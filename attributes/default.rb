@@ -36,7 +36,3 @@ default['drupal']['drush']['checksum'] = '12533dbc7a18f1fef79a1853a8fdb88171f4fe
 default['drupal']['drush']['dir'] = '/opt/drush'
 default['drupal']['drush']['executable'] = '/usr/bin/drush'
 
-
-
-default['drupal']['deploy']['rollback'] = false
-
