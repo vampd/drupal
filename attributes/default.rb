@@ -22,6 +22,8 @@ default['drupal']['site']['dbname'] = 'drupal'
 default['drupal']['site']['repository'] = 'http://git.drupal.org/project/drupal.git'
 default['drupal']['site']['revision'] = '7.x'
 default['drupal']['site']['releases'] = 5
+default['drupal']['site']['files'] = 'sites/default/files'
+default['drupal']['site']['settings'] = 'sites/default/settings.php'
 
 default['drupal']['server']['alias'] = "#{default['drupal']['site']['name']}.local"
 default['drupal']['server']['web_user'] = "www-data"
