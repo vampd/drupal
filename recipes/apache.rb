@@ -21,9 +21,12 @@ include_recipe "apache2"
 include_recipe "apache2::mod_php5"
 include_recipe "apache2::mod_rewrite"
 
-web_app node[:drupal][:site][:name] do
-  server_name node['hostname']
-  server_aliases [node[:drupal][:server][:alias]]
-  allow_override "All"
-  docroot "#{node[:drupal][:server][:base]}/current"
+node[:drupal][:sites].each do |site_name, data|
+  web_app site_name do
+    server_name "#{site_name}.local"
+    server_aliases ["#{site_name}.local"]
+    allow_override "All"
+    docroot "#{node[:drupal][:server][:base]}/#{site_name}/current"
+  end
 end
+

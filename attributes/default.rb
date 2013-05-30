@@ -17,22 +17,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-default['drupal']['site']['name'] = 'drupal'
-default['drupal']['site']['dbname'] = 'drupal'
-default['drupal']['site']['repository'] = 'http://git.drupal.org/project/drupal.git'
-default['drupal']['site']['revision'] = '7.x'
-default['drupal']['site']['releases'] = 5
-default['drupal']['site']['files'] = 'sites/default/files'
-default['drupal']['site']['settings'] = 'sites/default/settings.php'
+default['drupal']['sites']['drupal']['releases'] = 1
+default['drupal']['sites']['drupal']['files'] = 'sites/default/files'
+default['drupal']['sites']['drupal']['settings'] = 'sites/default/settings.php'
+default['drupal']['sites']['drupal']['repository']['uri'] = 'http://git.drupal.org/project/drupal.git'
+default['drupal']['sites']['drupal']['repository']['revision'] = '7.x'
+default['drupal']['sites']['drupal']['profile'] = 'standard'
+default['drupal']['sites']['drupal']['install'] = {
+  'install_configure_form.update_status_module' => "'array(FALSE,FALSE)'",
+  '--clean-url' => 1,
+}
 
 default['drupal']['server']['alias'] = "#{default['drupal']['site']['name']}.local"
 default['drupal']['server']['web_user'] = "www-data"
 default['drupal']['server']['web_group'] = "www-data"
-default['drupal']['server']['base'] = "/srv/www/#{default['drupal']['site']['name']}"
-default['drupal']['server']['files'] = "/srv/files/#{default['drupal']['site']['name']}"
+default['drupal']['server']['base'] = "/srv/www"
+default['drupal']['server']['assets'] = "/assets"
 
 default['drupal']['drush']['version'] = '7.x-5.9'
 default['drupal']['drush']['checksum'] = '12533dbc7a18f1fef79a1853a8fdb88171f4fed8'
 default['drupal']['drush']['dir'] = '/opt/drush'
 default['drupal']['drush']['executable'] = '/usr/bin/drush'
-

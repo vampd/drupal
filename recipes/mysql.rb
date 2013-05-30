@@ -33,20 +33,52 @@ mysql_connection_info = {
   :password => node["mysql"]["server_root_password"]
 }
 
-mysql_database node['drupal']['site']['dbname'] do
-  connection mysql_connection_info
-  action :create
-end
-
 drupal_user = data_bag_item('users', 'drupal')[node.chef_environment]
-
-['%', 'localhost'].each do |host_name|
-  mysql_database_user drupal_user['dbuser'] do
+node[:drupal][:sites].each do |site_name, site|
+  mysql_database site_name do
     connection mysql_connection_info
-    password drupal_user['dbpass']
-    database_name node['drupal']['site']['dbname']
-    host host_name
-    privileges [:select,:insert,:update,:delete,:create,:drop,:index,:alter,:'lock tables',:'create temporary tables']
-    action :grant
+    action :create
+  end
+
+  ['%', 'localhost'].each do |host_name|
+    mysql_database_user drupal_user['dbuser'] do
+      connection mysql_connection_info
+      password drupal_user['dbpass']
+      database_name site_name
+      host host_name
+      privileges [:select,:insert,:update,:delete,:create,:drop,:index,:alter,:'lock tables',:'create temporary tables']
+      action :grant
+    end
+  end
+
+  unless site[:database].nil?
+=begin
+I should be able to use something like the following but it simply doesn't work
+in chef:
+
+    mysql_database site_name do
+      connection mysql_connection_info
+      sql "SOURCE #{node[:drupal][:server][:assets]}/#{site_name}/#{site[:database]}"
+      action :query
+    end
+
+Instead, I have to go the dirty route and do the following in bash.  If you can
+help resolve this please do so that I don't feel dirty!
+=end
+    bash "Import existing #{site_name} database." do
+      user "root"
+      code <<-EOH
+        ret=$(mysql -u root -p#{passwords['root']} --disable-column-names -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '#{site_name}'")
+        if [ $ret -eq 0 ]
+          then mysql -u root -p#{passwords['root']} #{site_name} -e 'SOURCE /assets/#{site_name}/#{site[:database]}'
+        fi
+      EOH
+    end
+
   end
 end
+
+
+
+
+
