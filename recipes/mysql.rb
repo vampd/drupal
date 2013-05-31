@@ -34,7 +34,9 @@ mysql_connection_info = {
 }
 
 drupal_user = data_bag_item('users', 'drupal')[node.chef_environment]
-node[:drupal][:sites].each do |site_name, site|
+node[:drupal][:sites].each do |data|
+  site_name = data.keys.first
+  site = data[site_name]
   mysql_database site_name do
     connection mysql_connection_info
     action :create
@@ -77,8 +79,3 @@ help resolve this please do so that I don't feel dirty!
 
   end
 end
-
-
-
-
-

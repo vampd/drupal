@@ -21,7 +21,9 @@ include_recipe "apache2"
 include_recipe "apache2::mod_php5"
 include_recipe "apache2::mod_rewrite"
 
-node[:drupal][:sites].each do |site_name, data|
+node[:drupal][:sites].each do |data|
+  site_name = data.keys.first
+  site = data[site_name]
   web_app site_name do
     server_name "#{site_name}.local"
     server_aliases ["#{site_name}.local"]

@@ -59,7 +59,9 @@ directory node[:drupal][:server][:base] do
   recursive true
 end
 
-node[:drupal][:sites].each do |site_name, site|
+node[:drupal][:sites].each do |data|
+  site_name = data.keys.first
+  site = data[site_name]
   directory "/assets/#{site_name}" do
     owner node[:drupal][:server][:web_user]
     group node[:drupal][:server][:web_group]
