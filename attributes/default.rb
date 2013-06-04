@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-default['drupal']['sites'] = []
+default['drupal']['sites'] = {}
 #default['drupal']['sites']['drupal']['releases'] = 1
 #default['drupal']['sites']['drupal']['files'] = 'sites/default/files'
 #efault['drupal']['sites']['drupal']['settings'] = 'sites/default/settings.php'
