@@ -60,7 +60,8 @@ directory node[:drupal][:server][:base] do
   recursive true
 end
 
-node[:drupal][:sites][0].each do |key, data|
+node[:drupal][:sites].each do |key, data|
+  puts "KEY #{key}"
   site_name = key
   site = data
 
