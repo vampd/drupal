@@ -61,7 +61,6 @@ directory node[:drupal][:server][:base] do
 end
 
 node[:drupal][:sites].each do |key, data|
-  puts "KEY #{key}"
   site_name = key
   site = data
 
