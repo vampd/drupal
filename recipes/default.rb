@@ -101,6 +101,7 @@ node[:drupal][:sites].each do |key, data|
         link "#{release_path}/#{site[:files]}" do
           to "#{node[:drupal][:server][:base]}/#{site_name}/files"
           link_type :symbolic
+          not_if do ::File.exists?("#{release_path}/#{site[:files]}") end
         end
 
        execute "drupal-copy-settings" do
