@@ -101,7 +101,6 @@ node[:drupal][:sites].each do |key, data|
         link "#{release_path}/#{site[:files]}" do
           to "#{node[:drupal][:server][:base]}/#{site_name}/files"
           link_type :symbolic
-          not_if do ::File.exists?("#{release_path}/#{site[:files]}") end
         end
 
        execute "drupal-copy-settings" do
@@ -131,8 +130,6 @@ node[:drupal][:sites].each do |key, data|
             command <<-EOF
               #{cmd}
             EOF
-          else
-            puts "beep need to tie into existing db.drush core-config sett"
           end
           not_if { files_sorted_by_time.length > 1 }
         end
