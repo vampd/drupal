@@ -106,8 +106,10 @@ node[:drupal][:sites].each do |key, data|
        execute "drupal-copy-settings" do
         file_index = 0
         file_index = 1 if files_sorted_by_time.length > 1
+        cmd = "cp #{files_sorted_by_time[file_index]}/#{site[:settings]} #{release_path}/#{site[:settings]}"
+        Chef::Log.debug "#{cmd}"
           command <<-EOF
-            cp #{files_sorted_by_time[file_index]}/#{site[:settings]} #{release_path}/#{site[:settings]}
+            #{cmd}
             EOF
           only_if { ::File.exists?("#{files_sorted_by_time[-2]}/#{site[:settings]}") }
         end
@@ -127,6 +129,7 @@ node[:drupal][:sites].each do |key, data|
             cmd << " --account-name=#{drupal_user['admin_user']}" if install['account-name'].nil?
             cmd << " --account-pass=#{drupal_user['admin_pass']}" if install['account-pass'].nil?
             cwd release_path
+            Chef::Log.debug "#{cmd}"
             command <<-EOF
               #{cmd}
             EOF
@@ -143,6 +146,23 @@ node[:drupal][:sites].each do |key, data|
           only_if { files_sorted_by_time.length > 1 }
         end
       end
+
+      after_restart do
+        # Make the current symlink relative in the _default environment to
+        # facilitate working locally.
+        if node.chef_environment == "_default"
+          relative_path = release_path.gsub("#{node[:drupal][:server][:base]}/#{site_name}/","")
+          execute "drupal-current-relative" do
+            cwd "#{node[:drupal][:server][:base]}/#{site_name}/"
+            command <<-EOF
+              unlink current
+              ln -s #{relative_path} current
+            EOF
+            only_if { ::File.exists?("#{node[:drupal][:server][:base]}/#{site_name}/current") }
+          end
+        end
+      end
+
       symlink_before_migrate.clear
       create_dirs_before_symlink.clear
       purge_before_symlink.clear
