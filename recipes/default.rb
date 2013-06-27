@@ -91,8 +91,26 @@ node[:drupal][:sites].each do |key, data|
   end
 
   if site[:deploy]
+
+    if site[:clean]
+      execute "drupal-clean-releases" do
+        cmd = "rm -rf #{node[:drupal][:server][:base]}/#{site_name}/releases"
+        Chef::Log.debug("Clean install: #{cmd}") if ::File.exists?("#{node[:drupal][:server][:base]}/#{site_name}/releases")
+        command <<-EOF
+          #{cmd}
+          EOF
+        only_if { ::File.exists?("#{node[:drupal][:server][:base]}/#{site_name}/releases") }
+      end
+    end
+
     deploy "#{node[:drupal][:server][:base]}/#{site_name}" do
       files_sorted_by_time = Dir["#{node[:drupal][:server][:base]}/#{site_name}/releases/*"].sort_by{ |f| File.mtime(f) }
+      files_sorted_by_time = [] if site[:clean]
+      file_index = 0
+      file_index = 1 if files_sorted_by_time.length > 1
+      settings_file = "#{files_sorted_by_time[file_index]}/#{site[:settings]}"
+
+      Chef::Log.debug "drupal deploy: files_sorted_by_time = #{files_sorted_by_time.inspect} #{files_sorted_by_time.length}"
       repository site[:repository][:uri]
       revision site[:repository][:revision]
       keep_releases site[:releases]
@@ -104,18 +122,26 @@ node[:drupal][:sites].each do |key, data|
         end
 
        execute "drupal-copy-settings" do
-        file_index = 0
-        file_index = 1 if files_sorted_by_time.length > 1
-        cmd = "cp #{files_sorted_by_time[file_index]}/#{site[:settings]} #{release_path}/#{site[:settings]}"
-        Chef::Log.debug "#{cmd}"
+        cmd = "cp #{settings_file} #{release_path}/#{site[:settings]}"
+        Chef::Log.debug "drupal-copy-settings: #{ cmd}" if ::File.exists?(settings_file)
           command <<-EOF
             #{cmd}
             EOF
-          only_if { ::File.exists?("#{files_sorted_by_time[-2]}/#{site[:settings]}") }
+          only_if { ::File.exists?(settings_file) }
         end
       end
 
       before_restart do
+
+        execute "drush-site-update" do
+          cwd release_path
+          command <<-EOF
+            drush updb -y
+            drush cc all
+          EOF
+          Chef::Log.debug "drush-site-update: cwd #{release_path}; drush updb -y; drush cc all" if ::File.exists?(settings_file)
+          only_if { ::File.exists?(settings_file) }
+        end
 
         execute "drush-site-install" do
           drupal_user = data_bag_item('users', 'drupal')[node.chef_environment]
@@ -129,22 +155,16 @@ node[:drupal][:sites].each do |key, data|
             cmd << " --account-name=#{drupal_user['admin_user']}" if install['account-name'].nil?
             cmd << " --account-pass=#{drupal_user['admin_pass']}" if install['account-pass'].nil?
             cwd release_path
-            Chef::Log.debug "#{cmd}"
             command <<-EOF
               #{cmd}
             EOF
+            not_if { ::File.exists?(settings_file) }
+            Chef::Log.debug "drush-site-install: cwd #{release_path}; #{cmd}" unless ::File.exists?(settings_file)
+          else
+            # Install existing database.
           end
-          not_if { files_sorted_by_time.length > 1 }
         end
 
-        execute "drush-site-update" do
-          cwd release_path
-          command <<-EOF
-            drush updb -y
-            drush cc all
-          EOF
-          only_if { files_sorted_by_time.length > 1 }
-        end
       end
 
       after_restart do

@@ -37,6 +37,15 @@ drupal_user = data_bag_item('users', 'drupal')[node.chef_environment]
 node[:drupal][:sites].each do |key, data|
   site_name = key
   site = data
+
+  if site[:clean]
+    Chef::Log.debug("Clean install: Dropping database: #{site_name}")
+    mysql_database site_name do
+      connection mysql_connection_info
+      action :drop
+    end
+  end
+
   mysql_database site_name do
     connection mysql_connection_info
     action :create
