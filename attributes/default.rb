@@ -19,16 +19,6 @@
 #
 
 default['drupal']['sites'] = {}
-#default['drupal']['sites']['drupal']['releases'] = 1
-#default['drupal']['sites']['drupal']['files'] = 'sites/default/files'
-#efault['drupal']['sites']['drupal']['settings'] = 'sites/default/settings.php'
-#default['drupal']['sites']['drupal']['repository']['uri'] = 'http://git.drupal.org/project/drupal.git'
-#default['drupal']['sites']['drupal']['repository']['revision'] = '7.x'
-#default['drupal']['sites']['drupal']['profile'] = 'standard'
-#default['drupal']['sites']['drupal']['install'] = {
-#  'install_configure_form.update_status_module' => "'array(FALSE,FALSE)'",
-#  '--clean-url' => 1,
-#}
 
 default['drupal']['server']['alias'] = "#{default['drupal']['site']['name']}.local"
 default['drupal']['server']['web_user'] = "www-data"

@@ -18,40 +18,6 @@
 # limitations under the License.
 #
 
-Directory "/root/.ssh" do
-  action :create
-  mode 0700
-end
-
-File "/root/.ssh/config" do
-  action :create
-  content "Host *\nStrictHostKeyChecking no"
-  mode 0600
-end
-
-ruby_block "Give root access to the forwarded ssh agent" do
-  block do
-    # find a parent process' ssh agent socket
-    agents = {}
-    ppid = Process.ppid
-    Dir.glob('/tmp/ssh*/agent*').each do |fn|
-      agents[fn.match(/agent\.(\d+)$/)[1]] = fn
-    end
-    while ppid != '1'
-      if (agent = agents[ppid])
-        ENV['SSH_AUTH_SOCK'] = agent
-        break
-      end
-      File.open("/proc/#{ppid}/status", "r") do |file|
-        ppid = file.read().match(/PPid:\s+(\d+)/)[1]
-      end
-    end
-    # Uncomment to require that an ssh-agent be available
-    # fail "Could not find running ssh agent - Is config.ssh.forward_agent enabled in Vagrantfile?" unless ENV['SSH_AUTH_SOCK']
-  end
-  action :create
-end
-
 directory node[:drupal][:server][:base] do
   owner node[:drupal][:server][:web_user]
   group node[:drupal][:server][:web_group]
@@ -177,6 +143,17 @@ node[:drupal][:sites].each do |key, data|
             command <<-EOF
               unlink current
               ln -s #{relative_path} current
+            EOF
+            only_if { ::File.exists?("#{node[:drupal][:server][:base]}/#{site_name}/current") }
+          end
+          # When working locally it is helpful to have the local code pointing
+          # at the relevant branch.
+          execute "drupal-switch-branch" do
+            cwd "#{node[:drupal][:server][:base]}/#{site_name}/current"
+            puts "beep git pull origin #{site[:repository][:revision]}"
+            command <<-EOF
+              git checkout #{site[:repository][:revision]}
+              git pull origin #{site[:repository][:revision]}
             EOF
             only_if { ::File.exists?("#{node[:drupal][:server][:base]}/#{site_name}/current") }
           end
