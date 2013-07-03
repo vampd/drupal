@@ -109,10 +109,10 @@ node[:drupal][:sites].each do |key, data|
           only_if { ::File.exists?(settings_file) }
         end
 
-        execute "drush-site-install" do
-          drupal_user = data_bag_item('users', 'drupal')[node.chef_environment]
-          install = site[:install]
-          if site[:database].nil?
+        if site[:database].nil?
+          execute "drush-site-install" do
+            drupal_user = data_bag_item('users', 'drupal')[node.chef_environment]
+            install = site[:install]
             cmd = "drush -y site-install #{site[:profile]}"
             install.each do |flag, value|
               cmd << " #{flag}=#{value}"
@@ -126,9 +126,9 @@ node[:drupal][:sites].each do |key, data|
             EOF
             not_if { ::File.exists?(settings_file) }
             Chef::Log.debug "drush-site-install: cwd #{release_path}; #{cmd}" unless ::File.exists?(settings_file)
-          else
-            # Install existing database.
           end
+        else
+          # Install existing database.
         end
 
       end
