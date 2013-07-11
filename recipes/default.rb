@@ -157,6 +157,17 @@ node[:drupal][:sites].each do |key, data|
             EOF
             only_if { ::File.exists?("#{node[:drupal][:server][:base]}/#{site_name}/current") }
           end
+          # Optionally define additonal git remotes. These are in addition to
+          # the the default 'origin' remote provided by git clone.
+          unless site[:repository][:remotes].nil?
+            site[:repository][:remotes].each do |remote, uri|
+              execute "drupal-add-remote-#{remote}" do
+                cwd "#{node[:drupal][:server][:base]}/#{site_name}/current"
+                command "git remote add #{remote} #{uri}"
+                only_if { ::File.exists?("#{node[:drupal][:server][:base]}/#{site_name}/current") }
+              end
+            end
+          end
         end
       end
 
