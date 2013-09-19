@@ -1,35 +1,30 @@
-<VirtualHost *:80>
-  ServerName <%= @params[:server_name] %>
-  ServerAlias <% @params[:server_aliases].each do |a| %><%= a %> <% end %>
-  DocumentRoot <%= @params[:docroot] %>
-  RewriteEngine On
-
-  <Directory <%= @params[:docroot] %>>
-    Options <%= [@params[:directory_options] || "FollowSymLinks" ].flatten.join " " %>
-    AllowOverride <%= [@params[:allow_override] || "None" ].flatten.join " " %>
-    Order allow,deny
-    Allow from all
-  </Directory>
-
-  <Directory />
-    Options FollowSymLinks
-    AllowOverride All
-  </Directory>
-
-  LogLevel info
-  ErrorLog <%= node['apache']['log_dir'] %>/<%= @params[:name] %>-error.log
-  CustomLog <%= node['apache']['log_dir'] %>/<%= @params[:name] %>-access.log combined
-
-  <% if @params[:directory_index] -%>
-  DirectoryIndex <%= [@params[:directory_index]].flatten.join " " %>
-  <% end -%>
-
-  RewriteEngine On
-  RewriteLog <%= node['apache']['log_dir'] %>/<%= @application_name %>-rewrite.log
-  RewriteLogLevel 0
-
-  # Canonical host, <%= @params[:server_name] %>
-  RewriteCond %{HTTP_HOST}   !^<%= @params[:server_name] %> [NC]
-  RewriteCond %{HTTP_HOST}   !^$
-  RewriteRule ^/(.*)$        http://<%= @params[:server_name] %>/$1 [L,R=301]
+<VirtualHost *:<%= @params[:port] %>><% if @params[:server_name] -%>
+  ServerName <%= @params[:server_name] %><% end -%><% if @params[:server_aliases] -%>
+  ServerAlias <% @params[:server_aliases].each do |a| %><%= a %><% end %><% end -%><% if @params[:redirect] -%><% @params[:redirect].each do |a| %>
+  Redirect <%= a %><% end %><% end -%><% if @params[:docroot] -%>
+  DocumentRoot <%= @params[:docroot] %><% end -%><% if @params[:rewrite_engine] -%>
+  RewriteEngine <%= @params[:rewrite_engine] %><% end -%><% if @params[:rewrite_log] -%>
+  RewriteLog <%= @params[:rewrite_log] %><% end -%><% if @params[:rewrite_log_level] -%>
+  RewriteLogLevel <%= @params[:rewrite_log_level] %><% end -%><% if @params[:rewrite] -%><% @params[:rewrite].each do |hash| %><% if hash['rewrite_cond'] -%><% hash['rewrite_cond'].each do |condition| %>
+  RewriteCond <%= condition %><% end %><% end %><% if hash['rewrite_cond'] -%><% hash['rewrite_rule'].each do |rule| %>
+  RewriteRule <%= rule %><% end %><% end %><% end %><% end %><% if @params[:log_level] -%>
+  LogLevel <%= @params[:log_level] %><% end -%><% if @params[:error_log] -%>
+  ErrorLog <%= @params[:error_log] %><% end -%><% if @params[:custom_log] -%>
+  CustomLog <%= @params[:custom_log] %><% end -%><% if @params[:transfer_log] -%>
+  TransferLog <%= @params[:transfer_log] %><% end -%><% if @params[:directory_index] -%>
+  DirectoryIndex <%= [@params[:directory_index]].flatten.join " " %><% end -%><% if @params[:directories] -%>
+  <% @params[:directories].each do |directory, a| %>
+    <Directory <%= directory %>><% if a['options'] -%>
+      Options <%= a['options'].flatten.join " " %><% end -%><% if a['allow_override'] -%>
+      AllowOverride <%= a['allow_override'].flatten.join " " %><% end -%><% if a['order'] -%>
+      Order <%= a['order'].flatten.join "," %><% end -%><% if a['allow_from'] -%>
+      Allow from <%= a['allow_from'].flatten.join " " %><% end -%>
+    </Directory>
+  <% end %><% end -%><% if @params[:ssl_engine] -%>
+  SSLEngine <%= @params[:ssl_engine] %><% end -%><% if @params[:ssl_protocol] -%>
+  SSLProtocol <%= [@params[:ssl_protocol]].flatten.join " " %><% end -%><% if @params[:ssl_cipher_suite] -%>
+  SSLCipherSuite <%= [@params[:ssl_cipher_suite]].flatten.join ":" %><% end -%><% if @params[:ssl_certificate_file] -%>
+  SSLCertificateFile <%= @params[:ssl_certificate_file] %><% end -%><% if @params[:ssl_certificate_key_file] -%>
+  SSLCertificateKeyFile <%= @params[:ssl_certificate_key_file] %><% end -%><% if @params[:set_env_if] -%><% @params[:set_env_if].each do |a| %>
+  SetEnvIf <%= a %><% end %><% end %>
 </VirtualHost>

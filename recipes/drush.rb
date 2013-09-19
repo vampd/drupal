@@ -19,11 +19,14 @@
 #
 drush_archive = "#{Chef::Config[:file_cache_path]}/drush-#{node[:drupal][:drush][:version]}.tar.gz"
 
+
 remote_file drush_archive do
   checksum node[:drupal][:drush][:checksum]
   source "http://ftp.drupal.org/files/projects/drush-#{node[:drupal][:drush][:version]}.tar.gz"
   mode "0644"
+  action :create_if_missing
 end
+
 
 directory node[:drupal][:drush][:dir] do
   owner "root"

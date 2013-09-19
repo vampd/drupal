@@ -17,74 +17,84 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-passwords = data_bag_item('users', 'mysql')[node.chef_environment]
-node.set['mysql']['server_root_password'] = passwords["root"]
-node.set['mysql']['server_repl_password'] = passwords["replication"]
-node.set['mysql']['server_debian_password'] = passwords["debian"]
 
-include_recipe "mysql::server"
-include_recipe "mysql::client"
+# Set up the server.
+Chef::Log.debug "drupal::mysql - site[:db] = #{node[:db].inspect}"
+include_recipe node[:db][:client_recipe] unless node[:db][:client_recipe].nil?
 include_recipe "database"
-include_recipe "database::mysql"
+passwords = data_bag_item('users', 'mysql')[node.chef_environment]
+Chef::Log::debug "drupal::mysql passwords = #{passwords.inspect}"
+
+if Chef::Config[:solo]
+  Chef::Log.debug "drupal::mysql Setting chef solo node mysql passwords."
+  node.set['mysql']['server_debian_password'] = passwords["debian"] unless passwords["debian"].nil?
+  node['mysql']['server_root_password'] = passwords["root"] unless passwords["root"].nil?
+  node.set['mysql']['server_repl_password'] = passwords["replication"] unless passwords["replication"].nil?
+end
+
+gem_package "mysql" if node[:db][:driver] == "mysql"
 
 mysql_connection_info = {
-  :host => "localhost",
-  :username => "root",
-  :password => node["mysql"]["server_root_password"]
+  :host => node[:db][:host],
+  :username => node[:db][:root],
+  :password => node['mysql']['server_root_password']
 }
+Chef::Log.debug "drupal::mysql - mysql_connection_info = #{mysql_connection_info.inspect}"
 
 drupal_user = data_bag_item('users', 'drupal')[node.chef_environment]
-node[:drupal][:sites].each do |key, data|
-  site_name = key
-  site = data
+Chef::Log.debug "drupal::mysql - drupal_user = #{drupal_user.inspect}"
 
-  if site[:clean]
-    Chef::Log.debug("Clean install: Dropping database: #{site_name}")
-    mysql_database site_name do
-      connection mysql_connection_info
-      action :drop
+# Set up each drupal site.
+Chef::Log.debug "drupal::mysql - node[:drupal] = #{node[:drupal].inspect}"
+
+node[:drupal][:sites].each do |site_name, site|
+
+  if site[:active]
+    Chef::Log.debug "drupal::mysql site #{site_name.inspect} is active."
+
+    if ['clean', 'update', 'import'].include?(site[:deploy][:action])
+
+      if site[:deploy][:action] == 'clean'
+        Chef::Log.debug("drupal::mysql clean install: purging database: #{site[:drupal][:settings][:db_name]}")
+        mysql_database site[:drupal][:settings][:db_name] do
+          connection mysql_connection_info
+          action :drop
+        end
+
+        Chef::Log.debug "drupal::mysql clean install: Creating database: - `mysql -u #{mysql_connection_info[:username]} -p#{mysql_connection_info[:password]} -h #{mysql_connection_info[:host]} -e \"CREATE DATABASE #{site_name};\"`"
+        mysql_database site[:drupal][:settings][:db_name] do
+          connection mysql_connection_info
+          action :create
+        end
+      end
+
+      bash "Import existing #{site[:drupal][:db_name]} database." do
+        only_if { site[:deploy][:action] == 'import' }
+        user "root"
+        mysql = "mysql -u #{drupal_user['db_user']} -p#{drupal_user['db_password']} #{site[:drupal][:db_name]} -h #{site[:drupal][:db_host]} -e "
+        cmd = "#{mysql} 'SOURCE #{node[:server][:assets]}/#{site_name}/#{site[:drupal][:db_file]}'"
+        Chef::Log.debug "drupal::mysql import database: - `#{cmd}`" if site[:deploy][:action] == 'import'
+        code <<-EOH
+          set -x
+          set -e
+          #{cmd}
+        EOH
+      end
+
+      node[:db][:grant_hosts].each do |host_name|
+        Chef::Log.debug "drupal::mysql: - `mysql -u #{mysql_connection_info[:username]} -p#{mysql_connection_info[:password]} -h #{mysql_connection_info[:host]} -e \"GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON '#{site[:drupal][:db_name]}' TO '#{drupal_user['db_user']}'@'#{host_name}' IDENTIFIED BY '#{drupal_user['db_password']}';\"`"
+        mysql_database_user drupal_user['db_user'] do
+          connection mysql_connection_info
+          password drupal_user['db_password']
+          database_name site[:drupal][:db_name]
+          host host_name
+          privileges [:select,:insert,:update,:delete,:create,:drop,:index,:alter,:'lock tables',:'create temporary tables']
+          action :grant
+        end
+      end
     end
+  else
+    Chef::Log.debug "drupal::mysql site #{site_name} is not active."
   end
 
-  mysql_database site_name do
-    connection mysql_connection_info
-    action :create
-  end
-
-  ['%', 'localhost'].each do |host_name|
-    mysql_database_user drupal_user['dbuser'] do
-      connection mysql_connection_info
-      password drupal_user['dbpass']
-      database_name site_name
-      host host_name
-      privileges [:select,:insert,:update,:delete,:create,:drop,:index,:alter,:'lock tables',:'create temporary tables']
-      action :grant
-    end
-  end
-
-  unless site[:database].nil?
-=begin
-I should be able to use something like the following but it simply doesn't work
-in chef:
-
-    mysql_database site_name do
-      connection mysql_connection_info
-      sql "SOURCE #{node[:drupal][:server][:assets]}/#{site_name}/#{site[:database]}"
-      action :query
-    end
-
-Instead, I have to go the dirty route and do the following in bash.  If you can
-help resolve this please do so that I don't feel dirty!
-=end
-    bash "Import existing #{site_name} database." do
-      user "root"
-      code <<-EOH
-        ret=$(mysql -u root -p#{passwords['root']} --disable-column-names -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '#{site_name}'")
-        if [ $ret -eq 0 ]
-          then mysql -u root -p#{passwords['root']} #{site_name} -e 'SOURCE /assets/#{site_name}/#{site[:database]}'
-        fi
-      EOH
-    end
-
-  end
 end
