@@ -68,9 +68,12 @@ node[:drupal][:sites].each do |site_name, site|
       directory assets do
         owner node[:drupal][:server][:web_user]
         group node[:drupal][:server][:web_group]
-        recursive true
         mode 00755
         action :create
+      end
+
+      link "#{node[:drupal][:server][:base]}/#{site_name}" do
+        to assets
       end
 
       directory "#{base}/shared" do
