@@ -68,19 +68,28 @@ node[:drupal][:sites].each do |site_name, site|
       directory assets do
         owner node[:drupal][:server][:web_user]
         group node[:drupal][:server][:web_group]
-        recursive true
         mode 00755
         action :create
       end
 
-      directory "#{base}/shared" do
+      link "#{node[:drupal][:server][:base]}/#{site_name}" do
+        to assets
+      end
+
+      directory "#{assets}/files" do
         owner node[:drupal][:server][:web_user]
         group node[:drupal][:server][:web_group]
         mode 00755
         action :create
         recursive true
       end
-
+      directory "#{assets}/shared" do
+        owner node[:drupal][:server][:web_user]
+        group node[:drupal][:server][:web_group]
+        mode 00755
+        action :create
+        recursive true
+      end
 
       if site[:deploy][:action] == 'clean'
         execute "drupal-clean-releases" do
@@ -100,9 +109,9 @@ node[:drupal][:sites].each do |site_name, site|
 
         before_migrate do
           Chef::Log.debug("Drupal::default: before_migrate: release_path = #{release_path}")
-          Chef::Log.debug("Drupal::default: before_migrate: link #{release_path}/#{site[:drupal][:settings][:files]} to #{assets}")
+          Chef::Log.debug("Drupal::default: before_migrate: link #{release_path}/#{site[:drupal][:settings][:files]} to #{assets}/files")
           link "#{release_path}/#{site[:drupal][:settings][:files]}" do
-            to "#{assets}"
+            to "#{assets}/files"
             link_type :symbolic
           end
 
