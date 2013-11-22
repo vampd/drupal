@@ -76,14 +76,20 @@ node[:drupal][:sites].each do |site_name, site|
         to assets
       end
 
-      directory "#{base}/shared" do
+      directory "#{assets}/files" do
         owner node[:drupal][:server][:web_user]
         group node[:drupal][:server][:web_group]
         mode 00755
         action :create
         recursive true
       end
-
+      directory "#{assets}/shared" do
+        owner node[:drupal][:server][:web_user]
+        group node[:drupal][:server][:web_group]
+        mode 00755
+        action :create
+        recursive true
+      end
 
       if site[:deploy][:action] == 'clean'
         execute "drupal-clean-releases" do
@@ -103,9 +109,9 @@ node[:drupal][:sites].each do |site_name, site|
 
         before_migrate do
           Chef::Log.debug("Drupal::default: before_migrate: release_path = #{release_path}")
-          Chef::Log.debug("Drupal::default: before_migrate: link #{release_path}/#{site[:drupal][:settings][:files]} to #{assets}")
+          Chef::Log.debug("Drupal::default: before_migrate: link #{release_path}/#{site[:drupal][:settings][:files]} to #{assets}/files")
           link "#{release_path}/#{site[:drupal][:settings][:files]}" do
-            to "#{assets}"
+            to "#{assets}/files"
             link_type :symbolic
           end
 
@@ -162,6 +168,41 @@ node[:drupal][:sites].each do |site_name, site|
               code <<-EOH
                 #{cmd}
               EOH
+            end
+          end
+          #Use a CSS Preprocessor
+          unless site[:css_preprocessor].nil?
+            # If using bundler, a different process is needed
+            if site[:css_preprocessor][:engine] == 'compass'
+              if site[:css_preprocessor][:compile]
+                user "root"
+                Chef::Log.debug("Drupal::default: before_restart: site[:css_preprocessor] #{site[:css_preprocessor].inspect}")
+                if site[:css_preprocessor][:use_bundler]
+                  gem_package "bundler" do
+                    not_if "gem list | grep bundler"
+                    action :install
+                  end
+                  cmd = "bundle install; bundle exec compass compile;"
+                else
+                  site[:css_processor][:gems].each do |g|
+                    gem_package "#{g}" do
+                      not_if "gem list | grep #{g}"
+                      action :install
+                    end
+                  if Chef::Config[:solo]
+                    cmd = "set -x; set -e; compass clean; compass compile;"
+                  else
+                    cmd = "set -x; set -e; compass clean; compass watch;"
+                  end
+                end
+                Chef::Log.debug("Drupal::default: before_restart: site[:css_preprocessor][:engine] = #{site[:css_preprocessor][:engine].inspect}") unless site[:css_preprocessor][:engine].nil?
+                bash "compile CSS" do
+                  cwd "#{release_path}/#{site[:css_preprocessor][:location]}"
+                  code <<-EOH
+                    #{cmd}
+                  EOH
+                end
+              end
             end
           end
 
