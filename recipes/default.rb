@@ -175,7 +175,7 @@ node[:drupal][:sites].each do |site_name, site|
             # If using bundler, a different process is needed
             if site[:css_preprocessor][:engine] == 'compass'
               if site[:css_preprocessor][:compile]
-                user "root"
+
                 Chef::Log.debug("Drupal::default: before_restart: site[:css_preprocessor] #{site[:css_preprocessor].inspect}")
                 if site[:css_preprocessor][:use_bundler]
                   gem_package "bundler" do
@@ -189,6 +189,7 @@ node[:drupal][:sites].each do |site_name, site|
                       not_if "gem list | grep #{g}"
                       action :install
                     end
+                  end
                   if Chef::Config[:solo]
                     cmd = "set -x; set -e; compass clean; compass compile;"
                   else
@@ -197,6 +198,7 @@ node[:drupal][:sites].each do |site_name, site|
                 end
                 Chef::Log.debug("Drupal::default: before_restart: site[:css_preprocessor][:engine] = #{site[:css_preprocessor][:engine].inspect}") unless site[:css_preprocessor][:engine].nil?
                 bash "compile CSS" do
+                  user "root"
                   cwd "#{release_path}/#{site[:css_preprocessor][:location]}"
                   code <<-EOH
                     #{cmd}
