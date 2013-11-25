@@ -143,33 +143,6 @@ node[:drupal][:sites].each do |site_name, site|
         end
 
         before_restart do
-          # Manage CSS
-          unless site[:css].nil?
-            unless site[:css][:gems].nil?
-              Chef::Log.debug("Drupal::default: before_restart: site[:css] #{site[:css].inspect}")
-              site[:css][:gems].each do |g|
-                gem_package "#{g}" do
-                  not_if "gem list | grep #{g}"
-                  action :install
-                end
-              end
-            end
-
-            Chef::Log.debug("Drupal::default: before_restart: site[:css][:engine] = #{site[:css][:engine].inspect}") unless site[:css][:engine].nil?
-            bash "compile sass css" do
-              cwd "#{release_path}/#{site[:css][:base]}"
-              user "root"
-              if Chef::Config[:solo]
-                cmd = "set -x; set -e; compass clean; compass compile;"
-              else
-                cmd = "set -x; set -e; compass clean; compass watch;"
-              end
-              only_if { site[:css][:engine] == 'compass' }
-              code <<-EOH
-                #{cmd}
-              EOH
-            end
-          end
           #Use a CSS Preprocessor
           unless site[:css_preprocessor].nil?
             # If using bundler, a different process is needed
