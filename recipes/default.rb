@@ -102,7 +102,7 @@ node[:drupal][:sites].each do |site_name, site|
         end
       end
 
-      deploy base do
+      deploy "#{site_name} #{base}" do
         repository site[:repository][:uri]
         revision site[:repository][:revision]
         keep_releases site[:deploy][:releases]
@@ -116,7 +116,7 @@ node[:drupal][:sites].each do |site_name, site|
           end
 
           Chef::Log.debug("Drupal::default: before_migrate: template #{release_path}/#{site[:drupal][:settings][:settings]}")
-          template "drupal-settings" do
+          template "#{site_name} drupal-settings" do
             path "#{release_path}/#{site[:drupal][:settings][:settings]}"
             version = site[:drupal][:version].split('.')[0]
             source "d#{version}.settings.php.erb"
@@ -156,7 +156,7 @@ node[:drupal][:sites].each do |site_name, site|
             end
 
             Chef::Log.debug("Drupal::default: before_restart: site[:css][:engine] = #{site[:css][:engine].inspect}") unless site[:css][:engine].nil?
-            bash "compile sass css" do
+            bash "#{site_name} compile sass css" do
               cwd "#{release_path}/#{site[:css][:base]}"
               user "root"
               if Chef::Config[:solo]
@@ -178,7 +178,7 @@ node[:drupal][:sites].each do |site_name, site|
             EOH
           end
 
-          bash "drush-site-update" do
+          bash "#{site_name} drush-site-update" do
             cwd release_path
             user "root"
             cmd = "drush updb -y; drush cc all"
@@ -191,7 +191,7 @@ node[:drupal][:sites].each do |site_name, site|
             EOH
           end
 
-          bash "drush-site-install" do
+          bash "#{site_name} drush-site-install" do
             cwd release_path
             user "root"
             cmd = "drush -y site-install #{site[:drupal][:settings][:profile]}"
@@ -215,7 +215,7 @@ node[:drupal][:sites].each do |site_name, site|
           # Modifications to facilitate a local working environment.
           if Chef::Config[:solo]
 
-            case node['platform_family']
+            case node[:platform_family]
             when "redhat", "centos"
               bash "disable selinux" do
                 cmd = "type setenforce &>/dev/null && setenforce permissive"
