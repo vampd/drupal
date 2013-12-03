@@ -60,7 +60,7 @@ node[:drupal][:sites].each do |site_name, site|
         variables({
           :owner => node[:drupal][:server][:web_user],
           :group => node[:drupal][:server][:web_group],
-          :assets => "#{assets}",
+          :assets => assets,
           :files => "#{base}/current/sites/default/files",
         })
       end
