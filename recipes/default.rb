@@ -118,7 +118,7 @@ node[:drupal][:sites].each do |site_name, site|
           Chef::Log.debug("Drupal::default: before_migrate: template #{release_path}/#{site[:drupal][:settings][:settings]}")
           template "drupal-settings" do
             path "#{release_path}/#{site[:drupal][:settings][:settings]}"
-            version = "#{site[:drupal][:version]}".split('.')[0]
+            version = site[:drupal][:version].split('.')[0]
             source "d#{version}.settings.php.erb"
             owner node[:server][:web_user]
             group node[:server][:web_group]
@@ -148,7 +148,7 @@ node[:drupal][:sites].each do |site_name, site|
             unless site[:css][:gems].nil?
               Chef::Log.debug("Drupal::default: before_restart: site[:css] #{site[:css].inspect}")
               site[:css][:gems].each do |g|
-                gem_package "#{g}" do
+                gem_package g do
                   not_if "gem list | grep #{g}"
                   action :install
                 end
