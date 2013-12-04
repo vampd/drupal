@@ -23,6 +23,7 @@ directory node[:drupal][:server][:base] do
   mode 00755
   action :create
   recursive true
+  not_if { ::File.exists?(node[:drupal][:server][:base]) }
 end
 
 directory node[:drupal][:server][:assets] do
@@ -31,6 +32,7 @@ directory node[:drupal][:server][:assets] do
   mode 00755
   action :create
   recursive true
+  not_if { ::File.exists?(node[:drupal][:server][:assets]) }
 end
 
 # Set up each drupal site.
@@ -71,6 +73,7 @@ node[:drupal][:sites].each do |site_name, site|
         group node[:drupal][:server][:web_group]
         mode 00755
         action :create
+        not_if { ::File.exists?(assets) }
       end
 
       link "#{node[:drupal][:server][:base]}/#{site_name}" do
@@ -83,6 +86,7 @@ node[:drupal][:sites].each do |site_name, site|
         mode 00755
         action :create
         recursive true
+        not_if { ::File.exists?("#{assets}/files" ) }
       end
       directory "#{assets}/shared" do
         owner node[:drupal][:server][:web_user]
@@ -90,6 +94,7 @@ node[:drupal][:sites].each do |site_name, site|
         mode 00755
         action :create
         recursive true
+        not_if { ::File.exists?("#{assets}/shared" ) }
       end
 
       if site[:deploy][:action] == 'clean'
@@ -140,45 +145,28 @@ node[:drupal][:sites].each do |site_name, site|
             cookbook site[:drupal][:settings][:cookbook]
             source site[:drupal][:settings][:template]
           end
-
         end
 
         before_restart do
           #Use a CSS Preprocessor
           unless site[:css_preprocessor].nil?
-            # If using bundler, a different process is needed
-            if site[:css_preprocessor][:engine] == 'compass'
-              if site[:css_preprocessor][:compile]
-
-                Chef::Log.debug("Drupal::default: before_restart: site[:css_preprocessor] #{site[:css_preprocessor].inspect}")
-                if site[:css_preprocessor][:use_bundler]
-                  gem_package "bundler" do
-                    not_if "gem list | grep bundler"
-                    action :install
-                  end
-                  cmd = "bundle install; bundle update; bundle exec compass compile;"
-                else
-                  site[:css_processor][:gems].each do |g|
-                    gem_package "#{g}" do
-                      not_if "gem list | grep #{g}"
-                      action :install
-                    end
-                  end
-                  if Chef::Config[:solo]
-                    cmd = "set -x; set -e; compass clean; compass compile;"
-                  else
-                    cmd = "set -x; set -e; compass clean; compass watch;"
-                  end
-                end
-                Chef::Log.debug("Drupal::default: before_restart: site[:css_preprocessor][:engine] = #{site[:css_preprocessor][:engine].inspect}") unless site[:css_preprocessor][:engine].nil?
-                bash "compile CSS" do
-                  user "root"
-                  cwd "#{release_path}/#{site[:css_preprocessor][:location]}"
-                  code <<-EOH
-                    #{cmd}
-                  EOH
-                end
+            Chef::Log.debug("Drupal::default: before_restart: site[:css_preprocessor] #{site[:css_preprocessor].inspect}")
+            site[:css_preprocessor][:gems].each do |g|
+              gem_package "#{g}" do
+                not_if "gem list | grep #{g}"
+                action :install
               end
+            end
+            cmd = ""
+            site[:css_preprocessor][:commands].each do |c|
+              cmd << "#{c};"
+            end
+            bash "compile CSS" do
+              user "root"
+              cwd "#{release_path}/#{site[:css_preprocessor][:location]}"
+              code <<-EOH
+                #{cmd}
+              EOH
             end
           end
 
