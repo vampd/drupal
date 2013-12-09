@@ -104,7 +104,6 @@ node[:drupal][:sites].each do |site_name, site|
           command <<-EOF
             #{cmd}
             EOF
-          only_if { ::File.exists?("#{base}/releases") }
         end
       end
 
