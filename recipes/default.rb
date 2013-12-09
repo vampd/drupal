@@ -81,20 +81,21 @@ node[:drupal][:sites].each do |site_name, site|
       end
 
       directory "#{assets}/files" do
+
         owner node[:drupal][:server][:web_user]
         group node[:drupal][:server][:web_group]
         mode 00755
         action :create
         recursive true
-        not_if { ::File.exists?("#{assets}/files" ) }
       end
+
       directory "#{assets}/shared" do
         owner node[:drupal][:server][:web_user]
         group node[:drupal][:server][:web_group]
         mode 00755
         action :create
         recursive true
-        not_if { ::File.exists?("#{assets}/shared" ) }
+        not_if { ::File.exists?("#{assets}/files" ) }
       end
 
       if site[:deploy][:action] == 'clean'
