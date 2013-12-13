@@ -28,7 +28,7 @@ Chef::Log::debug "drupal::mysql passwords = #{passwords.inspect}"
 if Chef::Config[:solo]
   Chef::Log.debug "drupal::mysql Setting chef solo node mysql passwords."
   node.set['mysql']['server_debian_password'] = passwords["debian"] unless passwords["debian"].nil?
-  node['mysql']['server_root_password'] = passwords["root"] unless passwords["root"].nil?
+  node[:mysql][:server_root_password] = passwords["root"] unless passwords["root"].nil?
   node.set['mysql']['server_repl_password'] = passwords["replication"] unless passwords["replication"].nil?
 end
 
@@ -37,7 +37,7 @@ gem_package "mysql" if node[:db][:driver] == "mysql"
 mysql_connection_info = {
   :host => node[:db][:host],
   :username => node[:db][:root],
-  :password => node['mysql']['server_root_password']
+  :password => node[:mysql][:server_root_password]
 }
 Chef::Log.debug "drupal::mysql - mysql_connection_info = #{mysql_connection_info.inspect}"
 

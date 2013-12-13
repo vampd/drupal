@@ -18,15 +18,15 @@
 # limitations under the License.
 #
 
-default['drupal']['sites'] = {}
+default[:drupal][:sites] = {}
 
-default['drupal']['server']['alias'] = "#{default['drupal']['site']['name']}.local"
-default['drupal']['server']['web_user'] = "www-data"
-default['drupal']['server']['web_group'] = "www-data"
-default['drupal']['server']['base'] = "/srv/www"
-default['drupal']['server']['assets'] = "/assets"
+default[:drupal][:server][:alias] = "#{default[:drupal][:site][:name]}.local"
+default[:drupal][:server][:web_user] = "www-data"
+default[:drupal][:server][:web_group] = "www-data"
+default[:drupal][:server][:base] = "/srv/www"
+default[:drupal][:server][:assets] = "/assets"
 
-default['drupal']['drush']['version'] = '7.x-5.9'
-default['drupal']['drush']['checksum'] = '12533dbc7a18f1fef79a1853a8fdb88171f4fed8'
-default['drupal']['drush']['dir'] = '/opt/drush'
-default['drupal']['drush']['executable'] = '/usr/bin/drush'
+default[:drupal][:drush][:version] = '7.x-5.9'
+default[:drupal][:drush][:checksum] = '12533dbc7a18f1fef79a1853a8fdb88171f4fed8'
+default[:drupal][:drush][:dir] = '/opt/drush'
+default[:drupal][:drush][:executable] = '/usr/bin/drush'

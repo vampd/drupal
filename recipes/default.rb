@@ -108,7 +108,7 @@ node[:drupal][:sites].each do |site_name, site|
         end
       end
 
-      deploy base do
+      deploy "#{site_name} #{base}" do
         repository site[:repository][:uri]
         revision site[:repository][:revision]
         keep_releases site[:deploy][:releases]
@@ -122,9 +122,9 @@ node[:drupal][:sites].each do |site_name, site|
           end
 
           Chef::Log.debug("Drupal::default: before_migrate: template #{release_path}/#{site[:drupal][:settings][:settings]}")
-          template "drupal-settings" do
+          template "#{site_name} drupal-settings" do
             path "#{release_path}/#{site[:drupal][:settings][:settings]}"
-            version = "#{site[:drupal][:version]}".split('.')[0]
+            version = site[:drupal][:version].split('.')[0]
             source "d#{version}.settings.php.erb"
             owner node[:server][:web_user]
             group node[:server][:web_group]
@@ -148,6 +148,7 @@ node[:drupal][:sites].each do |site_name, site|
         end
 
         before_restart do
+<<<<<<< HEAD
           #Use a CSS Preprocessor
           unless site[:css_preprocessor].nil?
             Chef::Log.debug("Drupal::default: before_restart: site[:css_preprocessor] #{site[:css_preprocessor].inspect}")
@@ -162,6 +163,23 @@ node[:drupal][:sites].each do |site_name, site|
               cmd << "#{c};"
             end
             bash "compile CSS" do
+=======
+          # Manage CSS
+          unless site[:css].nil?
+            unless site[:css][:gems].nil?
+              Chef::Log.debug("Drupal::default: before_restart: site[:css] #{site[:css].inspect}")
+              site[:css][:gems].each do |g|
+                gem_package g do
+                  not_if "gem list | grep #{g}"
+                  action :install
+                end
+              end
+            end
+
+            Chef::Log.debug("Drupal::default: before_restart: site[:css][:engine] = #{site[:css][:engine].inspect}") unless site[:css][:engine].nil?
+            bash "#{site_name} compile sass css" do
+              cwd "#{release_path}/#{site[:css][:base]}"
+>>>>>>> e070d88d3915149c119522227c00c751ef829a99
               user "root"
               cwd "#{release_path}/#{site[:css_preprocessor][:location]}"
               code <<-EOH
@@ -214,7 +232,7 @@ node[:drupal][:sites].each do |site_name, site|
           # Modifications to facilitate a local working environment.
           if Chef::Config[:solo]
 
-            case node['platform_family']
+            case node[:platform_family]
             when "redhat", "centos"
               bash "disable selinux" do
                 cmd = "type setenforce &>/dev/null && setenforce permissive"
