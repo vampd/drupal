@@ -23,6 +23,7 @@ directory node[:drupal][:server][:base] do
   mode 00755
   action :create
   recursive true
+  not_if { ::File.exists?(node[:drupal][:server][:base]) }
 end
 
 directory node[:drupal][:server][:assets] do
@@ -31,6 +32,7 @@ directory node[:drupal][:server][:assets] do
   mode 00755
   action :create
   recursive true
+  not_if { ::File.exists?(node[:drupal][:server][:assets]) }
 end
 
 # Set up each drupal site.
@@ -44,6 +46,7 @@ node[:drupal][:sites].each do |site_name, site|
 
       base = "#{node[:drupal][:server][:base]}/#{site_name}"
       assets = "#{node[:drupal][:server][:assets]}/#{site_name}"
+      docroot = "#{}"
       drupal_user = data_bag_item('sites', site_name)[node.chef_environment]
       Chef::Log.debug "drupal::default drupal_user #{drupal_user.inspect}"
 
@@ -70,6 +73,7 @@ node[:drupal][:sites].each do |site_name, site|
         group node[:drupal][:server][:web_group]
         mode 00755
         action :create
+        not_if { ::File.exists?(assets) }
       end
 
       link "#{node[:drupal][:server][:base]}/#{site_name}" do
@@ -77,18 +81,21 @@ node[:drupal][:sites].each do |site_name, site|
       end
 
       directory "#{assets}/files" do
+
         owner node[:drupal][:server][:web_user]
         group node[:drupal][:server][:web_group]
         mode 00755
         action :create
         recursive true
       end
+
       directory "#{assets}/shared" do
         owner node[:drupal][:server][:web_user]
         group node[:drupal][:server][:web_group]
         mode 00755
         action :create
         recursive true
+        not_if { ::File.exists?("#{assets}/files" ) }
       end
 
       if site[:deploy][:action] == 'clean'
@@ -98,7 +105,6 @@ node[:drupal][:sites].each do |site_name, site|
           command <<-EOF
             #{cmd}
             EOF
-          only_if { ::File.exists?("#{base}/releases") }
         end
       end
 
@@ -139,10 +145,25 @@ node[:drupal][:sites].each do |site_name, site|
             cookbook site[:drupal][:settings][:cookbook]
             source site[:drupal][:settings][:template]
           end
-
         end
 
         before_restart do
+<<<<<<< HEAD
+          #Use a CSS Preprocessor
+          unless site[:css_preprocessor].nil?
+            Chef::Log.debug("Drupal::default: before_restart: site[:css_preprocessor] #{site[:css_preprocessor].inspect}")
+            site[:css_preprocessor][:gems].each do |g|
+              gem_package "#{g}" do
+                not_if "gem list | grep #{g}"
+                action :install
+              end
+            end
+            cmd = ""
+            site[:css_preprocessor][:commands].each do |c|
+              cmd << "#{c};"
+            end
+            bash "compile CSS" do
+=======
           # Manage CSS
           unless site[:css].nil?
             unless site[:css][:gems].nil?
@@ -158,13 +179,9 @@ node[:drupal][:sites].each do |site_name, site|
             Chef::Log.debug("Drupal::default: before_restart: site[:css][:engine] = #{site[:css][:engine].inspect}") unless site[:css][:engine].nil?
             bash "#{site_name} compile sass css" do
               cwd "#{release_path}/#{site[:css][:base]}"
+>>>>>>> e070d88d3915149c119522227c00c751ef829a99
               user "root"
-              if Chef::Config[:solo]
-                cmd = "set -x; set -e; compass clean; compass compile;"
-              else
-                cmd = "set -x; set -e; compass clean; compass watch;"
-              end
-              only_if { site[:css][:engine] == 'compass' }
+              cwd "#{release_path}/#{site[:css_preprocessor][:location]}"
               code <<-EOH
                 #{cmd}
               EOH
@@ -192,14 +209,14 @@ node[:drupal][:sites].each do |site_name, site|
           end
 
           bash "drush-site-install" do
-            cwd "#{release_path}/#{site[:drupal][:settings][docroot]}"
+            cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
             user "root"
             cmd = "drush -y site-install #{site[:drupal][:settings][:profile]}"
             site[:drupal][:install].each do |flag, value|
               cmd << " #{flag}=#{value}"
             end
             cmd << " --account-name=#{drupal_user['admin_user']} --account-pass=#{drupal_user['admin_pass']}"
-            cwd "#{release_path}/#{site[:drupal][:settings][docroot]}"
+            cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
             only_if { site[:deploy][:action] == 'clean' }
 
             Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action] == 'clean'
