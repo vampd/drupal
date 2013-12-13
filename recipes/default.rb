@@ -148,7 +148,6 @@ node[:drupal][:sites].each do |site_name, site|
         end
 
         before_restart do
-<<<<<<< HEAD
           #Use a CSS Preprocessor
           unless site[:css_preprocessor].nil?
             Chef::Log.debug("Drupal::default: before_restart: site[:css_preprocessor] #{site[:css_preprocessor].inspect}")
@@ -163,23 +162,6 @@ node[:drupal][:sites].each do |site_name, site|
               cmd << "#{c};"
             end
             bash "compile CSS" do
-=======
-          # Manage CSS
-          unless site[:css].nil?
-            unless site[:css][:gems].nil?
-              Chef::Log.debug("Drupal::default: before_restart: site[:css] #{site[:css].inspect}")
-              site[:css][:gems].each do |g|
-                gem_package g do
-                  not_if "gem list | grep #{g}"
-                  action :install
-                end
-              end
-            end
-
-            Chef::Log.debug("Drupal::default: before_restart: site[:css][:engine] = #{site[:css][:engine].inspect}") unless site[:css][:engine].nil?
-            bash "#{site_name} compile sass css" do
-              cwd "#{release_path}/#{site[:css][:base]}"
->>>>>>> e070d88d3915149c119522227c00c751ef829a99
               user "root"
               cwd "#{release_path}/#{site[:css_preprocessor][:location]}"
               code <<-EOH
