@@ -17,31 +17,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-drush_archive = "#{Chef::Config[:file_cache_path]}/drush-#{node[:drupal][:drush][:version]}.tar.gz"
 
 
-remote_file drush_archive do
-  checksum node[:drupal][:drush][:checksum]
-  source "http://ftp.drupal.org/files/projects/drush-#{node[:drupal][:drush][:version]}.tar.gz"
-  mode "0644"
-  action :create_if_missing
-end
-
-
-directory node[:drupal][:drush][:dir] do
+directory "#{node[:drupal][:drush][:dir]}" do
   owner "root"
   group "root"
   mode "0755"
   action :create
 end
 
-execute "extract-drush" do
-  cwd node[:drupal][:drush][:dir]
-  command "tar --strip-components 1 -xzf #{drush_archive}"
-  creates "#{node[:drupal][:drush][:dir]}/drush.php"
+directory "#{node[:drupal][:drush][:dir]}/shared" do
+  owner "root"
+  group "root"
+  mode "0755"
+  action :create
+end
+
+deploy node[:drupal][:drush][:dir] do
+  repository node[:drupal][:drush][:repository]
+  revision node[:drupal][:drush][:revision]
+  keep_releases 1
+  symlink_before_migrate.clear
+  create_dirs_before_symlink.clear
+  purge_before_symlink.clear
+  symlinks.clear
 end
 
 link node[:drupal][:drush][:executable] do
-  to "#{node[:drupal][:drush][:dir]}/drush"
+  to "#{node[:drupal][:drush][:dir]}/current/drush"
   link_type :symbolic
 end

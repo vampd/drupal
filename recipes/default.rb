@@ -60,8 +60,8 @@ node[:drupal][:sites].each do |site_name, site|
         variables({
           :owner => node[:drupal][:server][:web_user],
           :group => node[:drupal][:server][:web_group],
-          :assets => assets,
-          :files => "#{base}/current/sites/default/files",
+          :assets => "#{assets}",
+          :files => "#{base}/current/#{site[:drupal][:settings][:files]}",
         })
       end
 
@@ -178,8 +178,8 @@ node[:drupal][:sites].each do |site_name, site|
             EOH
           end
 
-          bash "#{site_name} drush-site-update" do
-            cwd release_path
+          bash "drush-site-update" do
+            cwd "#{release_path}/#{site[:drupal][:settings][docroot]}"
             user "root"
             cmd = "drush updb -y; drush cc all"
             only_if { site[:deploy][:action] == 'update' }
@@ -191,15 +191,15 @@ node[:drupal][:sites].each do |site_name, site|
             EOH
           end
 
-          bash "#{site_name} drush-site-install" do
-            cwd release_path
+          bash "drush-site-install" do
+            cwd "#{release_path}/#{site[:drupal][:settings][docroot]}"
             user "root"
             cmd = "drush -y site-install #{site[:drupal][:settings][:profile]}"
             site[:drupal][:install].each do |flag, value|
               cmd << " #{flag}=#{value}"
             end
             cmd << " --account-name=#{drupal_user['admin_user']} --account-pass=#{drupal_user['admin_pass']}"
-            cwd release_path
+            cwd "#{release_path}/#{site[:drupal][:settings][docroot]}"
             only_if { site[:deploy][:action] == 'clean' }
 
             Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action] == 'clean'
