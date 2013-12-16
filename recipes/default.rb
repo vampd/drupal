@@ -127,7 +127,6 @@ node[:drupal][:sites].each do |site_name, site|
           Chef::Log.debug("Drupal::default: before_migrate: template #{release_path}/#{site[:drupal][:settings][:settings]}")
           template "#{release_path}/#{site[:drupal][:settings][:settings]}" do
             path "#{release_path}/#{site[:drupal][:settings][:settings]}"
-            puts site[:drupal][:version].inspect
             version = "#{site[:drupal][:version]}".split('.')[0]
             source "d#{version}.settings.php.erb"
            # owner node[:server][:web_user]
