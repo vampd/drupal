@@ -41,12 +41,15 @@ Chef::Log.debug "drupal::default - node[:drupal] = #{node[:drupal].inspect}"
 node[:drupal][:sites].each do |site_name, site|
 
   if site[:active]
+
     Chef::Log.debug "drupal::default site #{site_name.inspect} is active. site = #{site.inspect}"
     Chef::Log.debug "drupal::default site settings #{site[:drupal][:settings].inspect}"
 
       base = "#{node[:drupal][:server][:base]}/#{site_name}"
       assets = "#{node[:drupal][:server][:assets]}/#{site_name}"
-      docroot = "#{}"
+      Chef::Log.debug "drupal::default base = #{base}"
+      Chef::Log.debug "drupal::default assets = #{assets}"
+
       drupal_user = data_bag_item('sites', site_name)[node.chef_environment]
       Chef::Log.debug "drupal::default drupal_user #{drupal_user.inspect}"
 
@@ -69,8 +72,8 @@ node[:drupal][:sites].each do |site_name, site|
       end
 
       directory assets do
-        owner node[:drupal][:server][:web_user]
-        group node[:drupal][:server][:web_group]
+#        owner node[:drupal][:server][:web_user]
+#        group node[:drupal][:server][:web_group]
         mode 00755
         action :create
         not_if { ::File.exists?(assets) }
@@ -81,21 +84,21 @@ node[:drupal][:sites].each do |site_name, site|
       end
 
       directory "#{assets}/files" do
-
-        owner node[:drupal][:server][:web_user]
-        group node[:drupal][:server][:web_group]
+        not_if { ::File.exists?("#{assets}/files") }
+#        owner node[:drupal][:server][:web_user]
+#        group node[:drupal][:server][:web_group]
         mode 00755
         action :create
         recursive true
       end
 
       directory "#{assets}/shared" do
-        owner node[:drupal][:server][:web_user]
-        group node[:drupal][:server][:web_group]
+#        owner node[:drupal][:server][:web_user]
+#        group node[:drupal][:server][:web_group]
         mode 00755
         action :create
         recursive true
-        not_if { ::File.exists?("#{assets}/files" ) }
+        not_if { ::File.exists?("#{assets}/shared" ) }
       end
 
       if site[:deploy][:action] == 'clean'
@@ -108,7 +111,7 @@ node[:drupal][:sites].each do |site_name, site|
         end
       end
 
-      deploy "#{site_name} #{base}" do
+      deploy base do
         repository site[:repository][:uri]
         revision site[:repository][:revision]
         keep_releases site[:deploy][:releases]
@@ -122,12 +125,13 @@ node[:drupal][:sites].each do |site_name, site|
           end
 
           Chef::Log.debug("Drupal::default: before_migrate: template #{release_path}/#{site[:drupal][:settings][:settings]}")
-          template "#{site_name} drupal-settings" do
+          template "#{release_path}/#{site[:drupal][:settings][:settings]}" do
             path "#{release_path}/#{site[:drupal][:settings][:settings]}"
-            version = site[:drupal][:version].split('.')[0]
+            puts site[:drupal][:version].inspect
+            version = "#{site[:drupal][:version]}".split('.')[0]
             source "d#{version}.settings.php.erb"
-            owner node[:server][:web_user]
-            group node[:server][:web_group]
+           # owner node[:server][:web_user]
+           # group node[:server][:web_group]
             mode 0644
             variables({
              :database => site[:drupal][:settings][:db_name],
@@ -178,7 +182,7 @@ node[:drupal][:sites].each do |site_name, site|
           end
 
           bash "drush-site-update" do
-            cwd "#{release_path}/#{site[:drupal][:settings][docroot]}"
+            cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
             user "root"
             cmd = "drush updb -y; drush cc all"
             only_if { site[:deploy][:action] == 'update' }

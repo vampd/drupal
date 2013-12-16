@@ -17,6 +17,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-execute "apt-get-update" do
-  command "apt-get update"
+case node['platform']
+when 'debian', 'ubuntu'
+  include_recipe "apt"
+
+  execute "apt-get-update" do
+    command "apt-get update"
+  end
 end
