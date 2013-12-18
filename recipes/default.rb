@@ -124,9 +124,9 @@ node[:drupal][:sites].each do |site_name, site|
             link_type :symbolic
           end
 
-          Chef::Log.debug("Drupal::default: before_migrate: template #{release_path}/#{site[:drupal][:settings][:settings]}")
-          template "#{release_path}/#{site[:drupal][:settings][:settings]}" do
-            path "#{release_path}/#{site[:drupal][:settings][:settings]}"
+          Chef::Log.debug("Drupal::default: before_migrate: template #{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}")
+          template "#{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}" do
+            path "#{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}"
             version = "#{site[:drupal][:version]}".split('.')[0]
             source "d#{version}.settings.php.erb"
            # owner node[:server][:web_user]
@@ -139,14 +139,18 @@ node[:drupal][:sites].each do |site_name, site|
              :host => site[:drupal][:settings][:db_host],
              :driver => site[:drupal][:settings][:db_driver],
              :prefix => site[:drupal][:settings][:db_prefix],
-             :settings_custom => site[:drupal][:settings][:custom]
+             :settings_custom => site[:drupal][:settings][:settings]
             })
           end
-
-          Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{site[:drupal][:settings][:custom]}")
-          drupal_custom_settings "#{release_path}/#{site[:drupal][:settings][:custom]}" do
-            cookbook site[:drupal][:settings][:cookbook]
-            source site[:drupal][:settings][:template]
+          Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{site[:drupal][:settings]}")
+          site[:drupal][:settings][:settings].each do |setting_name, setting|
+            unless setting[:template].nil?
+              Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{setting[:location]}")
+              drupal_custom_settings "#{release_path}/#{setting[:location]}}" do
+                cookbook site[:drupal][:settings][:cookbook]
+                source setting[:template]
+              end
+            end
           end
         end
 
