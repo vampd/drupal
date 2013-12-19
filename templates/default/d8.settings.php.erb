@@ -682,9 +682,13 @@ ini_set('session.cookie_lifetime', 2000000);
 #   include DRUPAL_ROOT . '/' . $conf_path . '/settings.local.php';
 # }
 
-
 <% if @settings_custom %>
-if (file_exists(DRUPAL_ROOT . "/<%= @settings_custom %>")) {
-  require DRUPAL_ROOT . "/<%= @settings_custom %>";
+  <% @settings_custom.each do |setting_name, setting| %>
+    <% if setting_name != "default" %>
+// Custom settings <%= setting_name %>
+if (file_exists(DRUPAL_ROOT . "/<%= setting[:location] %>")) {
+  require DRUPAL_ROOT . "/<%= setting[:location] %>";
 }
+    <% end %>
+  <% end %>
 <% end %>
