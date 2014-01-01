@@ -215,6 +215,20 @@ node[:drupal][:sites].each do |site_name, site|
               #{cmd}
             EOH
           end
+          # Run additional drush commands
+          unless site[:dev].nil?
+            cmd = ""
+            site[:dev][:drush].each do |c|
+              cmd << "#{c};"
+            end
+            bash "Run drush commands" do
+              user "root"
+              cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
+              code <<-EOH
+                #{cmd}
+              EOH
+            end
+          end
         end
 
         after_restart do
