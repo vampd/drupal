@@ -30,10 +30,3 @@ default[:drupal][:drush][:version] = '7.x-5.9'
 default[:drupal][:drush][:checksum] = '12533dbc7a18f1fef79a1853a8fdb88171f4fed8'
 default[:drupal][:drush][:dir] = '/opt/drush'
 default[:drupal][:drush][:executable] = '/usr/bin/drush'
-
-default[:node][:server_name] = 'node_js'
-default[:node][:script_location] ='/usr/local'
-default[:node][:user] = 'nodejs'
-default[:node][:dependencies] = []
-default[:node][:args] = ""
-default[:node][:action] = "start"
