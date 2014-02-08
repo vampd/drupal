@@ -72,7 +72,7 @@ node[:drupal][:sites].each do |site_name, site|
         only_if { site[:deploy][:action] == 'import' }
         user "root"
         mysql = "mysql -u #{drupal_user['db_user']} -p#{drupal_user['db_password']} #{site[:drupal][:db_name]} -h #{site[:drupal][:db_host]} -e "
-        cmd = "#{mysql} 'SOURCE #{node[:server][:assets]}/#{site_name}/#{site[:drupal][:db_file]}'"
+        cmd = "#{mysql} 'SOURCE #{node[:server][:assets]}/#{site_name}/#{site[:drupal][:settings][:db_file]}'"
         Chef::Log.debug "drupal::mysql import database: - `#{cmd}`" if site[:deploy][:action] == 'import'
         code <<-EOH
           set -x
