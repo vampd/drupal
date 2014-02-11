@@ -68,11 +68,11 @@ node[:drupal][:sites].each do |site_name, site|
         end
       end
 
-      bash "Import existing #{site[:drupal][:db_name]} database." do
+      bash "Import existing #{site[:drupal][:settings][:db_name]} database." do
         only_if { site[:deploy][:action] == 'import' }
         user "root"
-        mysql = "mysql -u #{drupal_user['db_user']} -p#{drupal_user['db_password']} #{site[:drupal][:db_name]} -h #{site[:drupal][:db_host]} -e "
-        cmd = "#{mysql} 'SOURCE #{node[:server][:assets]}/#{site_name}/#{site[:drupal][:db_file]}'"
+        mysql = "mysql -u #{mysql_connection_info[:username]} -p#{mysql_connection_info[:password]} #{site[:drupal][:settings][:db_name]} -h #{site[:drupal][:settings][:db_host]} -e "
+        cmd = "#{mysql} 'SOURCE #{node[:server][:assets]}/#{site_name}/#{site[:drupal][:settings][:db_file]}'"
         Chef::Log.debug "drupal::mysql import database: - `#{cmd}`" if site[:deploy][:action] == 'import'
         code <<-EOH
           set -x
@@ -82,11 +82,11 @@ node[:drupal][:sites].each do |site_name, site|
       end
 
       node[:db][:grant_hosts].each do |host_name|
-        Chef::Log.debug "drupal::mysql: - `mysql -u #{mysql_connection_info[:username]} -p#{mysql_connection_info[:password]} -h #{mysql_connection_info[:host]} -e \"GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON '#{site[:drupal][:db_name]}' TO '#{drupal_user['db_user']}'@'#{host_name}' IDENTIFIED BY '#{drupal_user['db_password']}';\"`"
+        Chef::Log.debug "drupal::mysql: - `mysql -u #{mysql_connection_info[:username]} -p#{mysql_connection_info[:password]} -h #{mysql_connection_info[:host]} -e \"GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON '#{site[:drupal][:settings][:db_name]}' TO '#{drupal_user['db_user']}'@'#{host_name}' IDENTIFIED BY '#{drupal_user['db_password']}';\"`"
         mysql_database_user drupal_user['db_user'] do
           connection mysql_connection_info
           password drupal_user['db_password']
-          database_name site[:drupal][:db_name]
+          database_name site[:drupal][:settings][:db_name]
           host host_name
           privileges [:select,:insert,:update,:delete,:create,:drop,:index,:alter,:'lock tables',:'create temporary tables']
           action :grant
