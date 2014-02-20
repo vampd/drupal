@@ -54,13 +54,15 @@ node[:drupal][:sites].each do |site_name, site|
 
     if ['clean', 'update', 'import'].include?(site[:deploy][:action])
 
-      if site[:deploy][:action] == 'clean'
+      if site[:deploy][:action] == 'clean' || site[:deploy][:action] == 'import'
         Chef::Log.debug("drupal::mysql clean install: purging database: #{site[:drupal][:settings][:db_name]}")
         mysql_database site[:drupal][:settings][:db_name] do
           connection mysql_connection_info
           action :drop
         end
+      end
 
+      if site[:deploy][:action] == 'clean'
         Chef::Log.debug "drupal::mysql clean install: Creating database: - `mysql -u #{mysql_connection_info[:username]} -p#{mysql_connection_info[:password]} -h #{mysql_connection_info[:host]} -e \"CREATE DATABASE #{site_name};\"`"
         mysql_database site[:drupal][:settings][:db_name] do
           connection mysql_connection_info
