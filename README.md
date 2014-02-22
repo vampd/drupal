@@ -6,7 +6,7 @@ This cookbook installs a Drupal site on a LAMP stack.
 
 Usage
 -----
-This cookbook has been designed to work with [drupal-lamp](http://github.com/newmediadenver/drupal-lamp].
+This cookbook has been designed to work with [drupal-lamp](http://github.com/newmediadenver/drupal-lamp).
 
 ### Available deploy actions
 #### Clean
@@ -89,6 +89,7 @@ default[:drupal][:sites] = {
     "uri": "https://github.com/drupal/drupal.git",
     "revision": "8.x" # branch, tag, or hash
   },
+  # Apache configuration
   "web_app": {
     "80": { # port
       "server_name": "drupal.local",
@@ -131,7 +132,7 @@ default[:drupal][:sites] = {
         "ssl_certificate_file": "",
         "ssl_certificate_key_file": ""
       }
-	  }
+    }
   }
 }
 ````
