@@ -54,7 +54,7 @@ node[:drupal][:sites].each do |site_name, site|
 
     if ['clean', 'update', 'import'].include?(site[:deploy][:action])
 
-      if site[:deploy][:action] == 'clean'
+      if site[:deploy][:action] == 'clean' || site[:deploy][:action] == 'import'
         Chef::Log.debug("drupal::mysql clean install: purging database: #{site[:drupal][:settings][:db_name]}")
         mysql_database site[:drupal][:settings][:db_name] do
           connection mysql_connection_info
