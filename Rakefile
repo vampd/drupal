@@ -10,7 +10,7 @@ end
 
 desc 'Run Foodcritic lint checks'
 FoodCritic::Rake::LintTask.new(:foodcritic) do |t|
-  t.options = { :fail_tags => ['correctness'] }
+  # t.options = { :fail_tags => ['correctness'] }
 end
 
 # desc 'Run ChefSpec examples'
