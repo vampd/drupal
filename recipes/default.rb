@@ -66,7 +66,7 @@ node[:drupal][:sites].each do |site_name, site|
         variables({
           :owner => node[:drupal][:server][:web_user],
           :group => node[:drupal][:server][:web_group],
-          :assets => "#{assets}",
+          :assets => assets,
           :files => "#{base}/current/#{site[:drupal][:settings][:files]}",
         })
       end
@@ -101,14 +101,13 @@ node[:drupal][:sites].each do |site_name, site|
         not_if { ::File.exists?("#{assets}/shared" ) }
       end
 
-      if site[:deploy][:action] == 'clean'
-        execute "drupal-clean-releases" do
-          cmd = "rm -rf #{base}/releases"
-          Chef::Log.debug("Drupal::default: clean install: #{cmd}") if ::File.exists?("#{base}/releases")
-          command <<-EOF
-            #{cmd}
-            EOF
-        end
+      execute "drupal-clean-releases" do
+        cmd = "rm -rf #{base}/releases"
+        Chef::Log.debug("Drupal::default: clean install: #{cmd}") if ::File.exists?("#{base}/releases")
+        command <<-EOF
+          #{cmd}
+          EOF
+        only_if { site[:deploy][:action] == 'clean' }
       end
 
       deploy base do
@@ -127,7 +126,7 @@ node[:drupal][:sites].each do |site_name, site|
           Chef::Log.debug("Drupal::default: before_migrate: template #{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}")
           template "#{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}" do
             path "#{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}"
-            version = "#{site[:drupal][:version]}".split('.')[0]
+            version = site[:drupal][:version].split('.')[0]
             source "d#{version}.settings.php.erb"
            # owner node[:server][:web_user]
            # group node[:server][:web_group]
@@ -159,7 +158,7 @@ node[:drupal][:sites].each do |site_name, site|
           unless site[:css_preprocessor].nil?
             Chef::Log.debug("Drupal::default: before_restart: site[:css_preprocessor] #{site[:css_preprocessor].inspect}")
             site[:css_preprocessor][:gems].each do |g|
-              gem_package "#{g}" do
+              gem_package g do
                 not_if "gem list | grep #{g}"
                 action :install
               end
@@ -184,7 +183,7 @@ node[:drupal][:sites].each do |site_name, site|
             EOH
           end
 
-          bash "drush-site-update" do
+          bash "drush-site-update-#{site_name}" do
             cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
             user "root"
             cmd = "drush updb -y; drush cc all"
@@ -197,7 +196,7 @@ node[:drupal][:sites].each do |site_name, site|
             EOH
           end
 
-          bash "drush-site-install" do
+          bash "drush-site-install-#{site_name}" do
             cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
             user "root"
             cmd = "drush -y site-install #{site[:drupal][:settings][:profile]}"

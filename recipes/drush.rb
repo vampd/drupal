@@ -19,7 +19,7 @@
 #
 
 
-directory "#{node[:drupal][:drush][:dir]}" do
+directory node[:drupal][:drush][:dir] do
   owner "root"
   group "root"
   mode "0755"
