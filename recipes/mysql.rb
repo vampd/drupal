@@ -88,7 +88,7 @@ node[:drupal][:sites].each do |site_name, site|
           password drupal_user['db_password']
           database_name site[:drupal][:settings][:db_name]
           host host_name
-          privileges [:select,:insert,:update,:delete,:create,:drop,:index,:alter,:'lock tables',:'create temporary tables']
+          privileges [:select, :insert, :update, :delete, :create, :drop, :index, :alter, :'lock tables', :'create temporary tables']
           action :grant
         end
       end

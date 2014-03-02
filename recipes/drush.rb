@@ -18,7 +18,6 @@
 # limitations under the License.
 #
 
-
 directory node[:drupal][:drush][:dir] do
   owner 'root'
   group 'root'

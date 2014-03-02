@@ -45,236 +45,235 @@ node[:drupal][:sites].each do |site_name, site|
     Chef::Log.debug "drupal::default site #{site_name.inspect} is active. site = #{site.inspect}"
     Chef::Log.debug "drupal::default site settings #{site[:drupal][:settings].inspect}"
 
-      base = "#{node[:drupal][:server][:base]}/#{site_name}"
-      assets = "#{node[:drupal][:server][:assets]}/#{site_name}"
-      Chef::Log.debug "drupal::default base = #{base}"
-      Chef::Log.debug "drupal::default assets = #{assets}"
+    base = "#{node[:drupal][:server][:base]}/#{site_name}"
+    assets = "#{node[:drupal][:server][:assets]}/#{site_name}"
+    Chef::Log.debug "drupal::default base = #{base}"
+    Chef::Log.debug "drupal::default assets = #{assets}"
 
-      drupal_user = data_bag_item('sites', site_name)[node.chef_environment]
-      Chef::Log.debug "drupal::default drupal_user #{drupal_user.inspect}"
+    drupal_user = data_bag_item('sites', site_name)[node.chef_environment]
+    Chef::Log.debug "drupal::default drupal_user #{drupal_user.inspect}"
 
 #      mysql = "mysql -u #{drupal_user['db_user']} -p#{drupal_user['db_password']} #{site[:drupal][:settings][:db_name]} -h #{site[:drupal][:settings][:db_host]} -e "
 #      Chef::Log.debug "drupal::default mysql #{mysql.inspect}"
 
-      ssh_known_hosts_entry site[:repository][:host]
+    ssh_known_hosts_entry site[:repository][:host]
 
-      template "/root/#{site_name}-files.sh" do
-        source "files.sh.erb"
-        mode 0755
-        owner "root"
-        group "root"
-        variables({
-          :owner => node[:drupal][:server][:web_user],
-          :group => node[:drupal][:server][:web_group],
-          :assets => assets,
-          :files => "#{base}/current/#{site[:drupal][:settings][:files]}",
-        })
-      end
+    template "/root/#{site_name}-files.sh" do
+      source "files.sh.erb"
+      mode 0755
+      owner "root"
+      group "root"
+      variables(
+        :owner => node[:drupal][:server][:web_user],
+        :group => node[:drupal][:server][:web_group],
+        :assets => assets,
+        :files => "#{base}/current/#{site[:drupal][:settings][:files]}"
+      )
+    end
 
-      directory assets do
+    directory assets do
 #        owner node[:drupal][:server][:web_user]
 #        group node[:drupal][:server][:web_group]
-        mode 00755
-        action :create
-        not_if { ::File.exists?(assets) }
-      end
+      mode 00755
+      action :create
+      not_if { ::File.exists?(assets) }
+    end
 
-      link "#{node[:drupal][:server][:base]}/#{site_name}" do
-        to assets
-      end
+    link "#{node[:drupal][:server][:base]}/#{site_name}" do
+      to assets
+    end
 
-      directory "#{assets}/files" do
-        not_if { ::File.exists?("#{assets}/files") }
+    directory "#{assets}/files" do
+      not_if { ::File.exists?("#{assets}/files") }
 #        owner node[:drupal][:server][:web_user]
 #        group node[:drupal][:server][:web_group]
-        mode 00755
-        action :create
-        recursive true
-      end
+      mode 00755
+      action :create
+      recursive true
+    end
 
-      directory "#{assets}/shared" do
+    directory "#{assets}/shared" do
 #        owner node[:drupal][:server][:web_user]
 #        group node[:drupal][:server][:web_group]
-        mode 00755
-        action :create
-        recursive true
-        not_if { ::File.exists?("#{assets}/shared" ) }
-      end
+      mode 00755
+      action :create
+      recursive true
+      not_if { ::File.exists?("#{assets}/shared") }
+    end
 
-      execute "drupal-clean-releases" do
-        cmd = "rm -rf #{base}/releases"
-        Chef::Log.debug("Drupal::default: clean install: #{cmd}") if ::File.exists?("#{base}/releases")
-        command <<-EOF
-          #{cmd}
-          EOF
-        only_if { site[:deploy][:action] == 'clean' }
-      end
+    execute "drupal-clean-releases" do
+      cmd = "rm -rf #{base}/releases"
+      Chef::Log.debug("Drupal::default: clean install: #{cmd}") if ::File.exists?("#{base}/releases")
+      command <<-EOF
+        #{cmd}
+        EOF
+      only_if { site[:deploy][:action] == 'clean' }
+    end
 
-      deploy base do
-        repository site[:repository][:uri]
-        revision site[:repository][:revision]
-        keep_releases site[:deploy][:releases]
+    deploy base do
+      repository site[:repository][:uri]
+      revision site[:repository][:revision]
+      keep_releases site[:deploy][:releases]
 
-        before_migrate do
-          Chef::Log.debug("Drupal::default: before_migrate: release_path = #{release_path}")
-          Chef::Log.debug("Drupal::default: before_migrate: link #{release_path}/#{site[:drupal][:settings][:files]} to #{assets}/files")
-          link "#{release_path}/#{site[:drupal][:settings][:files]}" do
-            to "#{assets}/files"
-            link_type :symbolic
-          end
+      before_migrate do
+        Chef::Log.debug("Drupal::default: before_migrate: release_path = #{release_path}")
+        Chef::Log.debug("Drupal::default: before_migrate: link #{release_path}/#{site[:drupal][:settings][:files]} to #{assets}/files")
+        link "#{release_path}/#{site[:drupal][:settings][:files]}" do
+          to "#{assets}/files"
+          link_type :symbolic
+        end
 
-          Chef::Log.debug("Drupal::default: before_migrate: template #{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}")
-          template "#{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}" do
-            path "#{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}"
-            version = site[:drupal][:version].split('.')[0]
-            source "d#{version}.settings.php.erb"
-           # owner node[:server][:web_user]
-           # group node[:server][:web_group]
-            mode 0644
-            variables({
-             :database => site[:drupal][:settings][:db_name],
-             :username => drupal_user['db_user'],
-             :password => drupal_user['db_password'],
-             :host => site[:drupal][:settings][:db_host],
-             :driver => site[:drupal][:settings][:db_driver],
-             :prefix => site[:drupal][:settings][:db_prefix],
-             :settings_custom => site[:drupal][:settings][:settings]
-            })
-          end
-          Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{site[:drupal][:settings]}")
-          site[:drupal][:settings][:settings].each do |setting_name, setting|
-            unless setting[:template].nil?
-              Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{setting[:location]}")
-              drupal_custom_settings "#{release_path}/#{setting[:location]}}" do
-                cookbook site[:drupal][:settings][:cookbook]
-                source setting[:template]
-              end
+        Chef::Log.debug("Drupal::default: before_migrate: template #{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}")
+        template "#{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}" do
+          path "#{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}"
+          version = site[:drupal][:version].split('.')[0]
+          source "d#{version}.settings.php.erb"
+         # owner node[:server][:web_user]
+         # group node[:server][:web_group]
+          mode 0644
+          variables(
+           :database => site[:drupal][:settings][:db_name],
+           :username => drupal_user['db_user'],
+           :password => drupal_user['db_password'],
+           :host => site[:drupal][:settings][:db_host],
+           :driver => site[:drupal][:settings][:db_driver],
+           :prefix => site[:drupal][:settings][:db_prefix],
+           :settings_custom => site[:drupal][:settings][:settings]
+          )
+        end
+        Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{site[:drupal][:settings]}")
+        site[:drupal][:settings][:settings].each do |setting_name, setting|
+          unless setting[:template].nil?
+            Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{setting[:location]}")
+            drupal_custom_settings "#{release_path}/#{setting[:location]}}" do
+              cookbook site[:drupal][:settings][:cookbook]
+              source setting[:template]
             end
           end
         end
+      end
 
-        before_restart do
-          #Use a CSS Preprocessor
-          unless site[:css_preprocessor].nil?
-            Chef::Log.debug("Drupal::default: before_restart: site[:css_preprocessor] #{site[:css_preprocessor].inspect}")
-            site[:css_preprocessor][:gems].each do |g|
-              gem_package g do
-                not_if "gem list | grep #{g}"
-                action :install
-              end
+      before_restart do
+        # Use a CSS Preprocessor
+        unless site[:css_preprocessor].nil?
+          Chef::Log.debug("Drupal::default: before_restart: site[:css_preprocessor] #{site[:css_preprocessor].inspect}")
+          site[:css_preprocessor][:gems].each do |g|
+            gem_package g do
+              not_if "gem list | grep #{g}"
+              action :install
             end
-            cmd = ""
-            site[:css_preprocessor][:commands].each do |c|
-              cmd << "#{c};"
-            end
-            bash "compile CSS" do
-              user "root"
-              cwd "#{release_path}/#{site[:css_preprocessor][:location]}"
+          end
+          cmd = ""
+          site[:css_preprocessor][:commands].each do |c|
+            cmd << "#{c};"
+          end
+          bash "compile CSS" do
+            user "root"
+            cwd "#{release_path}/#{site[:css_preprocessor][:location]}"
+            code <<-EOH
+              #{cmd}
+            EOH
+          end
+        end
+
+        Chef::Log.debug("Drupal::default: before_restart: execute: /root/#{site_name}-files.sh")
+        bash "change file ownership" do
+          code <<-EOH
+            /root/#{site_name}-files.sh
+          EOH
+        end
+
+        bash "drush-site-update-#{site_name}" do
+          cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
+          user "root"
+          cmd = "drush updb -y; drush cc all"
+          only_if { site[:deploy][:action] == 'update' }
+          Chef::Log.debug("Drupal::default: action = 'update' execute = #{cmd.inspect}") if site[:deploy][:action] == 'update'
+          code <<-EOH
+            set -x
+            set -e
+            #{cmd}
+          EOH
+        end
+
+        bash "drush-site-install-#{site_name}" do
+          cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
+          user "root"
+          cmd = "drush -y site-install #{site[:drupal][:settings][:profile]}"
+          site[:drupal][:install].each do |flag, value|
+            cmd << " #{flag}=#{value}"
+          end
+          cmd << " --account-name=#{drupal_user['admin_user']} --account-pass=#{drupal_user['admin_pass']}"
+          cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
+          only_if { site[:deploy][:action] == 'clean' }
+
+          Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action] == 'clean'
+          code <<-EOH
+            set -x
+            set -e
+            #{cmd}
+          EOH
+        end
+      end
+
+      after_restart do
+        # Modifications to facilitate a local working environment.
+        if Chef::Config[:solo]
+
+          case node[:platform_family]
+          when 'redhat', 'centos'
+            bash 'disable selinux' do
+              cmd = 'type setenforce &>/dev/null && setenforce permissive'
+              Chef::Log.debug("Drupal::default: after_restart: selinux: #{cmd}")
               code <<-EOH
+                set -x
+                set -e
                 #{cmd}
               EOH
             end
           end
 
-          Chef::Log.debug("Drupal::default: before_restart: execute: /root/#{site_name}-files.sh")
-          bash "change file ownership" do
-            code <<-EOH
-              /root/#{site_name}-files.sh
-            EOH
-          end
-
-          bash "drush-site-update-#{site_name}" do
-            cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
-            user "root"
-            cmd = "drush updb -y; drush cc all"
-            only_if { site[:deploy][:action] == 'update' }
-            Chef::Log.debug("Drupal::default: action = 'update' execute = #{cmd.inspect}") if site[:deploy][:action] == 'update'
-            code <<-EOH
+          execute 'drupal-current-relative' do
+            cwd base
+            cmd = "unlink current; ln -s #{release_path.gsub("#{base}/", "")} current"
+            Chef::Log.debug("Drupal::default: after_restart: relative symlink: base = #{base.inspect}; cmd = #{cmd.inspect}")
+            command <<-EOF
               set -x
               set -e
               #{cmd}
-            EOH
+            EOF
+            only_if { ::File.exists?("#{base}/current") }
           end
 
-          bash "drush-site-install-#{site_name}" do
-            cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
-            user "root"
-            cmd = "drush -y site-install #{site[:drupal][:settings][:profile]}"
-            site[:drupal][:install].each do |flag, value|
-              cmd << " #{flag}=#{value}"
-            end
-            cmd << " --account-name=#{drupal_user['admin_user']} --account-pass=#{drupal_user['admin_pass']}"
-            cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
-            only_if { site[:deploy][:action] == 'clean' }
-
-            Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action] == 'clean'
-            code <<-EOH
+          execute 'drupal-switch-branch' do
+            cwd "#{base}/current"
+            cmd = "git checkout #{site[:repository][:revision]} && git pull origin #{site[:repository][:revision]}"
+            Chef::Log.debug("Drupal::default: after_restart: _default environment: cd #{base}; #{cmd}")
+            command <<-EOF
               set -x
               set -e
               #{cmd}
-            EOH
+            EOF
+            only_if { ::File.exists?("#{base}/current") }
           end
         end
-
-        after_restart do
-          # Modifications to facilitate a local working environment.
-          if Chef::Config[:solo]
-
-            case node[:platform_family]
-            when 'redhat', 'centos'
-              bash 'disable selinux' do
-                cmd = 'type setenforce &>/dev/null && setenforce permissive'
-                Chef::Log.debug("Drupal::default: after_restart: selinux: #{cmd}")
-                code <<-EOH
-                  set -x
-                  set -e
-                  #{cmd}
-                EOH
-              end
-            end
-
-            execute 'drupal-current-relative' do
-              cwd base
-              cmd = "unlink current; ln -s #{release_path.gsub("#{base}/","")} current"
-              Chef::Log.debug("Drupal::default: after_restart: relative symlink: base = #{base.inspect}; cmd = #{cmd.inspect}")
-              command <<-EOF
-                set -x
-                set -e
-                #{cmd}
-              EOF
-              only_if { ::File.exists?("#{base}/current") }
-            end
-
-            execute 'drupal-switch-branch' do
-              cwd "#{base}/current"
-              cmd = "git checkout #{site[:repository][:revision]} && git pull origin #{site[:repository][:revision]}"
-              Chef::Log.debug("Drupal::default: after_restart: _default environment: cd #{base}; #{cmd}")
-              command <<-EOF
-                set -x
-                set -e
-                #{cmd}
-              EOF
-              only_if { ::File.exists?("#{base}/current") }
-            end
-          end
-          # Optionally define additonal git remotes. These are in addition to
-          # the the default 'origin' remote provided by git clone.
-          unless site[:repository][:remotes].nil?
-            site[:repository][:remotes].each do |remote, uri|
-              execute "drupal-add-remote-#{remote}" do
-                cwd "#{node[:drupal][:server][:base]}/#{site_name}/current"
-                command "git remote add #{remote} #{uri}"
-                only_if { ::File.exists?("#{node[:drupal][:server][:base]}/#{site_name}/current") }
-              end
+        # Optionally define additonal git remotes. These are in addition to
+        # the the default 'origin' remote provided by git clone.
+        unless site[:repository][:remotes].nil?
+          site[:repository][:remotes].each do |remote, uri|
+            execute "drupal-add-remote-#{remote}" do
+              cwd "#{node[:drupal][:server][:base]}/#{site_name}/current"
+              command "git remote add #{remote} #{uri}"
+              only_if { ::File.exists?("#{node[:drupal][:server][:base]}/#{site_name}/current") }
             end
           end
         end
-
-        symlink_before_migrate.clear
-        create_dirs_before_symlink.clear
-        purge_before_symlink.clear
-        symlinks.clear
       end
+
+      symlink_before_migrate.clear
+      create_dirs_before_symlink.clear
+      purge_before_symlink.clear
+      symlinks.clear
     end
   end
-
+end
