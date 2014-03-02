@@ -21,17 +21,17 @@
 # Set up the server.
 Chef::Log.debug "drupal::mysql - site[:db] = #{node[:db].inspect}"
 include_recipe node[:db][:client_recipe] unless node[:db][:client_recipe].nil?
-include_recipe "database"
-include_recipe "database::mysql"
+include_recipe 'database'
+include_recipe 'database::mysql'
 
 passwords = data_bag_item('users', 'mysql')[node.chef_environment]
 Chef::Log::debug "drupal::mysql passwords = #{passwords.inspect}"
 
 if Chef::Config[:solo]
-  Chef::Log.debug "drupal::mysql Setting chef solo node mysql passwords."
-  node.set['mysql']['server_debian_password'] = passwords["debian"] unless passwords["debian"].nil?
-  node.default[:mysql][:server_root_password] = passwords["root"] unless passwords["root"].nil?
-  node.set['mysql']['server_repl_password'] = passwords["replication"] unless passwords["replication"].nil?
+  Chef::Log.debug 'drupal::mysql Setting chef solo node mysql passwords.'
+  node.set['mysql']['server_debian_password'] = passwords['debian'] unless passwords['debian'].nil?
+  node.default[:mysql][:server_root_password] = passwords['root'] unless passwords['root'].nil?
+  node.set['mysql']['server_repl_password'] = passwords['replication'] unless passwords['replication'].nil?
 end
 
 mysql_connection_info = {
@@ -70,7 +70,7 @@ node[:drupal][:sites].each do |site_name, site|
 
       bash "Import existing #{site[:drupal][:settings][:db_name]} database." do
         only_if { site[:deploy][:action] == 'import' }
-        user "root"
+        user 'root'
         mysql = "mysql -u #{mysql_connection_info[:username]} -p#{mysql_connection_info[:password]} #{site[:drupal][:settings][:db_name]} -h #{site[:drupal][:settings][:db_host]} -e "
         cmd = "#{mysql} 'SOURCE #{node[:drupal][:server][:assets]}/#{site_name}/#{site[:drupal][:settings][:db_file]}'"
         Chef::Log.debug "drupal::mysql import database: - `#{cmd}`" if site[:deploy][:action] == 'import'

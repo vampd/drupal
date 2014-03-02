@@ -17,18 +17,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-Directory "/root/.ssh" do
+Directory '/root/.ssh' do
   action :create
   mode 0700
 end
 
-File "/root/.ssh/config" do
+File '/root/.ssh/config' do
   action :create
   content "Host *\nStrictHostKeyChecking no"
   mode 0600
 end
 
-ruby_block "Give root access to the forwarded ssh agent" do
+ruby_block 'Give root access to the forwarded ssh agent' do
   block do
     # find a parent process' ssh agent socket
     agents = {}
@@ -46,7 +46,7 @@ ruby_block "Give root access to the forwarded ssh agent" do
       end
     end
     # Uncomment to require that an ssh-agent be available
-    fail "Could not find running ssh agent - Is config.ssh.forward_agent enabled in Vagrantfile?" unless ENV['SSH_AUTH_SOCK']
+    fail 'Could not find running ssh agent - Is config.ssh.forward_agent enabled in Vagrantfile?' unless ENV['SSH_AUTH_SOCK']
   end
   action :create
 end

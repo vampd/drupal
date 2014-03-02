@@ -221,9 +221,9 @@ node[:drupal][:sites].each do |site_name, site|
           if Chef::Config[:solo]
 
             case node[:platform_family]
-            when "redhat", "centos"
-              bash "disable selinux" do
-                cmd = "type setenforce &>/dev/null && setenforce permissive"
+            when 'redhat', 'centos'
+              bash 'disable selinux' do
+                cmd = 'type setenforce &>/dev/null && setenforce permissive'
                 Chef::Log.debug("Drupal::default: after_restart: selinux: #{cmd}")
                 code <<-EOH
                   set -x
@@ -233,7 +233,7 @@ node[:drupal][:sites].each do |site_name, site|
               end
             end
 
-            execute "drupal-current-relative" do
+            execute 'drupal-current-relative' do
               cwd base
               cmd = "unlink current; ln -s #{release_path.gsub("#{base}/","")} current"
               Chef::Log.debug("Drupal::default: after_restart: relative symlink: base = #{base.inspect}; cmd = #{cmd.inspect}")
@@ -245,7 +245,7 @@ node[:drupal][:sites].each do |site_name, site|
               only_if { ::File.exists?("#{base}/current") }
             end
 
-            execute "drupal-switch-branch" do
+            execute 'drupal-switch-branch' do
               cwd "#{base}/current"
               cmd = "git checkout #{site[:repository][:revision]} && git pull origin #{site[:repository][:revision]}"
               Chef::Log.debug("Drupal::default: after_restart: _default environment: cd #{base}; #{cmd}")
