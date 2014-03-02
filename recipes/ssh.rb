@@ -41,7 +41,7 @@ ruby_block 'Give root access to the forwarded ssh agent' do
         ENV['SSH_AUTH_SOCK'] = agent
         break
       end
-      File.open("/proc/#{ppid}/status", "r") do |file|
+      File.open("/proc/#{ppid}/status", 'r') do |file|
         ppid = file.read.match(/PPid:\s+(\d+)/)[1]
       end
     end

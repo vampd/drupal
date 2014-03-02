@@ -59,10 +59,10 @@ node[:drupal][:sites].each do |site_name, site|
     ssh_known_hosts_entry site[:repository][:host]
 
     template "/root/#{site_name}-files.sh" do
-      source "files.sh.erb"
+      source 'files.sh.erb'
       mode 0755
-      owner "root"
-      group "root"
+      owner 'root'
+      group 'root'
       variables(
         :owner => node[:drupal][:server][:web_user],
         :group => node[:drupal][:server][:web_group],
@@ -101,7 +101,7 @@ node[:drupal][:sites].each do |site_name, site|
       not_if { ::File.exists?("#{assets}/shared") }
     end
 
-    execute "drupal-clean-releases" do
+    execute 'drupal-clean-releases' do
       cmd = "rm -rf #{base}/releases"
       Chef::Log.debug("Drupal::default: clean install: #{cmd}") if ::File.exists?("#{base}/releases")
       command <<-EOF
@@ -168,7 +168,7 @@ node[:drupal][:sites].each do |site_name, site|
             cmd << "#{c};"
           end
           bash "compile CSS" do
-            user "root"
+            user 'root'
             cwd "#{release_path}/#{site[:css_preprocessor][:location]}"
             code <<-EOH
               #{cmd}
@@ -177,7 +177,7 @@ node[:drupal][:sites].each do |site_name, site|
         end
 
         Chef::Log.debug("Drupal::default: before_restart: execute: /root/#{site_name}-files.sh")
-        bash "change file ownership" do
+        bash 'change file ownership' do
           code <<-EOH
             /root/#{site_name}-files.sh
           EOH
@@ -185,8 +185,8 @@ node[:drupal][:sites].each do |site_name, site|
 
         bash "drush-site-update-#{site_name}" do
           cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
-          user "root"
-          cmd = "drush updb -y; drush cc all"
+          user 'root'
+          cmd = 'drush updb -y; drush cc all'
           only_if { site[:deploy][:action] == 'update' }
           Chef::Log.debug("Drupal::default: action = 'update' execute = #{cmd.inspect}") if site[:deploy][:action] == 'update'
           code <<-EOH
@@ -198,12 +198,12 @@ node[:drupal][:sites].each do |site_name, site|
 
         bash "drush-site-install-#{site_name}" do
           cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
-          user "root"
+          user 'root'
           cmd = "drush -y site-install #{site[:drupal][:settings][:profile]}"
           site[:drupal][:install].each do |flag, value|
             cmd << " #{flag}=#{value}"
           end
-          cmd << " --account-name=#{drupal_user['admin_user']} --account-pass=#{drupal_user['admin_pass']}"
+          cmd << " --account-name=#{drupal_user[:admin_user]} --account-pass=#{drupal_user[:admin_pass]}"
           cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
           only_if { site[:deploy][:action] == 'clean' }
 
