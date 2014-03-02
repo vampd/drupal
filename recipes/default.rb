@@ -220,17 +220,15 @@ node[:drupal][:sites].each do |site_name, site|
         # Modifications to facilitate a local working environment.
         if Chef::Config[:solo]
 
-          case node[:platform_family]
-          when 'redhat', 'centos'
-            bash 'disable selinux' do
-              cmd = 'type setenforce &>/dev/null && setenforce permissive'
-              Chef::Log.debug("Drupal::default: after_restart: selinux: #{cmd}")
-              code <<-EOH
-                set -x
-                set -e
-                #{cmd}
-              EOH
-            end
+          bash 'disable selinux' do
+            cmd = 'type setenforce &>/dev/null && setenforce permissive'
+            Chef::Log.debug("Drupal::default: after_restart: selinux: #{cmd}")
+            code <<-EOH
+              set -x
+              set -e
+              #{cmd}
+            EOH
+            only_if { node[:platform_family] == 'redhat' || node[:platform_family] == 'centos'}
           end
 
           execute 'drupal-current-relative' do
