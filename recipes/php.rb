@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-include_recipe "php"
+include_recipe 'php'
 
 ['php5-mysql', 'php5-gd', 'php5-curl'].each do |pkg|
   package pkg do
@@ -25,6 +25,6 @@ include_recipe "php"
   end
 end
 
-php_pear "uploadprogress" do
+php_pear 'uploadprogress' do
   action :install
 end

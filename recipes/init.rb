@@ -19,9 +19,9 @@
 #
 case node[:platform]
 when 'debian', 'ubuntu'
-  include_recipe "apt"
+  include_recipe 'apt'
 
-  execute "apt-get-update" do
-    command "apt-get update"
+  execute 'apt-get-update' do
+    command 'apt-get update'
   end
 end

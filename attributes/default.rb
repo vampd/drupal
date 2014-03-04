@@ -20,12 +20,12 @@
 
 default[:drupal][:sites] = {}
 
-default[:drupal][:server][:web_user] = "www-data"
-default[:drupal][:server][:web_group] = "www-data"
-default[:drupal][:server][:base] = "/srv/www"
-default[:drupal][:server][:assets] = "/assets"
+default[:drupal][:server][:web_user] = 'www-data'
+default[:drupal][:server][:web_group] = 'www-data'
+default[:drupal][:server][:base] = '/srv/www'
+default[:drupal][:server][:assets] = '/assets'
 
-default[:drupal][:drush][:revision] = "6.2.0"
-default[:drupal][:drush][:repository] = "https://github.com/drush-ops/drush.git"
-default[:drupal][:drush][:dir] = "/opt/drush"
-default[:drupal][:drush][:executable] = "/usr/bin/drush"
+default[:drupal][:drush][:revision] = '6.2.0'
+default[:drupal][:drush][:repository] = 'https://github.com/drush-ops/drush.git'
+default[:drupal][:drush][:dir] = '/opt/drush'
+default[:drupal][:drush][:executable] = '/usr/bin/drush'

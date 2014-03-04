@@ -18,18 +18,17 @@
 # limitations under the License.
 #
 
-
 directory node[:drupal][:drush][:dir] do
-  owner "root"
-  group "root"
-  mode "0755"
+  owner 'root'
+  group 'root'
+  mode '0755'
   action :create
 end
 
 directory "#{node[:drupal][:drush][:dir]}/shared" do
-  owner "root"
-  group "root"
-  mode "0755"
+  owner 'root'
+  group 'root'
+  mode '0755'
   action :create
 end
 
