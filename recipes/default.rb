@@ -155,27 +155,6 @@ node[:drupal][:sites].each do |site_name, site|
         end
 
         before_restart do
-          #Use a CSS Preprocessor
-          unless site[:css_preprocessor].nil?
-            Chef::Log.debug("Drupal::default: before_restart: site[:css_preprocessor] #{site[:css_preprocessor].inspect}")
-            site[:css_preprocessor][:gems].each do |g|
-              gem_package "#{g}" do
-                not_if "gem list | grep #{g}"
-                action :install
-              end
-            end
-            cmd = ""
-            site[:css_preprocessor][:commands].each do |c|
-              cmd << "#{c};"
-            end
-            bash "compile CSS" do
-              user "root"
-              cwd "#{release_path}/#{site[:css_preprocessor][:location]}"
-              code <<-EOH
-                #{cmd}
-              EOH
-            end
-          end
 
           Chef::Log.debug("Drupal::default: before_restart: execute: /root/#{site_name}-files.sh")
           bash "change file ownership" do
