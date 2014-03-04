@@ -1,35 +1,30 @@
-#!/usr/bin/env rake
+require "foodcritic"
+require "rspec/core/rake_task"
+require "rubocop/rake_task"
 
-desc "Runs foodcritic linter"
-task :foodcritic do
-  if Gem::Version.new("1.9.2") <= Gem::Version.new(RUBY_VERSION.dup)
-    sandbox = File.join(File.dirname(__FILE__), %w{tmp foodcritic cookbook})
-    prepare_foodcritic_sandbox(sandbox)
+desc "Run RuboCop style and lint checks"
+Rubocop::RakeTask.new(:rubocop)
 
-    sh "foodcritic --epic-fail any #{File.dirname(sandbox)}"
-  else
-    puts "WARN: foodcritic run is skipped as Ruby #{RUBY_VERSION} is < 1.9.2."
-  end
+desc "Run Foodcritic lint checks"
+FoodCritic::Rake::LintTask.new(:foodcritic) do |t|
+  t.options = { :fail_tags => ["any"] }
 end
 
-task :default => 'foodcritic'
+# desc "Run ChefSpec examples"
+# RSpec::Core::RakeTask.new(:spec)
 
-private
-
-def prepare_foodcritic_sandbox(sandbox)
-  files = %w{*.md *.rb attributes definitions files libraries providers
-recipes resources templates}
-
-  rm_rf sandbox
-  mkdir_p sandbox
-  cp_r Dir.glob("{#{files.join(',')}}"), sandbox
-  puts "\n\n"
-end
-
+desc "Run all tests"
+task :test => [:rubocop, :foodcritic, :spec]
+task :default => :test
 
 begin
-  require 'kitchen/rake_tasks'
+  require "kitchen/rake_tasks"
   Kitchen::RakeTasks.new
+
+  desc "Alias for kitchen:all"
+  task :integration => "kitchen:all"
+
+  task :test => :integration
 rescue LoadError
   puts ">>>>> Kitchen gem not loaded, omitting tasks" unless ENV['CI']
 end
