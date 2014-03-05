@@ -94,5 +94,4 @@ node[:drupal][:sites].each do |site_name, site|
   else
     Chef::Log.debug "drupal::mysql site #{site_name} is not active."
   end
-
 end
