@@ -106,7 +106,7 @@ node[:drupal][:sites].each do |site_name, site|
       only_if { site[:deploy][:action].any? { |action| action == 'deploy' } }
       repository site[:repository][:uri]
       revision site[:repository][:revision]
-      # keep_releases site[:deploy][:releases]
+      keep_releases site[:deploy][:releases]
 
       before_migrate do
         Chef::Log.debug("Drupal::default: before_migrate: release_path = #{release_path}")
