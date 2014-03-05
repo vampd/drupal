@@ -107,7 +107,7 @@ node[:drupal][:sites].each do |site_name, site|
       command <<-EOF
         #{cmd}
         EOF
-      only_if { site[:deploy][:action] == 'clean' }
+      only_if { site[:deploy][:action].any? {|action| action == 'deploy' }}
     end
 
     deploy base do
@@ -174,7 +174,7 @@ node[:drupal][:sites].each do |site_name, site|
           cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
           user 'root'
           cmd = 'drush updb -y; drush cc all'
-          only_if { site[:deploy][:action] == 'update' }
+          only_if { site[:deploy][:action].any? {|action| action == 'update' }}
           Chef::Log.debug("Drupal::default: action = 'update' execute = #{cmd.inspect}") if site[:deploy][:action] == 'update'
           code <<-EOH
             set -x
@@ -192,9 +192,9 @@ node[:drupal][:sites].each do |site_name, site|
           end
           cmd << " --account-name=#{drupal_user[:admin_user]} --account-pass=#{drupal_user[:admin_pass]}"
           cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
-          only_if { site[:deploy][:action] == 'clean' }
+          only_if { site[:deploy][:action].any? {|action| action == 'install' }}
 
-          Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action] == 'clean'
+          Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action].any? {|action| action == 'install' }
           code <<-EOH
             set -x
             set -e
