@@ -22,7 +22,7 @@ include_recipe 'apache2::mod_php5'
 include_recipe 'apache2::mod_rewrite'
 
 node[:drupal][:sites].each do |site_name, site|
-  if site[:deploy][:action].any? { |action| ['deploy', 'install', 'update', 'import'].include? action }
+  if site[:deploy][:action].any? { |action| %w[deploy install update import].include? action }
 
     if site[:active]
       site['web_app'].each do |port, app|
