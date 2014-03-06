@@ -122,7 +122,7 @@ node[:drupal][:sites].each do |site_name, site|
           # the drush make to occur.
           except_make_files = ""
           site[:drush_make][:files].each do |file, value|
-              except_make_files << "#{value}|"
+            except_make_files << "#{value}|"
           end
 
           bash "Remove all files" do
@@ -174,7 +174,7 @@ node[:drupal][:sites].each do |site_name, site|
         Chef::Log.debug("Drupal::default: before_migrate: template #{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}")
         template "#{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}" do
           path "#{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}"
-          version = site[:drupal][:version].split('.')[0]
+          version = "#{site[:drupal][:version]}".split('.')[0]
           source "d#{version}.settings.php.erb"
          # owner node[:server][:web_user]
          # group node[:server][:web_group]
