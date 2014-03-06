@@ -116,6 +116,54 @@ node[:drupal][:sites].each do |site_name, site|
       keep_releases site[:deploy][:releases]
 
       before_migrate do
+        # If the Drush make hash is nil, then do nothing, else make the site
+        unless site[:drush_make][:files].nil?
+          # we are going to remove all the files in this folder, this will allow
+          # the drush make to occur.
+          except_make_files = ""
+          site[:drush_make][:files].each do |file, value|
+              except_make_files << "#{value}|"
+          end
+
+          bash "Remove all files" do
+            user "root"
+            cwd release_path
+            cmd = "rm -rf !(#{except_make_files}.git) ./*"
+            code <<-EOH
+              set -x
+              set -e
+              #{cmd}
+            EOH
+          end
+
+          bash "Run drush make" do
+            user "root"
+            cwd release_path
+            cmd = "drush make #{site[:drush_make][:files][:default]} -y"
+            code <<-EOH
+              set -x
+              set -e
+              #{cmd}
+            EOH
+          end
+
+          make_files = ""
+          site[:drush_make][:files].each do |file, value|
+            make_files << "#{value} "
+          end
+
+          bash "Remove make files from site directory" do
+            user "root"
+            cwd release_path
+            cmd = "rm -rf #{make_files}"
+            code <<-EOH
+              set -x
+              set -e
+              #{cmd}
+            EOH
+          end
+        end
+
         Chef::Log.debug("Drupal::default: before_migrate: release_path = #{release_path}")
         Chef::Log.debug("Drupal::default: before_migrate: link #{release_path}/#{site[:drupal][:settings][:files]} to #{assets}/files")
         link "#{release_path}/#{site[:drupal][:settings][:files]}" do
@@ -153,14 +201,13 @@ node[:drupal][:sites].each do |site_name, site|
         end
       end
 
-        before_restart do
+      before_restart do
 
-          Chef::Log.debug("Drupal::default: before_restart: execute: /root/#{site_name}-files.sh")
-          bash "change file ownership" do
-            code <<-EOH
-              #{cmd}
-            EOH
-          end
+        Chef::Log.debug("Drupal::default: before_restart: execute: /root/#{site_name}-files.sh")
+        bash "change file ownership" do
+          code <<-EOH
+            #{cmd}
+          EOH
         end
 
         Chef::Log.debug("Drupal::default: before_restart: execute: /root/#{site_name}-files.sh")
@@ -207,6 +254,7 @@ node[:drupal][:sites].each do |site_name, site|
         # Modifications to facilitate a local working environment.
         if Chef::Config[:solo]
 
+
           bash 'disable selinux' do
             cmd = 'type setenforce &>/dev/null && setenforce permissive'
             Chef::Log.debug("Drupal::default: after_restart: selinux: #{cmd}")
@@ -251,6 +299,21 @@ node[:drupal][:sites].each do |site_name, site|
               command "git remote add #{remote} #{uri}"
               only_if { ::File.exists?("#{node[:drupal][:server][:base]}/#{site_name}/current") }
             end
+          end
+        end
+        # Because of how drush mak weorks, we have to override the git operations
+        # this means that we have to change locations of the .git directory, etc
+        unless site[:drush_make][:files].nil?
+          # We move .git because of how the build happens
+          bash "Move .git to profile" do
+            user "root"
+            cwd "#{node[:drupal][:server][:base]}/#{site_name}/current"
+            cmd = "mv .git profiles/#{site[:drupal][:settings][:profile]}"
+            code <<-EOH
+              set -x
+              set -e
+              #{cmd}
+            EOH
           end
         end
       end
