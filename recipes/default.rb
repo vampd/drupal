@@ -120,15 +120,26 @@ node[:drupal][:sites].each do |site_name, site|
         unless site[:drush_make][:files].nil?
           # we are going to remove all the files in this folder, this will allow
           # the drush make to occur.
-          except_make_files = ""
+          make_files = ""
           site[:drush_make][:files].each do |file, value|
-            except_make_files << "#{value}|"
+            make_files << "#{value} "
           end
 
-          bash "Remove all files" do
+          bash "Remove all cloned files except the .git folder" do
             user "root"
             cwd release_path
-            cmd = "rm -rf !(#{except_make_files}.git) ./*"
+            cmd = "rm -rf ./*"
+            code <<-EOH
+              set -x
+              set -e
+              #{cmd}
+            EOH
+          end
+
+          bash "Get drush make files back" do
+            user "root"
+            cwd release_path
+            cmd = "git checkout #{make_files}"
             code <<-EOH
               set -x
               set -e
@@ -145,11 +156,6 @@ node[:drupal][:sites].each do |site_name, site|
               set -e
               #{cmd}
             EOH
-          end
-
-          make_files = ""
-          site[:drush_make][:files].each do |file, value|
-            make_files << "#{value} "
           end
 
           bash "Remove make files from site directory" do
