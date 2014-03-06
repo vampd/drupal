@@ -212,7 +212,7 @@ node[:drupal][:sites].each do |site_name, site|
         Chef::Log.debug("Drupal::default: before_restart: execute: /root/#{site_name}-files.sh")
         bash "change file ownership" do
           code <<-EOH
-            #{cmd}
+             /root/#{site_name}-files.sh
           EOH
         end
 
