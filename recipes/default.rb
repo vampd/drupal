@@ -218,7 +218,7 @@ node[:drupal][:sites].each do |site_name, site|
       site[:drupal][:install].each do |flag, value|
         cmd << " #{flag}=#{value}"
       end
-      cmd << " --account-name=#{drupal_user[:admin_user]} --account-pass=#{drupal_user[:admin_pass]}"
+      cmd << " --account-name=#{drupal_user['admin_user']} --account-pass=#{drupal_user['admin_pass']}"
       only_if { site[:deploy][:action].any? { |action| action == 'install' } }
 
       Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action].any? { |action| action == 'install' }
