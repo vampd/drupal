@@ -200,47 +200,6 @@ node[:drupal][:sites].each do |site_name, site|
         end
       end
 
-      before_restart do
-        Chef::Log.debug("Drupal::default: before_restart: execute: /root/#{site_name}-files.sh")
-        bash 'change file ownership' do
-          code <<-EOH
-            /root/#{site_name}-files.sh
-          EOH
-        end
-
-        bash "drush-site-update-#{site_name}" do
-          cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
-          user 'root'
-          cmd = 'drush updb -y; drush cc all'
-          only_if { site[:deploy][:action] == 'update' }
-          Chef::Log.debug("Drupal::default: action = 'update' execute = #{cmd.inspect}") if site[:deploy][:action] == 'update'
-          code <<-EOH
-            set -x
-            set -e
-            #{cmd}
-          EOH
-        end
-
-        bash "drush-site-install-#{site_name}" do
-          cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
-          user 'root'
-          cmd = "drush -y site-install #{site[:drupal][:settings][:profile]}"
-          site[:drupal][:install].each do |flag, value|
-            cmd << " #{flag}=#{value}"
-          end
-          cmd << " --account-name=#{drupal_user['admin_user']} --account-pass=#{drupal_user['admin_pass']}"
-          cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
-          only_if { site[:deploy][:action] == 'clean' }
-
-          Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action] == 'clean'
-          code <<-EOH
-            set -x
-            set -e
-            #{cmd}
-          EOH
-        end
-      end
-
       after_restart do
         # Modifications to facilitate a local working environment.
         if Chef::Config[:solo]
