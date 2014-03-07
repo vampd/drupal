@@ -146,16 +146,6 @@ node[:drupal][:sites].each do |site_name, site|
         end
       end
 
-      before_restart do
-
-        Chef::Log.debug("Drupal::default: before_restart: execute: /root/#{site_name}-files.sh")
-        bash 'change file ownership' do
-          code <<-EOH
-            /root/#{site_name}-files.sh
-          EOH
-        end
-      end
-
       after_restart do
         # Modifications to facilitate a local working environment.
         if Chef::Config[:solo]
@@ -194,6 +184,13 @@ node[:drupal][:sites].each do |site_name, site|
             EOF
             only_if { ::File.exists?("#{base}/current") }
           end
+        end
+
+        Chef::Log.debug("Drupal::default: after_restart: execute: /root/#{site_name}-files.sh")
+        bash 'change file ownership' do
+          code <<-EOH
+            /root/#{site_name}-files.sh
+          EOH
         end
         # Optionally define additonal git remotes. These are in addition to
         # the the default 'origin' remote provided by git clone.
