@@ -180,7 +180,7 @@ node[:drupal][:sites].each do |site_name, site|
         Chef::Log.debug("Drupal::default: before_migrate: template #{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}")
         template "#{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}" do
           path "#{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}"
-          version = "#{site[:drupal][:version]}".split('.')[0]
+          version = site[:drupal][:version].split('.')[0]
           source "d#{version}.settings.php.erb"
          # owner node[:server][:web_user]
          # group node[:server][:web_group]
@@ -208,14 +208,6 @@ node[:drupal][:sites].each do |site_name, site|
       end
 
       before_restart do
-
-        Chef::Log.debug("Drupal::default: before_restart: execute: /root/#{site_name}-files.sh")
-        bash "change file ownership" do
-          code <<-EOH
-             /root/#{site_name}-files.sh
-          EOH
-        end
-
         Chef::Log.debug("Drupal::default: before_restart: execute: /root/#{site_name}-files.sh")
         bash 'change file ownership' do
           code <<-EOH
@@ -243,7 +235,7 @@ node[:drupal][:sites].each do |site_name, site|
           site[:drupal][:install].each do |flag, value|
             cmd << " #{flag}=#{value}"
           end
-          cmd << " --account-name=#{drupal_user[:admin_user]} --account-pass=#{drupal_user[:admin_pass]}"
+          cmd << " --account-name=#{drupal_user['admin_user']} --account-pass=#{drupal_user['admin_pass']}"
           cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
           only_if { site[:deploy][:action] == 'clean' }
 
