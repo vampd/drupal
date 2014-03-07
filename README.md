@@ -9,16 +9,21 @@ Usage
 This cookbook has been designed to work with [drupal-lamp](http://github.com/newmediadenver/drupal-lamp).
 
 ### Available deploy actions
-#### Clean
-Clean will pull down a fresh copy of your repo and install a site.
+#### deploy
+deploy will pull down a fresh copy of your repo.
 
-#### Import
+#### install
+install will run drush site-install for the given install profile
+
+#### import
 This will import an existing database backup for your site.
-In addition to setting action = Import, you will need to place a sql file at /assets/[sitename]. So, if the site name is example and the file is backup.sql, it should be found at /assets/example/backup.sql.
+In addition to including import in your action list, you will need to place a sql dump in the same directory as your VagrantFile (or relative to it).
 
-You should specify the file name in your json at db_file.
+You should specify the path (relative to your VagrantFile) and file name in your json at db_file.
 
-#### Update
+If your file was backup.sql and you placed it in the same directory as your VagrantFile, then you would simply put backup.sql in your json at db_file.
+
+#### update
 Will run:
 ````
 drush updb -y; drush cc all
@@ -45,15 +50,19 @@ default[:drupal][:drush][:repository] = "https://github.com/drush-ops/drush.git"
 default[:drupal][:drush][:dir] = "/opt/drush" # where to place drush
 default[:drupal][:drush][:executable] = "/usr/bin/drush" # where to place drush executable
 
+# The below example will:
+# 1. clone the repository found https://github.com/drupal/drupal.git
+# 2. import a database from backup.sql
+# 3. run drupal updates
 default[:drupal][:sites] = {
 "example": {  # site name
   "active": true, # true or false
   "deploy": {
-    "action": "", # see "available deploy actions" 
+    "action": ["deploy", "import", "update"], # see "available deploy actions"
     "releases": 1 # number of git releases to store (in addition to the active release)
   },
   "drupal": {
-    "version": 8.0, # drupal version 8.0, 7.0 or 6.0
+    "version": "7.0", # drupal version 8.0, 7.0 or 6.0
     "install": {
       "install_configure_form.update_status_module": "'array(FALSE,FALSE)'",
       "--clean-url": 1 # enable clean urls on site install
@@ -67,13 +76,13 @@ default[:drupal][:sites] = {
           "location": "sites/default/settings.php" # location of the settings.php file
         },
         # use this section if you want to create a settings.php file from a template
-        "example_template": { 
+        "example_template": {
           "location": "sites/default/example.settings.php",
           "template": "example.settings.php.erb"
         },
-        # use this section if you want to include an additional settings.php 
+        # use this section if you want to include an additional settings.php
         #file onto the end of the default settings.php file
-        "example_static": { 
+        "example_static": {
           "location": "profiles/standard/standard.settings.php"
         }
       },
@@ -81,13 +90,13 @@ default[:drupal][:sites] = {
       "db_host": "localhost", # database host
       "db_prefix": "", # database prefix
       "db_driver": "mysql", # database driver
-      "db_file": "" # name of the database file that will be imported if action = import.
+      "db_file": "backup.sql" # name of the database file that will be imported if action = import.
     }
   },
   "repository": {
     "host": "github.com",
     "uri": "https://github.com/drupal/drupal.git",
-    "revision": "8.x" # branch, tag, or hash
+    "revision": "7.26" # branch, tag, or hash
   },
   # Apache configuration
   "web_app": {
@@ -109,7 +118,7 @@ default[:drupal][:sites] = {
       "redirect": ""
     },
     # include if you need https
-    "443": { 
+    "443": {
     	"server_name": "drupal.local",
       "rewrite_engine": "On",
       "docroot": "/srv/www/example/current",
