@@ -52,28 +52,26 @@ node[:drupal][:sites].each do |site_name, site|
   if site[:active]
     Chef::Log.debug "drupal::mysql site #{site_name.inspect} is active."
 
-    if ['clean', 'update', 'import'].include?(site[:deploy][:action])
+    if site[:deploy][:action].any? { |action| %w[install import].include? action }
 
-      if site[:deploy][:action] == 'clean' || site[:deploy][:action] == 'import'
-        Chef::Log.debug("drupal::mysql clean install: purging database: #{site[:drupal][:settings][:db_name]}")
-        mysql_database site[:drupal][:settings][:db_name] do
-          connection mysql_connection_info
-          action :drop
-        end
+      Chef::Log.debug("drupal::mysql clean install: purging database: #{site[:drupal][:settings][:db_name]}")
+      mysql_database site[:drupal][:settings][:db_name] do
+        connection mysql_connection_info
+        action :drop
+      end
 
-        Chef::Log.debug "drupal::mysql clean install: Creating database: - `mysql -u #{mysql_connection_info[:username]} -p#{mysql_connection_info[:password]} -h #{mysql_connection_info[:host]} -e \"CREATE DATABASE #{site_name};\"`"
-        mysql_database site[:drupal][:settings][:db_name] do
-          connection mysql_connection_info
-          action :create
-        end
+      Chef::Log.debug "drupal::mysql clean install: Creating database: - `mysql -u #{mysql_connection_info[:username]} -p#{mysql_connection_info[:password]} -h #{mysql_connection_info[:host]} -e \"CREATE DATABASE #{site_name};\"`"
+      mysql_database site[:drupal][:settings][:db_name] do
+        connection mysql_connection_info
+        action :create
       end
 
       bash "Import existing #{site[:drupal][:settings][:db_name]} database." do
-        only_if { site[:deploy][:action] == 'import' }
+        only_if { site[:deploy][:action].any? { |action| action == 'import' } }
         user 'root'
         mysql = "mysql -u #{mysql_connection_info[:username]} -p#{mysql_connection_info[:password]} #{site[:drupal][:settings][:db_name]} -h #{site[:drupal][:settings][:db_host]} -e "
         cmd = "#{mysql} 'SOURCE #{node[:drupal][:server][:assets]}/#{site_name}/#{site[:drupal][:settings][:db_file]}'"
-        Chef::Log.debug "drupal::mysql import database: - `#{cmd}`" if site[:deploy][:action] == 'import'
+        Chef::Log.debug "drupal::mysql import database: - `#{cmd}`" if site[:deploy][:action].any? { |action| action == 'import' }
         code <<-EOH
           set -x
           set -e
@@ -96,5 +94,4 @@ node[:drupal][:sites].each do |site_name, site|
   else
     Chef::Log.debug "drupal::mysql site #{site_name} is not active."
   end
-
 end

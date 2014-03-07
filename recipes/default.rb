@@ -101,16 +101,9 @@ node[:drupal][:sites].each do |site_name, site|
       not_if { ::File.exists?("#{assets}/shared") }
     end
 
-    execute 'drupal-clean-releases' do
-      cmd = "rm -rf #{base}/releases"
-      Chef::Log.debug("Drupal::default: clean install: #{cmd}") if ::File.exists?("#{base}/releases")
-      command <<-EOF
-        #{cmd}
-        EOF
-      only_if { site[:deploy][:action] == 'clean' }
-    end
-
+    # deploy only if deploy action present
     deploy base do
+      only_if { site[:deploy][:action].any? { |action| action == 'deploy' } }
       repository site[:repository][:uri]
       revision site[:repository][:revision]
       keep_releases site[:deploy][:releases]
@@ -145,7 +138,7 @@ node[:drupal][:sites].each do |site_name, site|
         site[:drupal][:settings][:settings].each do |setting_name, setting|
           unless setting[:template].nil?
             Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{setting[:location]}")
-            drupal_custom_settings "#{release_path}/#{setting[:location]}}" do
+            drupal_custom_settings "#{release_path}/#{setting[:location]} }" do
               cookbook site[:drupal][:settings][:cookbook]
               source setting[:template]
             end
@@ -153,52 +146,12 @@ node[:drupal][:sites].each do |site_name, site|
         end
       end
 
-        before_restart do
-
-          Chef::Log.debug("Drupal::default: before_restart: execute: /root/#{site_name}-files.sh")
-          bash "change file ownership" do
-            code <<-EOH
-              #{cmd}
-            EOH
-          end
-        end
+      before_restart do
 
         Chef::Log.debug("Drupal::default: before_restart: execute: /root/#{site_name}-files.sh")
         bash 'change file ownership' do
           code <<-EOH
             /root/#{site_name}-files.sh
-          EOH
-        end
-
-        bash "drush-site-update-#{site_name}" do
-          cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
-          user 'root'
-          cmd = 'drush updb -y; drush cc all'
-          only_if { site[:deploy][:action] == 'update' }
-          Chef::Log.debug("Drupal::default: action = 'update' execute = #{cmd.inspect}") if site[:deploy][:action] == 'update'
-          code <<-EOH
-            set -x
-            set -e
-            #{cmd}
-          EOH
-        end
-
-        bash "drush-site-install-#{site_name}" do
-          cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
-          user 'root'
-          cmd = "drush -y site-install #{site[:drupal][:settings][:profile]}"
-          site[:drupal][:install].each do |flag, value|
-            cmd << " #{flag}=#{value}"
-          end
-          cmd << " --account-name=#{drupal_user[:admin_user]} --account-pass=#{drupal_user[:admin_pass]}"
-          cwd "#{release_path}/#{site[:drupal][:settings][:docroot]}"
-          only_if { site[:deploy][:action] == 'clean' }
-
-          Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action] == 'clean'
-          code <<-EOH
-            set -x
-            set -e
-            #{cmd}
           EOH
         end
       end
@@ -259,6 +212,37 @@ node[:drupal][:sites].each do |site_name, site|
       create_dirs_before_symlink.clear
       purge_before_symlink.clear
       symlinks.clear
+    end
+
+    bash "drush-site-install-#{site_name}" do
+      cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
+      user 'root'
+      cmd = "drush -y site-install #{site[:drupal][:settings][:profile]}"
+      site[:drupal][:install].each do |flag, value|
+        cmd << " #{flag}=#{value}"
+      end
+      cmd << " --account-name=#{drupal_user['admin_user']} --account-pass=#{drupal_user['admin_pass']}"
+      only_if { site[:deploy][:action].any? { |action| action == 'install' } }
+
+      Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action].any? { |action| action == 'install' }
+      code <<-EOH
+        set -x
+        set -e
+        #{cmd}
+      EOH
+    end
+
+    bash "drush-site-update-#{site_name}" do
+      cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
+      user 'root'
+      cmd = 'drush updb -y; drush cc all'
+      only_if { site[:deploy][:action].any? { |action| action == 'update' } }
+      Chef::Log.debug("Drupal::default: action = 'update' execute = #{cmd.inspect}") if site[:deploy][:action].any? { |action| action == 'update' }
+      code <<-EOH
+        set -x
+        set -e
+        #{cmd}
+      EOH
     end
   end
 end
