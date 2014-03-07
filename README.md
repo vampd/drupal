@@ -17,9 +17,11 @@ install will run drush site-install for the given install profile
 
 #### import
 This will import an existing database backup for your site.
-In addition to including import in your action list, you will need to place a sql file at /assets/[sitename]. So, if the site name is example and the file is backup.sql, it should be found at /assets/example/backup.sql.
+In addition to including import in your action list, you will need to place a sql dump in the same directory as your VagrantFile (or relative to it).
 
-You should specify the file name in your json at db_file.
+You should specify the path (relative to your VagrantFile) and file name in your json at db_file.
+
+If your file was backup.sql and you placed it in the same directory as your VagrantFile, then you would simply put backup.sql in your json at db_file.
 
 #### update
 Will run:
