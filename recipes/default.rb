@@ -111,15 +111,11 @@ node[:drupal][:sites].each do |site_name, site|
       before_migrate do
         # If the Drush make hash is nil, then do nothing, else make the site
         unless site[:drush_make][:files].nil?
-          # we are going to remove all the files in this folder, this will allow
-          # the drush make to occur.
-          make_files = ""
-          site[:drush_make][:files].each do |file, value|
-            make_files << "#{value} "
-          end
 
+          # we are going to remove all the files in this folder, this will allow
+          # the drush make to occur
           bash "Remove all cloned files except the .git folder" do
-            user "root"
+            user 'root'
             cwd release_path
             cmd = "rm -rf ./*"
             code <<-EOH
@@ -129,8 +125,29 @@ node[:drupal][:sites].each do |site_name, site|
             EOH
           end
 
-          bash "Get drush make files back" do
-            user "root"
+          template "#{release_path}/build.make" do
+            source 'build.make.erb'
+            mode 0755
+            owner 'root'
+            group 'root'
+            variables(
+              :api => site[:drush_make][:api],
+              :url => site[:repository][:uri],
+              :branch => site[:repository][:revision],
+              :profile => site[:drupal][:settings][:profile],
+              :includes => site[:drush_make][:files]
+            )
+            only_if { site[:drush_make][:template] == true }
+          end
+
+          # Make Files
+          make_files = ""
+          site[:drush_make][:files].each do |file, value|
+            make_files << "#{value} "
+          end
+
+          bash "Get drush make files back: #{make_files}" do
+            user 'root'
             cwd release_path
             cmd = "git checkout #{make_files}"
             code <<-EOH
@@ -140,10 +157,14 @@ node[:drupal][:sites].each do |site_name, site|
             EOH
           end
 
-          bash "Run drush make" do
-            user "root"
+          bash "Run drush make for #{site}" do
+            user 'root'
             cwd release_path
-            cmd = "drush make #{site[:drush_make][:files][:default]} -y"
+            if site[:drush_make][:template] == true
+              cmd = 'drush make build.make -y'
+            else
+              cmd = "drush make #{site[:drush_make][:files][:default]} -y"
+            end
             code <<-EOH
               set -x
               set -e
@@ -151,8 +172,8 @@ node[:drupal][:sites].each do |site_name, site|
             EOH
           end
 
-          bash "Remove make files from site directory" do
-            user "root"
+          bash "Remove make files from #{site} directory" do
+            user 'root'
             cwd release_path
             cmd = "rm -rf #{make_files}"
             code <<-EOH
@@ -161,6 +182,7 @@ node[:drupal][:sites].each do |site_name, site|
               #{cmd}
             EOH
           end
+
         end
 
         Chef::Log.debug("Drupal::default: before_migrate: release_path = #{release_path}")

@@ -1,0 +1,13 @@
+api = <%= @api %>
+<% if @includes %>
+  <% @includes.each do |file_name, file| %>
+    <% if file_name != "default" %>
+includes[] = <%= file %>
+    <% end %>
+  <% end %>
+<% end %>
+
+projects[<%= @profile %>][download][type] = git
+projects[<%= @profile %>][download][url] = <%= @url %>
+projects[<%= @profile %>][download][branch] = <%= @branch %>
+projects[<%= @profile %>][type] = profile
