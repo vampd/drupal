@@ -44,7 +44,7 @@ false, you will need to have a ```"default":"build-[name-of-profile].make"``` in
 files hash. If the drush make is present, it will try to build the site, if not
 the recipe assumes you have a full site.
 ```
-"drush_make" :{
+"drush_make": {
   "api": "2",
   "files": {
     "default": "build-profile.make",
@@ -85,7 +85,7 @@ default[:drupal][:sites] = {
       "--clean-url": 1 # enable clean urls on site install
     },
     # Build the site using drush make
-    "drush_make" :{
+    "drush_make": {
       "api": "2",
       # Pull in all drush make files needed for the make
       "files": {
