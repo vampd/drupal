@@ -78,22 +78,22 @@ default[:drupal][:sites] = {
     "action": ["deploy", "import", "update"], # see "available deploy actions"
     "releases": 1 # number of git releases to store (in addition to the active release)
   },
+  # Build the site using drush make
+  "drush_make": {
+    "api": "2",
+    # Pull in all drush make files needed for the make
+    "files": {
+      "default": "build-profile.make",
+      "core": "drupal-org-core.make"
+    },
+    # Use a template or use the the default file
+    "template": false
+  },
   "drupal": {
     "version": "7.0", # drupal version 8.0, 7.0 or 6.0
     "install": {
       "install_configure_form.update_status_module": "'array(FALSE,FALSE)'",
       "--clean-url": 1 # enable clean urls on site install
-    },
-    # Build the site using drush make
-    "drush_make": {
-      "api": "2",
-      # Pull in all drush make files needed for the make
-      "files": {
-        "default": "build-profile.make",
-        "core": "drupal-org-core.make"
-      },
-      # Use a template or use the the default file
-      "template": false
     },
     "settings": {
       "profile": "standard", # if action is clean, this install profile will be installed
