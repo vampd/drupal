@@ -24,4 +24,9 @@ when 'debian', 'ubuntu'
   execute 'apt-get-update' do
     command 'apt-get update'
   end
+
+  package "unzip" do
+    action :install
+  end
+
 end

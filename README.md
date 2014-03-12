@@ -37,6 +37,23 @@ $ vagrant ssh
 $ cd /assets/[site name]
 $ [run drush commands]
 ````
+### Using drush make
+
+Drush make will build the site out of a drupal profile hosted in a git repo. If you would like to have
+the profile pull from a git uri, and build using the variables in the drupal_lamp.json, a template option is available and will be used in the command ```drush make build.make```. If template is
+false, you will need to have a ```"default":"build-[name-of-profile].make"``` in the
+files hash. If the drush make is present, it will try to build the site, if not
+the recipe assumes you have a full site.
+```
+"drush_make": {
+  "api": "2",
+  "files": {
+    "default": "build-profile.make",
+    "core": "drupal-org-core.make"
+  },
+  "template": false
+},
+```
 
 Configuration
 -------------
@@ -61,6 +78,17 @@ default[:drupal][:sites] = {
   "deploy": {
     "action": ["deploy", "import", "update"], # see "available deploy actions"
     "releases": 1 # number of git releases to store (in addition to the active release)
+  },
+  # Build the site using drush make
+  "drush_make": {
+    "api": "2",
+    # Pull in all drush make files needed for the make
+    "files": {
+      "default": "build-profile.make",
+      "core": "drupal-org-core.make"
+    },
+    # Use a template or use the the default file
+    "template": false
   },
   "drupal": {
     "version": "7.0", # drupal version 8.0, 7.0 or 6.0
