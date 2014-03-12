@@ -280,7 +280,7 @@ node[:drupal][:sites].each do |site_name, site|
             end
           end
         end
-        # Because of how drush mak weorks, we have to override the git operations
+        # Because of how drush make works, we have to override the git operations
         # this means that we have to change locations of the .git directory, etc
         # We move .git because of how the build happens
         bash "Move  #{site_name} .git to profile" do
