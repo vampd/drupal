@@ -138,7 +138,7 @@ node[:drupal][:sites].each do |site_name, site|
         site[:drupal][:settings][:settings].each do |setting_name, setting|
           unless setting[:template].nil?
             Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{setting[:location]}")
-            drupal_custom_settings "#{release_path}/#{setting[:location]} }" do
+            drupal_custom_settings "#{release_path}/#{setting[:location]}" do
               cookbook site[:drupal][:settings][:cookbook]
               source setting[:template]
             end
