@@ -110,7 +110,7 @@ node[:drupal][:sites].each do |site_name, site|
 
       before_migrate do
         # If the Drush make hash is nil, then do nothing, else make the site
-        unless site[:drush_make][:files].nil?
+        if site.has_key?("drush_make") && !site[:drush_make][:files].nil?
 
           # we are going to remove all the files in this folder, this will allow
           # the drush make to occur
@@ -282,18 +282,17 @@ node[:drupal][:sites].each do |site_name, site|
         end
         # Because of how drush mak weorks, we have to override the git operations
         # this means that we have to change locations of the .git directory, etc
-        unless site[:drush_make][:files].nil?
-          # We move .git because of how the build happens
-          bash "Move .git to profile" do
-            user "root"
-            cwd "#{node[:drupal][:server][:base]}/#{site_name}/current"
-            cmd = "mv .git profiles/#{site[:drupal][:settings][:profile]}"
-            code <<-EOH
-              set -x
-              set -e
-              #{cmd}
-            EOH
-          end
+        # We move .git because of how the build happens
+        bash "Move  #{site_name} .git to profile" do
+          only_if { site.has_key?("drush_make") && !site[:drush_make][:files].nil? }
+          user 'root'
+          cwd "#{node[:drupal][:server][:base]}/#{site_name}/current"
+          cmd = "mv .git profiles/#{site[:drupal][:settings][:profile]}"
+          code <<-EOH
+            set -x
+            set -e
+            #{cmd}
+          EOH
         end
       end
 
