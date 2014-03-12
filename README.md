@@ -38,7 +38,7 @@ $ [run drush commands]
 ````
 ### Using drush make
 
-Drush make will build the site out of a github profile. If you would like to have
+Drush make will build the site out of a drupal profile hosted in a git repo. If you would like to have
 the profile pull from a github uri, and build using the variables in the drupal_lamp.json, a template option is available and will be used in the command ```drush make build.make```. If template is
 false, you will need to have a ```"default":"build-[name-of-profile].make"``` in the
 files hash. If the drush make is present, it will try to build the site, if not
