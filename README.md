@@ -1,14 +1,73 @@
-drupal Cookbook
+Drupal Cookbook
 ===============
 This cookbook installs a Drupal site on a LAMP stack.
-
-[![Build Status](https://travis-ci.org/newmediadenver/drupal.png?branch=master)](https://travis-ci.org/newmediadenver/drupal)
 
 Usage
 -----
 This cookbook has been designed to work with [drupal-lamp](http://github.com/newmediadenver/drupal-lamp).
 
-### Available deploy actions
+## JSON Explained
+This JSON is found in the drupal-lamp repo under infrastructure/drupal_lamp.json.
+
+```
+"drupal": { # Name of the cookbook
+  "sites": { # Handling of sites
+    "example": {  # site name
+      "active": true, # true or false
+      "deploy": {
+        "action": ["deploy", "import", "update"], # see "Available Deploy Actions"
+        "releases": 1 # number of git releases to store (in addition to the active release)
+      },
+      "drush_make": { # Use drush make (See "Using Drush Make")
+        "api": "2",
+        "files": { # Pull in all drush make files needed for the make
+          "default": "build-profile.make",
+          "core": "drupal-org-core.make"
+        },
+        "template": false # Use a template or use the "default" file
+      },
+      "drupal": {
+        "version": "7.0", # drupal version 8.0, 7.0 or 6.0
+        "install": { # key->value pair passed to 'drush site-install'
+          "install_configure_form.update_status_module": "'array(FALSE,FALSE)'",
+          "--clean-url": 1 # enable clean urls on site install
+        },
+        "settings": {
+          "profile": "standard", # if action is clean, this install profile will be installed
+          "files": "sites/default/files", # location of the files directory
+          "cookbook": "drupal", # the name of this cookbook
+          "settings": { # See "Working with multiple settings.php"
+            "default": {
+              "location": "sites/default/settings.php" # location of the settings.php file
+            },
+          },
+          "db_name": "example", # database name
+          "db_host": "localhost", # database host
+          "db_prefix": "", # database prefix
+          "db_driver": "mysql", # database driver
+          "db_file": "/vagrant/backup.sql" # path of db file to be imported, if "action" has
+          "import" .
+        }
+      },
+      "repository": {
+        "host": "github.com",
+        "uri": "https://github.com/drupal/drupal.git",
+        "revision": "7.26" # branch, tag, or hash
+      },
+      # Apache configuration options
+      "web_app": { # See "Web App Config Options"
+        "80": { # port (Necessary)
+          "server_name": "drupal.local", (Necessary)
+          "rewrite_engine": "On", (Necessary)
+          "docroot": "/srv/www/example/current", (Necessary)
+        }
+      }
+    }
+  }
+}
+````
+
+## Available Deploy Actions
 #### deploy
 deploy will pull down a fresh copy of your repo.
 
@@ -16,13 +75,9 @@ deploy will pull down a fresh copy of your repo.
 install will run drush site-install for the given install profile
 
 #### import
-This will import an existing database backup for your site.
-In addition to including import in your action list, you will need a sql dump on your box. The easiest
-way to do this is to place a *.sql dump in the same directory as your VagrantFile (or relative to it).
-Then place the path to this sql dump file in db_file.
+This will import an existing database backup for your site. *If this is set, you will need to have a ```"db_file"``` specified.*
 
-Example:
-If your file was backup.sql and you placed it in the same directory as your VagrantFile, then you would simply put /vagrant/backup.sql in your json at db_file.
+**Example:**  Files placed in the same directory as the Vagrantfile, can be found at /vagrant on the provisioned machine. Therefore, if your file was ```backup.sql``` and was at the same level as the ```VagrantFile```, then you would simply put ```"db_file":"/vagrant/backup.sql"``` in the json.
 
 #### update
 Will run:
@@ -30,104 +85,66 @@ Will run:
 drush updb -y; drush cc all
 ````
 
-### Using drush
-After a site is installed:
-````
-$ vagrant ssh
-$ cd /assets/[site name]
-$ [run drush commands]
-````
-### Using drush make
+## Using Drush Make
 
-Drush make will build the site out of a drupal profile hosted in a git repo. If you would like to have
-the profile pull from a git uri, and build using the variables in the drupal_lamp.json, a template option is available and will be used in the command ```drush make build.make```. If template is
-false, you will need to have a ```"default":"build-[name-of-profile].make"``` in the
-files hash. If the drush make is present, it will try to build the site, if not
-the recipe assumes you have a full site.
+Drush make will build the site out of a drupal profile hosted in a git repo.
+
+**There are two options to use:**
+#### Template
+This will create the build-profile.make file out of a template. This is extremely helpful to use when working in teams that need to change the location of the profile specified in the build.make file.
+
+**Example:**
+
 ```
 "drush_make": {
   "api": "2",
   "files": {
-    "default": "build-profile.make",
     "core": "drupal-org-core.make"
   },
-  "template": false
+  "template": true
 },
 ```
 
-Configuration
--------------
-````
-default[:drupal][:server][:web_user] = "www-data" # linux web user
-default[:drupal][:server][:web_group] = "www-data" # linux web group
-default[:drupal][:server][:base] = "/srv/www" # web root base
-default[:drupal][:server][:assets] = "/assets" # where all folders will be linked to for sharing purposes
+##### Default
+This will use the ```default``` file specified to run the command ```drush make```.
+**Example:**
 
-default[:drupal][:drush][:revision] = "6.2.0" # drush revision
-default[:drupal][:drush][:repository] = "https://github.com/drush-ops/drush.git"
-default[:drupal][:drush][:dir] = "/opt/drush" # where to place drush
-default[:drupal][:drush][:executable] = "/usr/bin/drush" # where to place drush executable
+```
+"drush_make": {
+  "api": "2",
+  "files": {
+    "default": "build-profile.make" # Name this appropriate to the name of the profile
+    "core": "drupal-org-core.make"
+  },
+  "template": true
+},
+```
+## Working with Multiple settings.php
+The drupal cookbook allows for the handling of multiple settings.php files. This is beneficial because you can control settings for different environments via the inclusion of the files in the default settings.php.
 
-# The below example will:
-# 1. clone the repository found https://github.com/drupal/drupal.git
-# 2. import a database from backup.sql
-# 3. run drupal updates
-default[:drupal][:sites] = {
-"example": {  # site name
-  "active": true, # true or false
-  "deploy": {
-    "action": ["deploy", "import", "update"], # see "available deploy actions"
-    "releases": 1 # number of git releases to store (in addition to the active release)
+```
+"settings": {
+  "default": { # Required
+    "location": "sites/default/settings.php" # location of the settings.php file
   },
-  # Build the site using drush make
-  "drush_make": {
-    "api": "2",
-    # Pull in all drush make files needed for the make
-    "files": {
-      "default": "build-profile.make",
-      "core": "drupal-org-core.make"
-    },
-    # Use a template or use the the default file
-    "template": false
+  # use this section if you want to create a settings.php file from a template
+  # that will be included at the end of the default settings.php
+  "example_template": { # Optional. Can be named anything
+    "location": "sites/default/example.settings.php",
+    "template": "example.settings.php.erb" #if filled out will look for a template in the recipe
   },
-  "drupal": {
-    "version": "7.0", # drupal version 8.0, 7.0 or 6.0
-    "install": {
-      "install_configure_form.update_status_module": "'array(FALSE,FALSE)'",
-      "--clean-url": 1 # enable clean urls on site install
-    },
-    "settings": {
-      "profile": "standard", # if action is clean, this install profile will be installed
-      "files": "sites/default/files", # location of the files directory
-      "cookbook": "drupal", # the name of this cookbook
-      "settings": {
-        "default": {
-          "location": "sites/default/settings.php" # location of the settings.php file
-        },
-        # use this section if you want to create a settings.php file from a template
-        "example_template": {
-          "location": "sites/default/example.settings.php",
-          "template": "example.settings.php.erb"
-        },
-        # use this section if you want to include an additional settings.php
-        #file onto the end of the default settings.php file
-        "example_static": {
-          "location": "profiles/standard/standard.settings.php"
-        }
-      },
-      "db_name": "example", # database name
-      "db_host": "localhost", # database host
-      "db_prefix": "", # database prefix
-      "db_driver": "mysql", # database driver
-      "db_file": "backup.sql" # name of the database file that will be imported if action = import.
-    }
-  },
-  "repository": {
-    "host": "github.com",
-    "uri": "https://github.com/drupal/drupal.git",
-    "revision": "7.26" # branch, tag, or hash
-  },
-  # Apache configuration
+  # use this section if you want to include an additional settings.php
+  # file onto the end of the default settings.php file
+  "example_static": { # Optional. Can be named anything
+    "location": "profiles/standard/standard.settings.php"
+  }
+}
+```
+
+## Web App Config Options
+These are the options that exposed to the drupal cookbook for editing in the sites json.
+
+```
   "web_app": {
     "80": { # port
       "server_name": "drupal.local",
@@ -171,8 +188,6 @@ default[:drupal][:sites] = {
         "ssl_certificate_key_file": ""
       }
     }
-  }
-}
 ````
 
 Contributing
