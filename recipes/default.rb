@@ -306,9 +306,13 @@ node[:drupal][:sites].each do |site_name, site|
       cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
       user 'root'
       cmd = "drush -y site-install #{site[:drupal][:settings][:profile]}"
-      site[:drupal][:install].each do |flag, value|
-        cmd << " #{flag}=#{value}"
+
+      unless site[:drupal][:install].nil?
+        site[:drupal][:install].each do |flag, value|
+          cmd << " #{flag}=#{value}"
+        end
       end
+
       cmd << " --account-name=#{drupal_user['admin_user']} --account-pass=#{drupal_user['admin_pass']}"
       only_if { site[:deploy][:action].any? { |action| action == 'install' } }
 
