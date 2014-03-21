@@ -12,7 +12,7 @@ test/tmp
 test/version_tmp
 tmp
 Berksfile.lock
-test/support/Gemfile.lock
+Gemfile.lock
 
 # YARD artifacts
 .yardoc
