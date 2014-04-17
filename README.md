@@ -52,7 +52,8 @@ This JSON is found in the drupal-lamp repo under infrastructure/drupal_lamp.json
       "repository": {
         "host": "github.com",
         "uri": "https://github.com/drupal/drupal.git",
-        "revision": "7.26" # branch, tag, or hash
+        "revision": "7.26", # branch, tag, or hash
+        "shallow_clone": false # Indicates that the clone depth is set to 5. Default value: false.
       },
       # Apache configuration options
       "web_app": { # See "Web App Config Options"
