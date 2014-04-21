@@ -1,0 +1,5 @@
+AllCops:
+  Include:
+    - Berksfile
+    - Gemfile
+    - Rakefile
