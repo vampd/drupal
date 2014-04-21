@@ -58,4 +58,5 @@ node[:drupal][:sites].each do |site_name, site|
   default[:drupal][:sites][site_name][:web_app]['80'][:server_name] = "#{site_name}.local"
   default[:drupal][:sites][site_name][:web_app]['80'][:rewrite_engine] = 'On'
   default[:drupal][:sites][site_name][:web_app]['80'][:docroot] = "#{node[:drupal][:server][:base]}/#{site_name}/current"
+  default[:drupal][:sites][site_name][:web_app]['80'][:error_log] = "/var/log/apache2/#{site_name}-error.log"
 end
