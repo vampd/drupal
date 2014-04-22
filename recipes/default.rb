@@ -172,7 +172,7 @@ node[:drupal][:sites].each do |site_name, site|
             EOH
           end
 
-          bash 'Remove make files from #{site_name} directory' do
+          bash "Remove make files from #{site_name} directory" do
             user 'root'
             cwd release_path
             cmd = "rm -rf #{make_files}"
