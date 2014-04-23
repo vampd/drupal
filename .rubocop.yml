@@ -3,3 +3,23 @@ AllCops:
     - Berksfile
     - Gemfile
     - Rakefile
+  Exclude:
+    - vendor/**
+
+AlignParameters:
+  Enabled: false
+Encoding:
+  Enabled: false
+HashSyntax:
+  Enabled: false
+LineLength:
+  Enabled: true
+  Max: 240
+MethodLength:
+  Max: 30
+StringLiterals:
+  Enabled: true
+IfUnlessModifier:
+  Enabled: false
+TrivialAccessors:
+  ExactNameMatch: true
