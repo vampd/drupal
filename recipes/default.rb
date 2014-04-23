@@ -17,9 +17,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+web_user = node[:drupal][:server][:users][:web].split(':')
+files_user = node[:drupal][:server][:users][:files].split(':')
+
 directory node[:drupal][:server][:base] do
-  owner node[:drupal][:server][:web_user]
-  group node[:drupal][:server][:web_group]
+  owner web_user[0]
+  group web_user[1]
   mode 00755
   action :create
   recursive true
@@ -27,8 +30,8 @@ directory node[:drupal][:server][:base] do
 end
 
 directory node[:drupal][:server][:assets] do
-  owner node[:drupal][:server][:web_user]
-  group node[:drupal][:server][:web_group]
+  owner web_user[0]
+  group web_user[1]
   mode 00755
   action :create
   recursive true
@@ -53,9 +56,6 @@ node[:drupal][:sites].each do |site_name, site|
     drupal_user = data_bag_item('sites', site_name)[node.chef_environment]
     Chef::Log.debug "drupal::default drupal_user #{drupal_user.inspect}"
 
-#      mysql = "mysql -u #{drupal_user['db_user']} -p#{drupal_user['db_password']} #{site[:drupal][:settings][:db_name]} -h #{site[:drupal][:settings][:db_host]} -e "
-#      Chef::Log.debug "drupal::default mysql #{mysql.inspect}"
-
     ssh_known_hosts_entry site[:repository][:host]
 
     template "/root/#{site_name}-files.sh" do
@@ -64,16 +64,16 @@ node[:drupal][:sites].each do |site_name, site|
       owner 'root'
       group 'root'
       variables(
-        :owner => node[:drupal][:server][:web_user],
-        :group => node[:drupal][:server][:web_group],
+        :web_owner => web_user[0],
+        :web_group => web_user[1],
+        :files_owner => files_user[0],
+        :files_group => files_user[1],
         :assets => assets,
         :files => "#{base}/current/#{site[:drupal][:settings][:files]}"
       )
     end
 
     directory assets do
-#        owner node[:drupal][:server][:web_user]
-#        group node[:drupal][:server][:web_group]
       mode 00755
       action :create
       not_if { ::File.exists?(assets) }
@@ -85,16 +85,12 @@ node[:drupal][:sites].each do |site_name, site|
 
     directory "#{assets}/files" do
       not_if { ::File.exists?("#{assets}/files") }
-#        owner node[:drupal][:server][:web_user]
-#        group node[:drupal][:server][:web_group]
       mode 00755
       action :create
       recursive true
     end
 
     directory "#{assets}/shared" do
-#        owner node[:drupal][:server][:web_user]
-#        group node[:drupal][:server][:web_group]
       mode 00755
       action :create
       recursive true
@@ -107,6 +103,7 @@ node[:drupal][:sites].each do |site_name, site|
       repository site[:repository][:uri]
       revision site[:repository][:revision]
       keep_releases site[:deploy][:releases]
+      shallow_clone site[:repository][:shallow_clone]
 
       before_migrate do
         # If the Drush make hash is nil, then do nothing, else make the site
@@ -197,8 +194,6 @@ node[:drupal][:sites].each do |site_name, site|
           path "#{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}"
           version = site[:drupal][:version].split('.')[0]
           source "d#{version}.settings.php.erb"
-         # owner node[:server][:web_user]
-         # group node[:server][:web_group]
           mode 0644
           variables(
            :database => site[:drupal][:settings][:db_name],
@@ -225,7 +220,6 @@ node[:drupal][:sites].each do |site_name, site|
       after_restart do
         # Modifications to facilitate a local working environment.
         if Chef::Config[:solo]
-
 
           bash 'disable selinux' do
             cmd = 'type setenforce &>/dev/null && setenforce permissive'

@@ -19,7 +19,7 @@
 #
 include_recipe 'php'
 
-['php5-mysql', 'php5-gd', 'php5-curl'].each do |pkg|
+%w(php5-mysql php5-gd php5-curl).each do |pkg|
   package pkg do
     action :install
   end
