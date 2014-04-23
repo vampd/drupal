@@ -25,7 +25,7 @@ include_recipe 'database'
 include_recipe 'database::mysql'
 
 passwords = data_bag_item('users', 'mysql')[node.chef_environment]
-Chef::Log::debug "drupal::mysql passwords = #{passwords.inspect}"
+Chef::Log.debug "drupal::mysql passwords = #{passwords.inspect}"
 
 if Chef::Config[:solo]
   Chef::Log.debug 'drupal::mysql Setting chef solo node mysql passwords.'

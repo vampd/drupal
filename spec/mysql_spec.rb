@@ -38,7 +38,7 @@ describe 'drupal::mysql' do
           'example' => {
             'active' => 1,
             'deploy' => {
-              'action' => ['deploy', 'install', 'import']
+              'action' => %w(deploy install import)
             },
             'drupal' => {
               'settings' => {
