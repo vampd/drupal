@@ -30,7 +30,7 @@ end
 
 desc 'Run Foodcritic lint checks'
 FoodCritic::Rake::LintTask.new(:foodcritic) do |t|
-  t.options = { fail_tags: ['any'] }
+  t.options = { fail_tags: ['FC002'] }
 end
 
 desc 'Run ChefSpec examples'

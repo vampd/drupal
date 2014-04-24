@@ -1,7 +1,7 @@
 # encoding: utf-8
 source 'https://rubygems.org'
 
-gem 'foodcritic', '~> 3.0'
+gem 'foodcritic', '~> 3.0.3'
 gem 'rake', '~> 10.3.0'
 gem 'rubocop', '~> 0.20.0'
 gem 'rspec', '~> 2.14.1'
