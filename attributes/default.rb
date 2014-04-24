@@ -51,7 +51,7 @@ node[:drupal][:sites].each do |site_name, site|
   default[:drupal][:sites][site_name][:drupal][:settings][:files] = 'sites/default/files'
   default[:drupal][:sites][site_name][:drupal][:settings][:cookbook] = 'drupal'
   default[:drupal][:sites][site_name][:drupal][:settings][:settings][:default][:location] = 'sites/default/settings.php'
-  default[:drupal][:sites][site_name][:drupal][:settings][:db_name] = site_name.gsub("-","_")
+  default[:drupal][:sites][site_name][:drupal][:settings][:db_name] = site_name.gsub('-', '_')
   default[:drupal][:sites][site_name][:drupal][:settings][:db_host] = 'localhost'
   default[:drupal][:sites][site_name][:drupal][:settings][:db_prefix] = ''
   default[:drupal][:sites][site_name][:drupal][:settings][:db_driver] = 'mysql'

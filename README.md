@@ -2,6 +2,8 @@ Drupal Cookbook
 ===============
 This cookbook installs a Drupal site on a LAMP stack.
 
+https://travis-ci.org/newmediadenver/drupal.svg?branch=2.x
+
 Usage
 -----
 This cookbook has been designed to work with [drupal-lamp](http://github.com/newmediadenver/drupal-lamp).

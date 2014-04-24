@@ -26,7 +26,7 @@ directory node[:drupal][:server][:base] do
   mode 00755
   action :create
   recursive true
-  not_if { ::File.exists?(node[:drupal][:server][:base]) }
+  not_if { ::File.exist?(node[:drupal][:server][:base]) }
 end
 
 directory node[:drupal][:server][:assets] do
@@ -35,7 +35,7 @@ directory node[:drupal][:server][:assets] do
   mode 00755
   action :create
   recursive true
-  not_if { ::File.exists?(node[:drupal][:server][:assets]) }
+  not_if { ::File.exist?(node[:drupal][:server][:assets]) }
 end
 
 # Set up each drupal site.
@@ -76,7 +76,7 @@ node[:drupal][:sites].each do |site_name, site|
     directory assets do
       mode 00755
       action :create
-      not_if { ::File.exists?(assets) }
+      not_if { ::File.exist?(assets) }
     end
 
     link "#{node[:drupal][:server][:base]}/#{site_name}" do
@@ -84,7 +84,7 @@ node[:drupal][:sites].each do |site_name, site|
     end
 
     directory "#{assets}/files" do
-      not_if { ::File.exists?("#{assets}/files") }
+      not_if { ::File.exist?("#{assets}/files") }
       mode 00755
       action :create
       recursive true
@@ -94,7 +94,7 @@ node[:drupal][:sites].each do |site_name, site|
       mode 00755
       action :create
       recursive true
-      not_if { ::File.exists?("#{assets}/shared") }
+      not_if { ::File.exist?("#{assets}/shared") }
     end
 
     # deploy only if deploy action present
@@ -107,7 +107,7 @@ node[:drupal][:sites].each do |site_name, site|
 
       before_migrate do
         # If the Drush make hash is nil, then do nothing, else make the site
-        if site.has_key?("drush_make") && !site[:drush_make][:files].nil?
+        if site.key?('drush_make') && !site[:drush_make][:files].nil?
 
           # we are going to remove all the files in this folder, this will allow
           # the drush make to occur
@@ -229,7 +229,7 @@ node[:drupal][:sites].each do |site_name, site|
               set -e
               #{cmd}
             EOH
-            only_if { node[:platform_family] == 'redhat' || node[:platform_family] == 'centos'}
+            only_if { node[:platform_family] == 'redhat' || node[:platform_family] == 'centos' }
           end
 
           execute 'drupal-current-relative' do
@@ -241,7 +241,7 @@ node[:drupal][:sites].each do |site_name, site|
               set -e
               #{cmd}
             EOF
-            only_if { ::File.exists?("#{base}/current") }
+            only_if { ::File.exist?("#{base}/current") }
           end
 
           execute 'drupal-switch-branch' do
@@ -253,7 +253,7 @@ node[:drupal][:sites].each do |site_name, site|
               set -e
               #{cmd}
             EOF
-            only_if { ::File.exists?("#{base}/current") }
+            only_if { ::File.exist?("#{base}/current") }
           end
         end
 
@@ -270,7 +270,7 @@ node[:drupal][:sites].each do |site_name, site|
             execute "drupal-add-remote-#{remote}" do
               cwd "#{node[:drupal][:server][:base]}/#{site_name}/current"
               command "git remote add #{remote} #{uri}"
-              only_if { ::File.exists?("#{node[:drupal][:server][:base]}/#{site_name}/current") }
+              only_if { ::File.exist?("#{node[:drupal][:server][:base]}/#{site_name}/current") }
             end
           end
         end
@@ -278,7 +278,7 @@ node[:drupal][:sites].each do |site_name, site|
         # this means that we have to change locations of the .git directory, etc
         # We move .git because of how the build happens
         bash "Move  #{site_name} .git to profile" do
-          only_if { site.has_key?("drush_make") && !site[:drush_make][:files].nil? }
+          only_if { site.key?('drush_make') && !site[:drush_make][:files].nil? }
           user 'root'
           cwd "#{node[:drupal][:server][:base]}/#{site_name}/current"
           cmd = "mv .git profiles/#{site[:drupal][:settings][:profile]}"
