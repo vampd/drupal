@@ -20,6 +20,8 @@
 include_recipe 'apache2'
 include_recipe 'apache2::mod_php5'
 include_recipe 'apache2::mod_rewrite'
+include_recipe "apache2::mod_fastcgi"
+include_recipe "apache2::mod_ssl"
 
 node[:drupal][:sites].each do |site_name, site|
   if site[:active]
@@ -46,6 +48,7 @@ node[:drupal][:sites].each do |site_name, site|
           ssl_cipher_suite app['ssl']['ssl_cipher_suite'] unless app['ssl']['ssl_cipher_suite'].nil?
           ssl_certificate_file app['ssl']['ssl_certificate_file'] unless app['ssl']['ssl_certificate_file'].nil?
           ssl_certificate_key_file app['ssl']['ssl_certificate_key_file'] unless app['ssl']['ssl_certificate_key_file'].nil?
+          ssl_certificate_chain_file app['ssl']['ssl_certificate_chain_file'] unless app['ssl']['ssl_certificate_chain_file'].nil?
         end
       end
     end
