@@ -17,16 +17,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-include_recipe 'apache2'
-include_recipe 'apache2::mod_php5'
-include_recipe 'apache2::mod_rewrite'
-include_recipe "apache2::mod_fastcgi"
-include_recipe "apache2::mod_ssl"
 
 node[:drupal][:sites].each do |site_name, site|
   if site[:active]
     site['web_app'].each do |port, app|
-      web_app "#{site_name}-#{port}" do
+      drupal_web_app "#{site_name}-#{port}" do
         port port
         docroot app['docroot'] unless app['docroot'].nil?
         server_name app['server_name'] unless app['server_name'].nil?
