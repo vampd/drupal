@@ -21,7 +21,7 @@ define :drupal_web_app, :template => 'web_app.conf.erb', :enable => true do
 
   application_name = params[:name]
 
-  web_user = node[:server][:users][:web].split(':')
+  web_user = node[:drupal][:server][:users][:web].split(':')
 
   template "#{node[:drupal][:server][:available]}/#{application_name}.conf" do
     source   params[:template]
