@@ -21,7 +21,8 @@ describe 'drupal::drush' do
     expect(chef_run).to create_directory('/opt/drush').with(
       owner: 'root',
       group: 'root',
-      mode: '0755'
+      mode: '0755',
+      recursive: true
     )
   end
 

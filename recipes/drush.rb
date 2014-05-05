@@ -23,6 +23,7 @@ directory node[:drupal][:drush][:dir] do
   group 'root'
   mode '0755'
   action :create
+  recursive true
 end
 
 directory "#{node[:drupal][:drush][:dir]}/shared" do
