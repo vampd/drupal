@@ -8,8 +8,6 @@ version          '2.0.0'
 recipe            'drupal::apache', 'Loads and configures apache'
 
 depends 'apache2'
-depends 'mysql'
-depends 'database'
 depends 'php'
 depends 'ssh_known_hosts'
 depends 'apt'
