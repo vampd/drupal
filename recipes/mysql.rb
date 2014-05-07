@@ -37,7 +37,7 @@ node[:drupal][:sites].each do |site_name, site|
       Chef::Log.debug("drupal::mysql clean install: purging database: #{site[:drupal][:settings][:db_name]}")
       bash "Drop database #{site[:drupal][:settings][:db_name]}." do
         user 'root'
-        mysql = "mysql -u #{drupal_user[:mysql][:maintenance_user]} -p#{drupal_user[:mysql][:maintenance_password]} -h #{site[:drupal][:settings][:db_host]}"
+        mysql = "mysql -u #{drupal_user['mysql']['maintenance_user']} -p#{drupal_user['mysql']['maintenance_password']} -h #{site[:drupal][:settings][:db_host]}"
         cmd = "#{mysql} -e 'DROP DATABASE IF EXISTS #{site[:drupal][:settings][:db_name]}'"
         Chef::Log.debug "drupal::mysql drop database: - `#{cmd}`"
         code <<-EOH
@@ -50,7 +50,7 @@ node[:drupal][:sites].each do |site_name, site|
       Chef::Log.debug "drupal::mysql clean install: Creating database #{site_name}"
       bash "Create #{site[:drupal][:settings][:db_name]} database." do
         user 'root'
-        mysql = "mysql -u #{drupal_user[:mysql][:maintenance_user]} -p#{drupal_user[:mysql][:maintenance_password]} -h #{site[:drupal][:settings][:db_host]}"
+        mysql = "mysql -u #{drupal_user['mysql']['maintenance_user']} -p#{drupal_user['mysql']['maintenance_password']} -h #{site[:drupal][:settings][:db_host]}"
         cmd = "#{mysql} -e 'CREATE DATABASE #{site[:drupal][:settings][:db_name]}'"
         Chef::Log.debug "drupal::mysql create database: - `#{cmd}`"
         code <<-EOH
@@ -63,7 +63,7 @@ node[:drupal][:sites].each do |site_name, site|
       bash "Import existing #{site[:drupal][:settings][:db_name]} database." do
         only_if { site[:deploy][:action].any? { |action| action == 'import' } }
         user 'root'
-        mysql = "mysql -u #{drupal_user[:mysql][:maintenance_user]} -p#{drupal_user[:mysql][:maintenance_password]} #{site[:drupal][:settings][:db_name]} -h #{site[:drupal][:settings][:db_host]} -e "
+        mysql = "mysql -u #{drupal_user['mysql']['maintenance_user']} -p#{drupal_user['mysql']['maintenance_password']} #{site[:drupal][:settings][:db_name]} -h #{site[:drupal][:settings][:db_host]} -e "
         cmd = "#{mysql} 'SOURCE #{site[:drupal][:settings][:db_file]}'"
         Chef::Log.debug "drupal::mysql import database: - `#{cmd}`" if site[:deploy][:action].any? { |action| action == 'import' }
         code <<-EOH
@@ -77,7 +77,7 @@ node[:drupal][:sites].each do |site_name, site|
     bash "Drop #{site[:drupal][:settings][:db_name]} database." do
       only_if { site[:deploy][:action].any? { |action| action == 'remove' } }
       user 'root'
-      mysql = "mysql -u #{drupal_user[:mysql][:maintenance_user]} -p#{drupal_user[:mysql][:maintenance_password]} -h #{site[:drupal][:settings][:db_host]}"
+      mysql = "mysql -u #{drupal_user['mysql']['maintenance_user']} -p#{drupal_user['mysql']['maintenance_password']} -h #{site[:drupal][:settings][:db_host]}"
       cmd = "#{mysql} -e 'DROP DATABASE IF EXISTS #{site[:drupal][:settings][:db_name]}'"
       Chef::Log.debug "drupal::mysql drop database: - `#{cmd}`"
       code <<-EOH
