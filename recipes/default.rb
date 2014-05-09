@@ -197,8 +197,8 @@ node[:drupal][:sites].each do |site_name, site|
           mode 0644
           variables(
            :database => site[:drupal][:settings][:db_name],
-           :username => drupal_user['db_user'],
-           :password => drupal_user['db_password'],
+           :username => drupal_user['mysql']['site_user'],
+           :password => drupal_user['mysql']['site_password'],
            :host => site[:drupal][:settings][:db_host],
            :driver => site[:drupal][:settings][:db_driver],
            :prefix => site[:drupal][:settings][:db_prefix],
