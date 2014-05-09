@@ -88,6 +88,10 @@ Will run:
 drush updb -y; drush cc all
 ````
 
+#### remove
+This will remove the code, the database, and the virtualhost configuration
+for the site.
+
 ## Using Drush Make
 
 Drush make will build the site out of a drupal profile hosted in a git repo.
