@@ -219,7 +219,7 @@ node[:drupal][:sites].each do |site_name, site|
           only_if { site[:deploy][:action].any? { |action| action == 'restore' } }
           cwd release_path
           user 'root'
-          cmd = "drush arr #{site[:drupal][:archive_file]} --overwrite  --destination=#{base}/current/#{site[:drupal][:settings][:docroot]}"
+          cmd = "drush arr #{site[:drupal][:archive_file]} --overwrite  --destination=#{release_path}"
           Chef::Log.debug("Drupal::default: action = 'restore' execute = #{cmd.inspect}") if site[:deploy][:action].any? { |action| action == 'restore' }
           code <<-EOH
             set -x
