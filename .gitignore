@@ -1,23 +1,23 @@
-*.gem
-*.rbc
-.bundle
-.config
-coverage
-InstalledFiles
-lib/bundler/man
-pkg
-rdoc
-spec/reports
-test/tmp
-test/version_tmp
-tmp
-Berksfile.lock
-Gemfile.lock
+# Bundler
+/Gemfile.lock
+/bin/
+/.bundle/
+vendor/bundle/
+vendor/*
 
-# YARD artifacts
-.yardoc
-_yardoc
-doc/
+# Berkshelf
+/Berksfile.lock
+/cookbooks/
+/vendor/cookbooks/
+
+# Vagrant
+/.vagrant/
+
+# Test Kitchen
+.kitchen
+/.kitchen.local.yml
+
+# Macs
 .DS_Store
-.kitchen/
-.kitchen.local.yml
+
+/coverage
