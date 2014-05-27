@@ -1,8 +1,7 @@
 # Bundler
-/Gemfile.lock
+*.lock
 /bin/
 /.bundle/
-vendor/bundle/
 vendor/*
 
 # Berkshelf
@@ -14,8 +13,7 @@ vendor/*
 /.vagrant/
 
 # Test Kitchen
-.kitchen
-/.kitchen.local.yml
+.kitchen/
 
 # Macs
 .DS_Store
