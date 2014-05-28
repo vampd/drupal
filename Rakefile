@@ -13,15 +13,6 @@ class Readme < OpenStruct
   end
 end
 
-def rake_tasks
-  documentation = ''
-  s = `rake -T`.split("\n")
-  s.each do |l|
-    documentation << "    #{l}\n" if l =~ /^rake/
-  end
-  documentation
-end
-
 desc 'Run RuboCop style and lint checks'
 Rubocop::RakeTask.new(:rubocop)
 
@@ -35,6 +26,7 @@ RSpec::Core::RakeTask.new(:spec)
 
 desc 'Generate the Readme.md file.'
 task :readme do
+  rake_tasks = `rake -D`
   metadata = Chef::Cookbook::Metadata.new
   metadata.from_file('metadata.rb')
   authors = `git shortlog -sn`.b.scan(/[^\d\s].*/).map do |a|
@@ -54,8 +46,8 @@ task test: [:rubocop, :foodcritic, :spec]
 task default: :test
 
 begin
-  require 'kitchen/rake_tasks'
-  Kitchen::RakeTasks.new
+   require 'kitchen/rake_tasks'
+   Kitchen::RakeTasks.new
 
   desc 'Alias for kitchen:all'
   task integration: 'kitchen:all'

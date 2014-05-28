@@ -44,16 +44,36 @@ nmd-drupal::30ish: Goes beep
 Testing and Utility
 -------
 
-    rake foodcritic                   # Lint Chef cookbooks
-    rake integration                  # Alias for kitchen:all
-    rake kitchen:all                  # Run all test instances
-    rake kitchen:default-centos-64    # Run default-centos-64 test instance
-    rake kitchen:default-ubuntu-1204  # Run default-ubuntu-1204 test instance
-    rake kitchen:default-ubuntu-1404  # Run default-ubuntu-1404 test instance
-    rake readme                       # Generate the Readme.md file
-    rake rubocop                      # Run RuboCop style and lint checks
-    rake spec                         # Run ChefSpec examples
-    rake test                         # Run all tests
+rake foodcritic
+    Lint Chef cookbooks
+
+rake integration
+    Alias for kitchen:all
+
+rake kitchen:all
+    Run all test instances
+
+rake kitchen:default-centos-64
+    Run default-centos-64 test instance
+
+rake kitchen:default-ubuntu-1204
+    Run default-ubuntu-1204 test instance
+
+rake kitchen:default-ubuntu-1404
+    Run default-ubuntu-1404 test instance
+
+rake readme
+    Generate the Readme.md file.
+
+rake rubocop
+    Run RuboCop style and lint checks
+
+rake spec
+    Run ChefSpec examples
+
+rake test
+    Run all tests
+
 
 
 License and Authors
@@ -64,8 +84,8 @@ Authors::
   Tim Whitney
   Kevin Bridges
   Chris Caldwell
-  Rick Manelius
   David Arnold
+  Rick Manelius
   arknoll
   Caleb Thorne
   bryonurbanec
