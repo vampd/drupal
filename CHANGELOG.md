@@ -5,9 +5,7 @@ This file is used to list changes made in each version of the nmd-drupal cookboo
 
 0.1.0
 -----
-- [your_name] - Initial release of nmd-drupal
+- [David Arnold] - Initial release of nmd-drupal added base NMD structure and function to cookbook and added files directory support.
 
 - - -
-Check the [Markdown Syntax Guide](http://daringfireball.net/projects/markdown/syntax) for help with Markdown.
 
-The [Github Flavored Markdown page](http://github.github.com/github-flavored-markdown/) describes the differences between markdown on github and standard markdown.
