@@ -1,10 +1,11 @@
+[![Build Status](https://travis-ci.org/newmediadenver/drupal.svg?branch=3.x)](https://travis-ci.org/newmediadenver/drupal)
 
 New Media Denver's nmd-drupal cookbook
 =============================
 
-nmd-drupal (3.0.0)  Manages the installation and configuration of Drupal.
+nmd-drupal (3.0.0) Manages Drupal.
 
-
+Manages the installation and configuration of Drupal.
 
 Requirements
 ------------
@@ -43,7 +44,9 @@ drupal/files/owner:
   calculated: false
 drupal/files/group: 
   display_name: "[:drupal][:files][:path]"
-  description: This is the root level files directory path group owner.
+  description: |-
+    This is the root level files directory path group owner
+              .
   type: string
   required: recommended
   recipes:
@@ -66,7 +69,7 @@ drupal/files/mode:
 Recipes
 -------
 
-nmd-drupal::default: " Manages the installation and configuration of Drupal."
+nmd-drupal::default: Manages Drupal.
 nmd-drupal::files: Manages files
 nmd-drupal::30ish: Goes beep
 
@@ -83,14 +86,14 @@ rake integration
 rake kitchen:all
     Run all test instances
 
-rake kitchen:default-centos-64
-    Run default-centos-64 test instance
+rake kitchen:files-centos-64
+    Run files-centos-64 test instance
 
-rake kitchen:default-ubuntu-1204
-    Run default-ubuntu-1204 test instance
+rake kitchen:files-ubuntu-1204
+    Run files-ubuntu-1204 test instance
 
-rake kitchen:default-ubuntu-1404
-    Run default-ubuntu-1404 test instance
+rake kitchen:files-ubuntu-1404
+    Run files-ubuntu-1404 test instance
 
 rake readme
     Generate the Readme.md file.
@@ -110,16 +113,16 @@ License and Authors
 ------------------
 
 Authors:: 
-  Alex Knoll
-  Tim Whitney
-  Kevin Bridges
-  David Arnold
-  Chris Caldwell
-  Rick Manelius
-  arknoll
-  Caleb Thorne
-  bryonurbanec
-  tannerjfco
+*   Alex Knoll
+*   Tim Whitney
+*   Kevin Bridges
+*   David Arnold
+*   Chris Caldwell
+*   Rick Manelius
+*   arknoll
+*   Caleb Thorne
+*   bryonurbanec
+*   tannerjfco
 
 
 Copyright:: 2014, NewMedia Denver
