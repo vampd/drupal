@@ -77,7 +77,7 @@ nmd-drupal::30ish: Goes beep
 Testing and Utility
 -------
 
-rake foodcritic
+    rake foodcritic
     Lint Chef cookbooks
 
 rake integration
