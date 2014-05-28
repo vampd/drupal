@@ -1,16 +1,6 @@
 # encoding: utf-8
 require 'serverspec'
 
-# include Serverspec::Helper::Exec
-# include Serverspec::Helper::DetectOS
-
-# RSpec.configure do |c|
-#   c.before :all do
-#     c.path = '/usr/bin'
-#   end
-# end
-
-
 describe file('/default/files') do
   it { should be_directory }
   it { should be mode 755 }

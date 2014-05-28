@@ -17,37 +17,38 @@ recipe 'nmd-drupal::files', 'Manages files'
 recipe 'nmd-drupal::30ish', 'Goes beep'
 
 grouping 'nmd-drupal/files',
-  :title => 'Files attributes',
-  :description => 'Files recipe attributes'
+         title: 'Files attributes',
+         description: 'Files recipe attributes'
 
-  attribute 'drupal/files/path',
-   :display_name => '[:drupal][:files][:path]',
-   :description => 'This is the root level files directory path.',
-   :type => 'string',
-   :required => 'recommended',
-   :recipes => ['nmd-drupal::files'],
-   :default => '/default/files'
+attribute 'drupal/files/path',
+          display_name: '[:drupal][:files][:path]',
+          description: 'This is the root level files directory path.',
+          type: 'string',
+          required: 'recommended',
+          recipes: ['nmd-drupal::files'],
+          default: '/default/files'
 
-  attribute 'drupal/files/owner',
-  :display_name => '[:drupal][:files][:owner]',
-  :description => 'This is the root level files directory owner.',
-  :type => 'string',
-  :required => 'recommended',
-  :recipes => ['nmd-drupal::files'],
-  :default => 'root'
+attribute 'drupal/files/owner',
+          display_name: '[:drupal][:files][:owner]',
+          description: 'This is the root level files directory owner.',
+          type: 'string',
+          required: 'recommended',
+          recipes: ['nmd-drupal::files'],
+          default: 'root'
 
-  attribute 'drupal/files/group',
-  :display_name => '[:drupal][:files][:path]',
-  :description => 'This is the root level files directory path group owner.',
-  :type => 'string',
-  :required => 'recommended',
-  :recipes => ['nmd-drupal::files'],
-  :default => 'root'
+attribute 'drupal/files/group',
+          display_name: '[:drupal][:files][:path]',
+          description: 'This is the root level files directory path group owner
+          .',
+          type: 'string',
+          required: 'recommended',
+          recipes: ['nmd-drupal::files'],
+          default: 'root'
 
-  attribute 'drupal/files/mode',
-  :display_name => '[:drupal][:files][:mode]',
-  :description => 'This is the root level files directory mode.',
-  :type => 'string',
-  :required => 'recommended',
-  :recipes => ['nmd-drupal::files'],
-  :default => '755'
+attribute 'drupal/files/mode',
+          display_name: '[:drupal][:files][:mode]',
+          description: 'This is the root level files directory mode.',
+          type: 'string',
+          required: 'recommended',
+          recipes: ['nmd-drupal::files'],
+          default: '755'

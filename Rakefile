@@ -44,8 +44,8 @@ task test: [:rubocop, :foodcritic, :spec]
 task default: :test
 
 begin
-   require 'kitchen/rake_tasks'
-   Kitchen::RakeTasks.new
+  require 'kitchen/rake_tasks'
+  Kitchen::RakeTasks.new
 
   desc 'Alias for kitchen:all'
   task integration: 'kitchen:all'
