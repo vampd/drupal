@@ -11,9 +11,9 @@ Requirements
 
 ### Platforms
 
-`ubuntu >= 0.0.0`
+`ubuntu >= 12.04`
 
-`centos >= 0.0.0`
+`centos >= 6.0`
 
 ### Dependencies
 
@@ -48,6 +48,7 @@ Testing and Utility
     rake integration                  # Alias for kitchen:all
     rake kitchen:all                  # Run all test instances
     rake kitchen:default-centos-64    # Run default-centos-64 test instance
+    rake kitchen:default-ubuntu-1204  # Run default-ubuntu-1204 test instance
     rake kitchen:default-ubuntu-1404  # Run default-ubuntu-1404 test instance
     rake readme                       # Generate the Readme.md file
     rake rubocop                      # Run RuboCop style and lint checks

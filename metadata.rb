@@ -5,8 +5,8 @@ license 'Apache 2.0'
 description 'Installs/Configures nmd-drupal'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version '3.0.0'
-supports 'ubuntu'
-supports 'centos'
+supports 'ubuntu', '>= 12.04'
+supports 'centos', '>= 6.0'
 
 desc = ' Manages the installation and configuration of Drupal.'
 description desc
