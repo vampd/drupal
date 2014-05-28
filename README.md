@@ -71,13 +71,12 @@ Recipes
 
 nmd-drupal::default: Manages Drupal.
 nmd-drupal::files: Manages files
-nmd-drupal::30ish: Goes beep
 
 
 Testing and Utility
 -------
 
-    rake foodcritic
+rake foodcritic
         Lint Chef cookbooks
     
     rake integration

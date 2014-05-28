@@ -14,7 +14,6 @@ description desc
 long_description 'Manages the installation and configuration of Drupal.'
 recipe 'nmd-drupal::default', desc
 recipe 'nmd-drupal::files', 'Manages files'
-recipe 'nmd-drupal::30ish', 'Goes beep'
 
 grouping 'nmd-drupal/files',
          title: 'Files attributes',
