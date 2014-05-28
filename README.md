@@ -22,61 +22,61 @@ Requirements
 Attributes
 ----------
 
-drupal/files/path: 
-  display_name: "[:drupal][:files][:path]"
-  description: This is the root level files directory path.
-  type: string
-  required: recommended
-  recipes:
-  - nmd-drupal::files
-  default: "/default/files"
-  choice: []
-  calculated: false
-drupal/files/owner: 
-  display_name: "[:drupal][:files][:owner]"
-  description: This is the root level files directory owner.
-  type: string
-  required: recommended
-  recipes:
-  - nmd-drupal::files
-  default: root
-  choice: []
-  calculated: false
-drupal/files/group: 
-  display_name: "[:drupal][:files][:path]"
-  description: |-
-    This is the root level files directory path group owner
-              .
-  type: string
-  required: recommended
-  recipes:
-  - nmd-drupal::files
-  default: root
-  choice: []
-  calculated: false
-drupal/files/mode: 
-  display_name: "[:drupal][:files][:mode]"
-  description: This is the root level files directory mode.
-  type: string
-  required: recommended
-  recipes:
-  - nmd-drupal::files
-  default: '755'
-  choice: []
-  calculated: false
-
+    drupal/files/path: 
+      display_name: "[:drupal][:files][:path]"
+      description: This is the root level files directory path.
+      type: string
+      required: recommended
+      recipes:
+      - nmd-drupal::files
+      default: "/default/files"
+      choice: []
+      calculated: false
+    drupal/files/owner: 
+      display_name: "[:drupal][:files][:owner]"
+      description: This is the root level files directory owner.
+      type: string
+      required: recommended
+      recipes:
+      - nmd-drupal::files
+      default: root
+      choice: []
+      calculated: false
+    drupal/files/group: 
+      display_name: "[:drupal][:files][:path]"
+      description: |-
+        This is the root level files directory path group owner
+                  .
+      type: string
+      required: recommended
+      recipes:
+      - nmd-drupal::files
+      default: root
+      choice: []
+      calculated: false
+    drupal/files/mode: 
+      display_name: "[:drupal][:files][:mode]"
+      description: This is the root level files directory mode.
+      type: string
+      required: recommended
+      recipes:
+      - nmd-drupal::files
+      default: '755'
+      choice: []
+      calculated: false
+    
 
 Recipes
 -------
 
-nmd-drupal::default: Manages Drupal.
-nmd-drupal::files: Manages files
-
+        nmd-drupal::default: Manages Drupal.
+    nmd-drupal::files: Manages files
+    
 
 Testing and Utility
 -------
 
-rake foodcritic
+    rake foodcritic
         Lint Chef cookbooks
     
     rake integration
@@ -111,7 +111,7 @@ rake foodcritic
 License and Authors
 ------------------
 
-Authors:: 
+The following users have contributed to this code: 
 *   Alex Knoll
 *   Tim Whitney
 *   Kevin Bridges

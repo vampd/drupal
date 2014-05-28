@@ -22,12 +22,12 @@ Requirements
 Attributes
 ----------
 
-<%= metadata.attributes.to_yaml.to_s.gsub(/!ruby\/hash:Mash/, '').lines.to_a[1..-1].join %>
+<%= metadata.attributes.to_yaml.to_s.gsub(/!ruby\/hash:Mash/, '').gsub("\n", "\n    ").lines.to_a[1..-1].join %>
 
 Recipes
 -------
 
-<%= metadata.recipes.to_yaml.to_s.gsub(/!ruby\/hash:Mash/, '').lines.to_a[1..-1].join %>
+    <%= metadata.recipes.to_yaml.to_s.gsub(/!ruby\/hash:Mash/, '').gsub("\n", "\n    ").lines.to_a[1..-1].join %>
 
 Testing and Utility
 -------
@@ -37,7 +37,7 @@ Testing and Utility
 License and Authors
 ------------------
 
-Authors:: <% authors.each do |author| %><% unless author.nil? %><%= "\n*   #{author}" %><% end %><% end %>
+The following users have contributed to this code: <% authors.each do |author| %><% unless author.nil? %><%= "\n*   #{author}" %><% end %><% end %>
 
 
 Copyright:: 2014, NewMedia Denver
