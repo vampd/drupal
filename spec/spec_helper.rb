@@ -1,8 +1,8 @@
 # encoding: utf-8
 require 'chefspec'
 require 'chefspec/berkshelf'
-require 'coveralls'
-Coveralls.wear!
+require 'simplecov'
+SimpleCov.start
 RSpec.configure do |config|
 
   # Specify the Chef log_level (default: :warn)
