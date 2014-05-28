@@ -17,9 +17,7 @@ desc 'Run RuboCop style and lint checks'
 Rubocop::RakeTask.new(:rubocop)
 
 desc 'Run Foodcritic lint checks'
-FoodCritic::Rake::LintTask.new(:foodcritic) do |t|
-  t.options = { fail_tags: ['any'] }
-end
+FoodCritic::Rake::LintTask.new(:foodcritic)
 
 desc 'Run ChefSpec examples'
 RSpec::Core::RakeTask.new(:spec)
