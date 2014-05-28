@@ -13,3 +13,16 @@ description desc
 
 long_description
 recipe 'nmd-drupal::default', desc
+recipe 'nmd-drupal::files', 'Manages files'
+recipe 'nmd-drupal::30ish', 'Goes beep'
+
+grouping 'nmd-drupal/files',
+  :title => 'Files attributes',
+  :description => 'Files recipe attributes'
+
+attribute 'drupal/files/path',
+ :display_name => '[:drupal][:settings][:files]',
+ :description => 'This is the root level files directory path.',
+ :type => 'string',
+ :required => 'recommended',
+ :recipes => ['nmd-drupal::files']

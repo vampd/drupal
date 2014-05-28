@@ -13,36 +13,6 @@ class Readme < OpenStruct
   end
 end
 
-# rubocop:disable AssignmentInCondition, MethodLength
-def recipes(content = '')
-  Dir.glob('spec/*_spec.rb').sort.each do |f|
-    File.open(f, 'r') do |spec|
-      while line = spec.gets
-        recipe = line.match(/^describe.+['|"](\w+::\w+)/i)
-        content << "### #{recipe[1]}\n" unless recipe.nil?
-        describes = line.match(/ +it '([^']+)/)
-        content << "    #{describes[1]}\n" unless describes.nil?
-      end
-    end
-  end
-  content
-end
-
-def attributes(content = '')
-  File.open('attributes/default.rb', 'r') do |f|
-    output = false
-    while line = f.gets #
-      output = true if line =~ /^###/
-      if output
-        content << "#{line}" if line =~ /^###/
-        content << "    #{line}" unless line =~ /^###/
-      end
-    end
-  end
-  content
-end
-# rubocop:enable AssignmentInCondition, MethodLength
-
 def rake_tasks
   documentation = ''
   s = `rake -T`.split("\n")
@@ -65,18 +35,16 @@ RSpec::Core::RakeTask.new(:spec)
 
 desc 'Generate the Readme.md file.'
 task :readme do
+  puts 'beep'
+  metadata = Chef::Cookbook::Metadata.new
+  metadata.from_file('metadata.rb')
   authors = `git shortlog -sn`.b.scan(/[^\d\s].*/).map do |a|
     a == 'Making GitHub Delicious.' ? nil : a
   end
-
-  metadata = Chef::Cookbook::Metadata.new
-  metadata.from_file('metadata.rb')
   markdown = Readme.new(
-                        metadata: metadata,
-                        attributes: attributes,
-                        recipes: recipes,
-                        rake_tasks: rake_tasks,
-                        authors: authors)
+                         metadata: metadata,
+                         rake_tasks: rake_tasks,
+                         authors: authors)
   new_readme = markdown.render(File.read('templates/default/readme.md.erb'))
   File.open('README.md', 'w') { |file| file.write(new_readme) }
   puts new_readme
