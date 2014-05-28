@@ -1,7 +1,6 @@
 # Bundler
 *.lock
 /bin/
-/.bundle/
 vendor/*
 
 # Berkshelf
