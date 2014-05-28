@@ -1,20 +1,5 @@
-# Bundler
 *.lock
-/bin/
 vendor/*
-
-# Berkshelf
-/Berksfile.lock
-/cookbooks/
-/vendor/cookbooks/
-
-# Vagrant
-/.vagrant/
-
-# Test Kitchen
-.kitchen/
-
-# Macs
+.kitchen
 .DS_Store
-
 /coverage
