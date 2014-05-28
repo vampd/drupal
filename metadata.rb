@@ -1,3 +1,4 @@
+# encoding: utf-8
 name 'nmd-drupal'
 maintainer 'New Media Denver'
 maintainer_email 'support@newmediadenver.com'
