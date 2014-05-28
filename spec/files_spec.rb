@@ -8,6 +8,6 @@ describe 'nmd-drupal::files' do
       user: 'root',
       group: 'root',
       mode: '0755'
-      )
+    )
   end
 end
