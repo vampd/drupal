@@ -35,7 +35,6 @@ RSpec::Core::RakeTask.new(:spec)
 
 desc 'Generate the Readme.md file.'
 task :readme do
-  puts 'beep'
   metadata = Chef::Cookbook::Metadata.new
   metadata.from_file('metadata.rb')
   authors = `git shortlog -sn`.b.scan(/[^\d\s].*/).map do |a|

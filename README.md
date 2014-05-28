@@ -65,8 +65,8 @@ Authors::
   Kevin Bridges
   Chris Caldwell
   Rick Manelius
-  arknoll
   David Arnold
+  arknoll
   Caleb Thorne
   bryonurbanec
   tannerjfco
