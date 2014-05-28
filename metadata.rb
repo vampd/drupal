@@ -8,10 +8,10 @@ version '3.0.0'
 supports 'ubuntu', '>= 12.04'
 supports 'centos', '>= 6.0'
 
-desc = ' Manages the installation and configuration of Drupal.'
+desc = 'Manages Drupal.'
 description desc
 
-long_description
+long_description 'Manages the installation and configuration of Drupal.'
 recipe 'nmd-drupal::default', desc
 recipe 'nmd-drupal::files', 'Manages files'
 recipe 'nmd-drupal::30ish', 'Goes beep'
