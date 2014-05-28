@@ -78,36 +78,36 @@ Testing and Utility
 -------
 
     rake foodcritic
-    Lint Chef cookbooks
-
-rake integration
-    Alias for kitchen:all
-
-rake kitchen:all
-    Run all test instances
-
-rake kitchen:files-centos-64
-    Run files-centos-64 test instance
-
-rake kitchen:files-ubuntu-1204
-    Run files-ubuntu-1204 test instance
-
-rake kitchen:files-ubuntu-1404
-    Run files-ubuntu-1404 test instance
-
-rake readme
-    Generate the Readme.md file.
-
-rake rubocop
-    Run RuboCop style and lint checks
-
-rake spec
-    Run ChefSpec examples
-
-rake test
-    Run all tests
-
-
+        Lint Chef cookbooks
+    
+    rake integration
+        Alias for kitchen:all
+    
+    rake kitchen:all
+        Run all test instances
+    
+    rake kitchen:files-centos-64
+        Run files-centos-64 test instance
+    
+    rake kitchen:files-ubuntu-1204
+        Run files-ubuntu-1204 test instance
+    
+    rake kitchen:files-ubuntu-1404
+        Run files-ubuntu-1404 test instance
+    
+    rake readme
+        Generate the Readme.md file.
+    
+    rake rubocop
+        Run RuboCop style and lint checks
+    
+    rake spec
+        Run ChefSpec examples
+    
+    rake test
+        Run all tests
+    
+    
 
 License and Authors
 ------------------

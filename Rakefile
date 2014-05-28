@@ -32,7 +32,7 @@ task :readme do
   end
   markdown = Readme.new(
                          metadata: metadata,
-                         rake_tasks: rake_tasks,
+                         rake_tasks: rake_tasks.gsub("\n", "\n    "),
                          authors: authors)
   new_readme = markdown.render(File.read('templates/default/readme.md.erb'))
   File.open('README.md', 'w') { |file| file.write(new_readme) }
