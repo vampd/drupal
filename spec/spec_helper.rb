@@ -2,7 +2,9 @@
 require 'chefspec'
 require 'chefspec/berkshelf'
 require 'simplecov'
-SimpleCov.start
+SimpleCov.start do
+  add_filter 'vendor/'
+end
 RSpec.configure do |config|
 
   # Specify the Chef log_level (default: :warn)
