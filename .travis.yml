@@ -8,6 +8,6 @@ rvm:
   - 2.0.0
   - 2.1.1
 
-install: bundle install --without=integration
+install: script/cached-bundle install --without integration --deployment
 
 script: bundle exec rake test

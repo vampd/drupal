@@ -4,4 +4,4 @@ AllCops:
     - Gemfile
     - Rakefile
   Exclude:
-    - vendor/**
+    - vendor/**/*
