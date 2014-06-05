@@ -1,12 +1,12 @@
-# CHANGELOG for drupal
-
+Drupal Cookbook changelog
+=========================
 This file is used to list changes made in each version of drupal.
 
-## 0.1.0:
+v.1.1.0 (2014-06-05)
+--------------------
+- Add support for drush make arguments
+- Minor Bug fixes
 
-* Initial release of drupal
-
-- - -
-Check the [Markdown Syntax Guide](http://daringfireball.net/projects/markdown/syntax) for help with Markdown.
-
-The [Github Flavored Markdown page](http://github.github.com/github-flavored-markdown/) describes the differences between markdown on github and standard markdown.
+v.1.0.0 (2014-03-21)
+--------------------
+- Initial release of drupal
