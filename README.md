@@ -24,6 +24,9 @@ This JSON is found in the drupal-lamp repo under infrastructure/drupal_lamp.json
           "default": "build-profile.make",
           "core": "drupal-org-core.make"
         },
+        "arguments": { # Add drush make arguments
+          "--working-copy" # Example argument
+        },
         "template": false # Use a template or use the "default" file
       },
       "drupal": {
@@ -115,6 +118,21 @@ This will use the ```default``` file specified to run the command ```drush make`
   "files": {
     "default": "build-profile.make" # Name this appropriate to the name of the profile
     "core": "drupal-org-core.make"
+  },
+  "template": true
+},
+```
+### Adding Drush make arguments
+
+```
+"drush_make": {
+  "api": "2",
+  "files": {
+    "default": "build-profile.make" # Name this appropriate to the name of the profile
+    "core": "drupal-org-core.make"
+  },
+  "arguments": { # Add drush make arguments
+    "--working-copy" # Example argument
   },
   "template": true
 },

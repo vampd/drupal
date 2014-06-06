@@ -165,6 +165,13 @@ node[:drupal][:sites].each do |site_name, site|
             else
               cmd = "drush make #{site[:drush_make][:files][:default]} -y"
             end
+
+            unless site[:drush_make][:arguments].nil?
+              site[:drush_make][:arguments].each do |flag|
+                cmd << " #{flag}"
+              end
+            end
+
             code <<-EOH
               set -x
               set -e
