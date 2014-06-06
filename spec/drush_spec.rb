@@ -73,7 +73,8 @@ describe 'drupal::drush' do
 
     it 'installs drush using composer' do
       expect(chef_run).to run_execute('install-drush-using-composer').with(
-        command: 'composer global require drush/drush:dev-master'
+        cwd: '/opt/drush/current',
+        command: 'composer global require drush/drush:dev-master && composer install'
       )
     end
   end

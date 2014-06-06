@@ -52,6 +52,7 @@ execute 'install-drush-using-composer' do
   cwd "#{node[:drupal][:drush][:dir]}/current"
   version = node[:drupal][:drush][:revision].split('.')[0]
   cmd = 'composer global require drush/drush:dev-master'
+  cmd << ' && composer install'
   command <<-EOF
     set -x
     set -e
