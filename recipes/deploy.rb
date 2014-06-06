@@ -154,7 +154,7 @@ node[:drupal][:sites].each do |site_name, site|
             EOH
           end
 
-          bash "Run drush make for #{site}" do
+          bash "Run drush make for #{site_name}" do
             user 'root'
             cwd release_path
             if site[:drush_make][:template] == true
@@ -162,6 +162,13 @@ node[:drupal][:sites].each do |site_name, site|
             else
               cmd = "drush make #{site[:drush_make][:files][:default]} -y"
             end
+
+            unless site[:drush_make][:arguments].nil?
+              site[:drush_make][:arguments].each do |flag|
+                cmd << " #{flag}"
+              end
+            end
+
             code <<-EOH
               set -x
               set -e
@@ -169,7 +176,7 @@ node[:drupal][:sites].each do |site_name, site|
             EOH
           end
 
-          bash "Remove make files from #{site} directory" do
+          bash "Remove make files from #{site_name} directory" do
             user 'root'
             cwd release_path
             cmd = "rm -rf #{make_files}"
