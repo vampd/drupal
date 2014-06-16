@@ -74,6 +74,13 @@ describe 'drupal::default' do
     )
   end
 
+  it 'creates the /assets/example/private directory' do
+    expect(chef_run).to create_directory('/assets/example/private').with(
+      mode: 00755,
+      recursive: true
+    )
+  end
+
   it 'creates the /assets/example/shared directory' do
     expect(chef_run).to create_directory('/assets/example/shared').with(
       mode: 00755,
