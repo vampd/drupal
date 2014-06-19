@@ -11,6 +11,15 @@ platforms:
   - name: centos-6.4
 
 suites:
+  - name: default
+    run_list:
+      - recipe[nmd-drupal::drush]
+      - recipe[nmd-drupal::files]
+    attributes:
+  - name: drush
+    run_list:
+      - recipe[nmd-drupal::drush]
+    attributes:
   - name: files
     run_list:
       - recipe[nmd-drupal::files]
