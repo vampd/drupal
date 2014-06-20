@@ -14,6 +14,76 @@ class Readme < OpenStruct
   end
 end
 
+def recipes(content = '') # rubocop:disable MethodLength
+  Dir.glob('spec/*_spec.rb').sort.each do |f|
+    File.open(f, 'r') do |spec|
+      while line = spec.gets # rubocop:disable AssignmentInCondition
+        recipe = line.match(/^describe.+['|"](\w+::\w+)/i)
+        content << "### #{recipe[1]}\n" unless recipe.nil?
+        describes = line.match(/ +it '([^']+)/)
+        content << "    #{describes[1]}\n" unless describes.nil?
+      end
+    end
+  end
+  content
+end
+
+# TODO: this seriously needs to be refactored and cleaned up.
+def credit # rubocop:disable MethodLength
+  logs = `git log`.split('commit ')
+  logs.shift
+
+  authors = {}
+  credit = {}
+
+  logs.map do |log|
+    l = log.split("\n")
+    commit = l.shift
+    author = l.shift.to_s.split('Author: ')[1]
+    unless author.nil?
+      if authors[author].nil?
+        commit_detail = Octokit.commit('DavidXArnold/drupal/tree/3.x', commit)
+        authors[author] = commit_detail[:author][:html_url]
+        if credit[commit_detail[:author][:html_url]].nil?
+          credit[commit_detail[:author][:html_url]] = {}
+        end
+        html_url = commit_detail[:author][:html_url]
+        credit[html_url][author.split(' <')[0]] = author.split(' <')[1][0..-2]
+      end
+    end
+  end
+  credit.each do |key, names|
+    clean_names = []
+    names.each do |name, _email|
+      clean_names.push(name)
+    end
+    credit[key] = clean_names.join(', ')
+  end
+  credit
+end
+
+def attributes(content = '', output = false)
+  File.open('attributes/default.rb', 'r') do |f|
+    while line = f.gets # rubocop:disable AssignmentInCondition
+      output = true if line =~ /^###/
+      if output
+        content << "#{line}" if line =~ /^###/
+        content << "    #{line}" unless line =~ /^###/
+      end
+    end
+  end
+  content
+end
+
+def rake_tasks
+  documentation = ''
+  s = `rake -T`.split("\n")
+  s.each do |l|
+    documentation << "    #{l}\n" if l =~ /^rake/
+  end
+  documentation
+end
+
 desc 'Run RuboCop style and lint checks'
 Rubocop::RakeTask.new(:rubocop)
 
@@ -41,40 +111,6 @@ task :spec, :os do |os, args|
       t.rspec_opts = '--tag rhel --tag ubuntu'
     end
   end
-end
-
-# TODO: this seriously needs to be refactored and cleaned up.
-def credit # rubocop:disable MethodLength
-  logs = `git log`.split('commit ')
-  logs.shift
-
-  authors = {}
-  credit = {}
-
-  logs.map do |log|
-    l = log.split("\n")
-    commit = l.shift
-    author = l.shift.to_s.split('Author: ')[1]
-    unless author.nil?
-      if authors[author].nil?
-        commit_detail = Octokit.commit('newmediadenver/nmddrupal', commit)
-        authors[author] = commit_detail[:author][:html_url]
-        if credit[commit_detail[:author][:html_url]].nil?
-          credit[commit_detail[:author][:html_url]] = {}
-        end
-        html_url = commit_detail[:author][:html_url]
-        credit[html_url][author.split(' <')[0]] = author.split(' <')[1][0..-2]
-      end
-    end
-  end
-  credit.each do |key, names|
-    clean_names = []
-    names.each do |name, _email|
-      clean_names.push(name)
-    end
-    credit[key] = clean_names.join(', ')
-  end
-  credit
 end
 
 desc 'Generate the Readme.md file.'
