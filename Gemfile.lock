@@ -287,18 +287,18 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  berkshelf (>= 2.0.15)
-  chefspec (>= 3.4.0)
+  berkshelf (= 2.0.15)
+  chefspec (= 3.4.0)
   coveralls
-  fauxhai (>= 2.1.0)
-  foodcritic (>= 3.0.3)
+  fauxhai (= 2.1.2)
+  foodcritic (= 3.0.3)
   kitchen-vagrant
-  octokit (~> 3.0)
-  rake (>= 10.3.0)
-  rspec (>= 2.14.1)
-  rubocop (>= 0.20.0)
+  octokit (= 3.1.2)
+  rake (= 10.3.2)
+  rspec (= 2.14.1)
+  rubocop (= 0.20.1)
   simplecov
-  test-kitchen (>= 1.0)
-  travis (>= 1.6.9)
+  test-kitchen (= 1.2.1)
+  travis (= 1.6.9)
   vagrant-wrapper
-  websocket-native (~> 1.0.0)
+  websocket-native (= 1.0.0)
