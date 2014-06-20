@@ -76,52 +76,30 @@ Recipes
 Testing and Utility
 -------
 
-    rake foodcritic
-        Lint Chef cookbooks
-    
-    rake integration
-        Alias for kitchen:all
-    
-    rake kitchen:all
-        Run all test instances
-    
-    rake kitchen:files-centos-64
-        Run files-centos-64 test instance
-    
-    rake kitchen:files-ubuntu-1204
-        Run files-ubuntu-1204 test instance
-    
-    rake kitchen:files-ubuntu-1404
-        Run files-ubuntu-1404 test instance
-    
-    rake readme
-        Generate the Readme.md file.
-    
-    rake rubocop
-        Run RuboCop style and lint checks
-    
-    rake spec
-        Run ChefSpec examples
-    
-    rake test
-        Run all tests
-    
-    
+        rake foodcritic                 # Lint Chef cookbooks
+    rake integration                # Alias for kitchen:all
+    rake kitchen:all                # Run all test instances
+    rake kitchen:files-centos-64    # Run files-centos-64 test instance
+    rake kitchen:files-ubuntu-1204  # Run files-ubuntu-1204 test instance
+    rake kitchen:files-ubuntu-1404  # Run files-ubuntu-1404 test instance
+    rake readme                     # Generate the Readme.md file
+    rake rubocop                    # Run RuboCop style and lint checks
+    rake spec[os]                   # Run ChefSpec examples
+    rake test                       # Run all tests
+
 
 License and Authors
 ------------------
 
 The following users have contributed to this code: 
-*   Alex Knoll
-*   Tim Whitney
-*   Kevin Bridges
-*   David Arnold
-*   Chris Caldwell
-*   Rick Manelius
-*   arknoll
-*   Caleb Thorne
-*   bryonurbanec
-*   tannerjfco
+*   ["https://github.com/DavidXArnold", "David Arnold"]
+*   ["https://github.com/cyberswat", "Kevin Bridges"]
+*   ["https://github.com/arknoll", "Alex Knoll"]
+*   ["https://github.com/timodwhit", "Tim Whitney"]
+*   ["https://github.com/rickmanelius", "Rick Manelius"]
+*   ["https://github.com/tannerjfco", "tannerjfco"]
+*   ["https://github.com/draenen", "Caleb Thorne"]
+*   ["https://github.com/b-ry", "bryonurbanec"]
 
 
 Copyright:: 2014, NewMedia Denver

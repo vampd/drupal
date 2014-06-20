@@ -3,7 +3,7 @@ rvm:
 - 1.9.3
 - 2.0.0
 - 2.1.1
-install: script/cached-bundle install --without integration --deployment
+install: '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && script/cached-bundle install --without integration --deployment || bundle install --without integration --deployment'
 notifications:
   hipchat:
     rooms:
