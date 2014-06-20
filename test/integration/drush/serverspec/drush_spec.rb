@@ -10,13 +10,9 @@ RSpec.configure do |c|
   end
 end
 
-describe package('git') do
-  it { should be_installed }
-end
-
 describe file('/opt/drush') do
   it { should be_directory }
-  it { should be_mode 777 }
+  it { should be_mode 755 }
   it { should be_owned_by 'root' }
   it { should be_grouped_into 'root' }
 end
@@ -36,5 +32,5 @@ describe file('/opt/drush/current/drush') do
 end
 
 describe file('/usr/bin/drush') do
-	if { should should be_linked_to '/opt/drush/current/drush'}
+  it { should be_linked_to '/opt/drush/current/drush' }
 end

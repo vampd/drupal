@@ -1,6 +1,7 @@
 # encoding: utf-8
 #
-# Author:: Rick Manelius
+# Author:: NEWMEDIA Denver
+# Email:: support@newmediadenver.com
 #
 # Cookbook Name:: nmd-drupal
 # Recipe:: files
@@ -24,6 +25,8 @@ directory node[:drupal][:drush][:dir] do
   group 'root'
   mode '0755'
   action :create
+  recursive true
+  not_if { ::File.directory?(node[:drupal][:drush][:dir]) }
 end
 
 directory "#{node[:drupal][:drush][:dir]}/shared" do
@@ -31,6 +34,7 @@ directory "#{node[:drupal][:drush][:dir]}/shared" do
   group 'root'
   mode '0755'
   action :create
+  not_if { ::File.directory?("#{node[:drupal][:drush][:dir]}/shared") }
 end
 
 deploy node[:drupal][:drush][:dir] do
@@ -46,4 +50,5 @@ end
 link node[:drupal][:drush][:executable] do
   to "#{node[:drupal][:drush][:dir]}/current/drush"
   link_type :symbolic
+  #not_if "test -h #{node[:drupal][:drush][:executable]}"
 end
