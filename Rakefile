@@ -57,7 +57,7 @@ def credit # rubocop:disable MethodLength
     author = l.shift.to_s.split('Author: ')[1]
     unless author.nil?
       if authors[author].nil?
-        commit_detail = Octokit.commit('newmediadenver/nmdbase', commit)
+        commit_detail = Octokit.commit('newmediadenver/nmddrupal', commit)
         authors[author] = commit_detail[:author][:html_url]
         if credit[commit_detail[:author][:html_url]].nil?
           credit[commit_detail[:author][:html_url]] = {}
