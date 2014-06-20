@@ -1,7 +1,7 @@
 # encoding: utf-8
 require 'spec_helper'
 
-describe 'nmd-drupal::files' do
+describe 'nmd-drupal::files', :ubuntu && :rhel do
   let(:chef_run) { ChefSpec::Runner.new.converge(described_recipe) }
   it 'Creates files directory' do
     expect(chef_run).to create_directory('/default/files').with(
