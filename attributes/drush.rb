@@ -23,3 +23,10 @@ default[:drupal][:drush][:repository] =
   'https://github.com/drush-ops/drush.git'
 default[:drupal][:drush][:dir] = '/opt/drush'
 default[:drupal][:drush][:executable] = '/usr/bin/drush'
+
+# States control what happens during the run. Listed below are the start and
+# end states that we trigger events from.
+# - install -> installed
+# - update -> updated
+# - purge -> purged
+default[:drupal][:drush][:state] = 'install'

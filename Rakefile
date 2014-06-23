@@ -85,10 +85,14 @@ def rake_tasks
 end
 
 desc 'Run RuboCop style and lint checks'
-Rubocop::RakeTask.new(:rubocop)
+task :rubocop do
+  Rubocop::RakeTask.new(:rubocop)
+end
 
 desc 'Run Foodcritic lint checks'
-FoodCritic::Rake::LintTask.new(:foodcritic)
+task :foodcritic do
+  FoodCritic::Rake::LintTask.new(:foodcritic)
+end
 
 description = 'Run ChefSpec examples. Specify OS to test either with rake '
 description << '"spec[rhel]" (Redhat,centos etc) or rake "spec[ubuntu]". '
