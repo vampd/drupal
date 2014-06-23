@@ -23,6 +23,9 @@ default[:drupal][:drush][:repository] =
   'https://github.com/drush-ops/drush.git'
 default[:drupal][:drush][:dir] = '/opt/drush'
 default[:drupal][:drush][:executable] = '/usr/bin/drush'
+default[:drupal][:drush][:owner] = 'root'
+default[:drupal][:drush][:group] = 'root'
+default[:drupal][:drush][:mode] = '0755'
 
 # States control what happens during the run. Listed below are the start and
 # end states that we trigger events from.

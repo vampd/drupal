@@ -33,6 +33,7 @@ platforms:
 suites:
   - name: default
     run_list:
+      - recipe[git::default]
       - recipe[nmd-drupal::drush]
       - recipe[nmd-drupal::files]
     attributes:

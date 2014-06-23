@@ -21,9 +21,9 @@
 # limitations under the License.
 #
 directory node[:drupal][:drush][:dir] do
-  owner 'root'
-  group 'root'
-  mode '0755'
+  owner node[:drupal][:drush][:owner]
+  group node[:drupal][:drush][:group]
+  mode node[:drupal][:drush][:mode]
   action :create
   recursive true
   not_if { ::File.directory?(node[:drupal][:drush][:dir]) }
@@ -31,9 +31,9 @@ directory node[:drupal][:drush][:dir] do
 end
 
 directory "#{node[:drupal][:drush][:dir]}/shared" do
-  owner 'root'
-  group 'root'
-  mode '0755'
+  owner node[:drupal][:drush][:owner]
+  group node[:drupal][:drush][:group]
+  mode node[:drupal][:drush][:mode]
   action :create
   not_if { ::File.directory?("#{node[:drupal][:drush][:dir]}/shared") }
   only_if { node[:drupal][:drush][:state] == 'install' }
