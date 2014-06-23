@@ -50,5 +50,5 @@ end
 link node[:drupal][:drush][:executable] do
   to "#{node[:drupal][:drush][:dir]}/current/drush"
   link_type :symbolic
-  #not_if "test -h #{node[:drupal][:drush][:executable]}"
+  not_if { ::File.exist?(node[:drupal][:drush][:executable]) }
 end
