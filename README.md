@@ -18,11 +18,13 @@ Requirements
 
 ### Dependencies
 
+`git >= 0.0.0`
+
 
 Attributes
 ----------
 
-    drupal/files/path: 
+    drupal/files/path:
       display_name: "[:drupal][:files][:path]"
       description: This is the root level files directory path.
       type: string
@@ -32,7 +34,7 @@ Attributes
       default: "/default/files"
       choice: []
       calculated: false
-    drupal/files/owner: 
+    drupal/files/owner:
       display_name: "[:drupal][:files][:owner]"
       description: This is the root level files directory owner.
       type: string
@@ -42,7 +44,7 @@ Attributes
       default: root
       choice: []
       calculated: false
-    drupal/files/group: 
+    drupal/files/group:
       display_name: "[:drupal][:files][:path]"
       description: |-
         This is the root level files directory path group owner
@@ -54,7 +56,7 @@ Attributes
       default: root
       choice: []
       calculated: false
-    drupal/files/mode: 
+    drupal/files/mode:
       display_name: "[:drupal][:files][:mode]"
       description: This is the root level files directory mode.
       type: string
@@ -64,42 +66,106 @@ Attributes
       default: '755'
       choice: []
       calculated: false
-    
+
 
 Recipes
 -------
 
         nmd-drupal::default: Manages Drupal.
     nmd-drupal::files: Manages files
-    
+
 
 Testing and Utility
 -------
 
-        rake foodcritic                 # Lint Chef cookbooks
-    rake integration                # Alias for kitchen:all
-    rake kitchen:all                # Run all test instances
-    rake kitchen:files-centos-64    # Run files-centos-64 test instance
-    rake kitchen:files-ubuntu-1204  # Run files-ubuntu-1204 test instance
-    rake kitchen:files-ubuntu-1404  # Run files-ubuntu-1404 test instance
-    rake readme                     # Generate the Readme.md file
-    rake rubocop                    # Run RuboCop style and lint checks
-    rake spec[os]                   # Run ChefSpec examples
-    rake test                       # Run all tests
+    rake foodcritic
+        Run Foodcritic lint checks
+
+    rake integration
+        Alias for kitchen:all
+
+    rake kitchen:all
+        Run all test instances
+
+    rake kitchen:default-centos-65-virtualbox
+        Run default-centos-65-virtualbox test instance
+
+    rake kitchen:default-centos-65-vmware
+        Run default-centos-65-vmware test instance
+
+    rake kitchen:default-ubuntu-1204-virtualbox
+        Run default-ubuntu-1204-virtualbox test instance
+
+    rake kitchen:default-ubuntu-1204-vmware
+        Run default-ubuntu-1204-vmware test instance
+
+    rake kitchen:default-ubuntu-1404-virtualbox
+        Run default-ubuntu-1404-virtualbox test instance
+
+    rake kitchen:default-ubuntu-1404-vmware
+        Run default-ubuntu-1404-vmware test instance
+
+    rake kitchen:drush-centos-65-virtualbox
+        Run drush-centos-65-virtualbox test instance
+
+    rake kitchen:drush-centos-65-vmware
+        Run drush-centos-65-vmware test instance
+
+    rake kitchen:drush-ubuntu-1204-virtualbox
+        Run drush-ubuntu-1204-virtualbox test instance
+
+    rake kitchen:drush-ubuntu-1204-vmware
+        Run drush-ubuntu-1204-vmware test instance
+
+    rake kitchen:drush-ubuntu-1404-virtualbox
+        Run drush-ubuntu-1404-virtualbox test instance
+
+    rake kitchen:drush-ubuntu-1404-vmware
+        Run drush-ubuntu-1404-vmware test instance
+
+    rake kitchen:files-centos-65-virtualbox
+        Run files-centos-65-virtualbox test instance
+
+    rake kitchen:files-centos-65-vmware
+        Run files-centos-65-vmware test instance
+
+    rake kitchen:files-ubuntu-1204-virtualbox
+        Run files-ubuntu-1204-virtualbox test instance
+
+    rake kitchen:files-ubuntu-1204-vmware
+        Run files-ubuntu-1204-vmware test instance
+
+    rake kitchen:files-ubuntu-1404-virtualbox
+        Run files-ubuntu-1404-virtualbox test instance
+
+    rake kitchen:files-ubuntu-1404-vmware
+        Run files-ubuntu-1404-vmware test instance
+
+    rake readme
+        Generate the Readme.md file.
+
+    rake rubocop
+        Run RuboCop style and lint checks
+
+    rake spec
+        Run ChefSpec examples
+
+    rake test
+        Run all tests
 
 
 License and Authors
 ------------------
 
-The following users have contributed to this code: 
-*   ["https://github.com/DavidXArnold", "David Arnold"]
-*   ["https://github.com/cyberswat", "Kevin Bridges"]
-*   ["https://github.com/arknoll", "Alex Knoll"]
-*   ["https://github.com/timodwhit", "Tim Whitney"]
-*   ["https://github.com/rickmanelius", "Rick Manelius"]
-*   ["https://github.com/tannerjfco", "tannerjfco"]
-*   ["https://github.com/draenen", "Caleb Thorne"]
-*   ["https://github.com/b-ry", "bryonurbanec"]
+The following users have contributed to this code:
+* ["https://github.com/DavidXArnold", "David Arnold"]
+* ["https://github.com/cyberswat", "Kevin Bridges"]
+* ["https://github.com/arknoll", "Alex Knoll"]
+* ["https://github.com/timodwhit", "Tim Whitney"]
+* ["https://github.com/rickmanelius", "Rick Manelius"]
+* ["https://github.com/tannerjfco", "tannerjfco"]
+* ["https://github.com/draenen", "Caleb Thorne"]
+* ["https://github.com/b-ry", "bryonurbanec"]
 
 
 Copyright:: 2014, NewMedia Denver

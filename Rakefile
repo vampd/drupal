@@ -40,17 +40,15 @@ def credit # rubocop:disable MethodLength
     l = log.split("\n")
     commit = l.shift
     author = l.shift.to_s.split('Author: ')[1]
-    unless author.nil?
-      if authors[author].nil?
-        commit_detail = Octokit.commit('DavidXArnold/drupal/tree/3.x', commit)
-        authors[author] = commit_detail[:author][:html_url]
-        if credit[commit_detail[:author][:html_url]].nil?
-          credit[commit_detail[:author][:html_url]] = {}
-        end
-        html_url = commit_detail[:author][:html_url]
-        credit[html_url][author.split(' <')[0]] = author.split(' <')[1][0..-2]
-      end
+    next unless author.nil?
+    next if authors[author].nil?
+    commit_detail = Octokit.commit('DavidXArnold/drupal/tree/3.x', commit)
+    authors[author] = commit_detail[:author][:html_url]
+    if credit[commit_detail[:author][:html_url]].nil?
+      credit[commit_detail[:author][:html_url]] = {}
     end
+    html_url = commit_detail[:author][:html_url]
+    credit[html_url][author.split(' <')[0]] = author.split(' <')[1][0..-2]
   end
   credit.each do |key, names|
     clean_names = []
@@ -66,10 +64,9 @@ def attributes(content = '', output = false)
   File.open('attributes/default.rb', 'r') do |f|
     while line = f.gets # rubocop:disable AssignmentInCondition
       output = true if line =~ /^###/
-      if output
-        content << "#{line}" if line =~ /^###/
-        content << "    #{line}" unless line =~ /^###/
-      end
+      next if output
+      content << "#{line}" if line =~ /^###/
+      content << "    #{line}" unless line =~ /^###/
     end
   end
   content
@@ -85,10 +82,14 @@ def rake_tasks
 end
 
 desc 'Run RuboCop style and lint checks'
-Rubocop::RakeTask.new(:rubocop)
+task :rubocop do
+  RuboCop::RakeTask.new(:rubocop)
+end
 
 desc 'Run Foodcritic lint checks'
-FoodCritic::Rake::LintTask.new(:foodcritic)
+task :foodcritic do
+  FoodCritic::Rake::LintTask.new(:foodcritic)
+end
 
 description = 'Run ChefSpec examples. Specify OS to test either with rake '
 description << '"spec[rhel]" (Redhat,centos etc) or rake "spec[ubuntu]". '

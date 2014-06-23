@@ -12,6 +12,8 @@ supports 'centos', '>= 6.0'
 desc = 'Manages Drupal.'
 description desc
 
+depends 'git'
+
 long_description 'Manages the installation and configuration of Drupal.'
 recipe 'nmd-drupal::default', desc
 recipe 'nmd-drupal::files', 'Manages files'
