@@ -1,7 +1,7 @@
 # encoding: utf-8
 require 'spec_helper'
 
-describe 'nmd-drupal::drush' do
+describe 'nmd-drupal::drush', :ubuntu && :rhel do
   let(:chef_run) { ChefSpec::Runner.new.converge(described_recipe) }
 
   it 'creates the /opt/drush directory' do
