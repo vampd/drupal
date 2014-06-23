@@ -27,6 +27,7 @@ directory node[:drupal][:drush][:dir] do
   action :create
   recursive true
   not_if { ::File.directory?(node[:drupal][:drush][:dir]) }
+  only_if { node[:drupal][:drush][:state] == 'install' }
 end
 
 directory "#{node[:drupal][:drush][:dir]}/shared" do
@@ -35,6 +36,7 @@ directory "#{node[:drupal][:drush][:dir]}/shared" do
   mode '0755'
   action :create
   not_if { ::File.directory?("#{node[:drupal][:drush][:dir]}/shared") }
+  only_if { node[:drupal][:drush][:state] == 'install' }
 end
 
 deploy node[:drupal][:drush][:dir] do
@@ -45,10 +47,23 @@ deploy node[:drupal][:drush][:dir] do
   create_dirs_before_symlink.clear
   purge_before_symlink.clear
   symlinks.clear
+  # rubocop:disable WordArray
+  only_if { ['install', 'update'].include?(node[:drupal][:drush][:state]) }
+  # rubocop:enable WordArray
 end
 
 link node[:drupal][:drush][:executable] do
   to "#{node[:drupal][:drush][:dir]}/current/drush"
   link_type :symbolic
   not_if { ::File.exist?(node[:drupal][:drush][:executable]) }
+  only_if { node[:drupal][:drush][:state] == 'install' }
+end
+
+ruby_block 'evaluate drush state' do
+  block do
+    unless node[:drupal][:drush][:state].match(/ed$/)
+      node.set[:drupal][:drush][:state] = "#{node[:drupal][:drush][:state]}ed"
+      node.save unless Chef::Config[:solo]
+    end
+  end
 end

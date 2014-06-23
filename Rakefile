@@ -86,7 +86,7 @@ end
 
 desc 'Run RuboCop style and lint checks'
 task :rubocop do
-  Rubocop::RakeTask.new(:rubocop)
+  RuboCop::RakeTask.new(:rubocop)
 end
 
 desc 'Run Foodcritic lint checks'
