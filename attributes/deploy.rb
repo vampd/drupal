@@ -6,7 +6,7 @@ default[:nmddrupal][:server][:users][:files] =
   node[:nmddrupal][:server][:users][:web]
 
 # drupal specific settings
-node[:nmddrupal][:sites].each do |name, site|
+node[:nmddrupal][:sites].each do |name, _site|
   default[:nmddrupal][:sites][name][:active] = 0
   default[:nmddrupal][:sites][name][:deploy][:action] = []
   default[:nmddrupal][:sites][name][:deploy][:releases] = 5
