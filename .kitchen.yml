@@ -34,15 +34,35 @@ suites:
   - name: default
     run_list:
       - recipe[git::default]
-      - recipe[nmd-drupal::drush]
-      - recipe[nmd-drupal::files]
+      - recipe[nmddrupal::drush]
+      - recipe[nmddrupal::files]
     attributes:
+      nmddrupal:
+        sites:
+          - example
   - name: drush
     run_list:
       - recipe[git::default]
-      - recipe[nmd-drupal::drush]
+      - recipe[nmddrupal::drush]
     attributes:
+      nmddrupal:
+        sites:
+          - example
   - name: files
     run_list:
-      - recipe[nmd-drupal::files]
+      - recipe[nmddrupal::files]
     attributes:
+      nmddrupal:
+        sites:
+          - example
+  - name: deploy
+    run_list:
+      - recipe[git::default]
+      - recipe[nmddrupal::deploy]
+    attributes:
+      nmddrupal:
+        sites:
+          example:
+            deploy:
+              action:
+                - deploy
