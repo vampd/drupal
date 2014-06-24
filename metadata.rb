@@ -13,6 +13,7 @@ desc = 'Manages Drupal.'
 description desc
 
 depends 'git'
+depends 'ssh_known_hosts', '~> 1.1.0'
 
 long_description 'Manages the installation and configuration of Drupal.'
 recipe 'nmddrupal::default', desc
