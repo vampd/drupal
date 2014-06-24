@@ -1,9 +1,8 @@
 # encoding: utf-8
 #
-# Cookbook Name:: nmd-drupal
+# Cookbook Name:: nmddrupal
 # Attributes:: files
 #
-# Author:: David Arnold
 # Copyright:: 2014, newmedia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-default[:drupal][:files][:path] = '/default/files'
-default[:drupal][:files][:owner] = 'root'
-default[:drupal][:files][:group] = 'root'
-default[:drupal][:files][:mode] = '755'
+default[:nmddrupal][:files][:path] = '/default/files'
+default[:nmddrupal][:files][:owner] = 'root'
+default[:nmddrupal][:files][:group] = 'root'
+default[:nmddrupal][:files][:mode] = '755'
