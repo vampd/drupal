@@ -18,6 +18,74 @@ long_description 'Manages the installation and configuration of Drupal.'
 recipe 'nmd-drupal::default', desc
 recipe 'nmd-drupal::files', 'Manages files'
 
+grouping 'nmd-drupal/drush',
+         title: 'Drush attributes',
+         description: 'Drush recipe attributes'
+
+attribute 'nmd-drupal/drush/revision',
+          display_name: '[:drupal][:drush][:revision]',
+          description: 'This is the version of drush to install.',
+          type: 'string',
+          required: 'recommended',
+          recipes: ['nmd-drupal::drush'],
+          default: '6.3.0'
+
+attribute 'nmd-drupal/drush/repository',
+          display_name: '[:drupal][:drush][:repository]',
+          description: 'This is the code repository to reference.',
+          type: 'string',
+          required: 'recommended',
+          recipes: ['nmd-drupal::drush'],
+          default: 'https://github.com/drush-ops/drush.git'
+
+attribute 'nmd-drupal/drush/dir',
+          display_name: '[:drupal][:drush][:dir]',
+          description: 'This folder stores the clone repository.',
+          type: 'string',
+          required: 'recommended',
+          recipes: ['nmd-drupal::drush'],
+          default: '/opt/drush'
+
+attribute 'nmd-drupal/drush/executable',
+          display_name: '[:drupal][:drush][:executable]',
+          description: 'This is the symlinked file to the drush binary.',
+          type: 'string',
+          required: 'recommended',
+          recipes: ['nmd-drupal::drush'],
+          default: '/usr/bin/drush'
+
+attribute 'nmd-drupal/drush/owner',
+          display_name: '[:drupal][:drush][:owner]',
+          description: 'This is owner of the executable binary.',
+          type: 'string',
+          required: 'recommended',
+          recipes: ['nmd-drupal::drush'],
+          default: 'root'
+
+attribute 'nmd-drupal/drush/group',
+          display_name: '[:drupal][:drush][:group]',
+          description: 'This is group of the executable binary.',
+          type: 'string',
+          required: 'recommended',
+          recipes: ['nmd-drupal::drush'],
+          default: 'root'
+
+attribute 'nmd-drupal/drush/mode',
+          display_name: '[:drupal][:drush][:mode]',
+          description: 'This is permissions of the executable binary.',
+          type: 'string',
+          required: 'recommended',
+          recipes: ['nmd-drupal::drush'],
+          default: '755'
+
+attribute 'nmd-drupal/drush/state',
+          display_name: '[:drupal][:drush][:state]',
+          description: 'Controls runtime action: install, update, or purge',
+          type: 'string',
+          required: 'recommended',
+          recipes: ['nmd-drupal::drush'],
+          default: 'install'
+
 grouping 'nmd-drupal/files',
          title: 'Files attributes',
          description: 'Files recipe attributes'
@@ -53,4 +121,4 @@ attribute 'drupal/files/mode',
           type: 'string',
           required: 'recommended',
           recipes: ['nmd-drupal::files'],
-          default: '755'
+          default: '0755'
