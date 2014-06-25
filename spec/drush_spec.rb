@@ -3,15 +3,15 @@ require 'spec_helper'
 
 describe 'nmddrupal::drush', :ubuntu && :rhel do
   let(:chef_run) do
-      ChefSpec::Runner.new do |node|
-        node.set['nmddrupal'] = {
-          'sites' => {
-            'example' => {
-            }
+    ChefSpec::Runner.new do |node|
+      node.set['nmddrupal'] = {
+        'sites' => {
+          'example' => {
           }
         }
-      end.converge(described_recipe)
-    end
+      }
+    end.converge(described_recipe)
+  end
   it 'creates the /opt/drush directory' do
     expect(chef_run).to create_directory('/opt/drush').with(
       owner: 'root',
@@ -41,5 +41,4 @@ describe 'nmddrupal::drush', :ubuntu && :rhel do
       link_type: :symbolic
     )
   end
-
 end
