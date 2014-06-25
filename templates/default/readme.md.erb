@@ -27,12 +27,12 @@ Attributes
 Recipes
 -------
 
-    <%= metadata.recipes.to_yaml.to_s.gsub(/!ruby\/hash:Mash/, '').gsub("\n", "\n    ").lines.to_a[1..-1].join %>
+<%= metadata.recipes.to_yaml.to_s.gsub(/!ruby\/hash:Mash/, '').gsub("\n", "\n    ").lines.to_a[1..-1].join %>
 
 Testing and Utility
 -------
 
-    <%= rake_tasks %>
+<%= rake_tasks %>
 
 License and Authors
 ------------------

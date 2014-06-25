@@ -221,9 +221,7 @@ Attributes
       calculated: false
     nmddrupal/files/group: 
       display_name: '[:nmddrupal][:files][:path]'
-      description: |-
-        This is the root level files directory path group owner
-          .
+      description: This is the root level files directory path group owner.
       type: string
       required: recommended
       recipes:
@@ -246,7 +244,7 @@ Attributes
 Recipes
 -------
 
-        nmddrupal::default: Manages Drupal.
+    nmddrupal::default: Manages Drupal.
     nmddrupal::deploy: Deploys a Drupal Site
     nmddrupal::files: Manages files
     
@@ -254,7 +252,7 @@ Recipes
 Testing and Utility
 -------
 
-        rake foodcritic                              # Run Foodcritic lint checks
+    rake foodcritic                              # Run Foodcritic lint checks
     rake integration                             # Alias for kitchen:all
     rake kitchen:all                             # Run all test instances
     rake kitchen:default-centos-65-virtualbox    # Run default-centos-65-virtualbox test instance

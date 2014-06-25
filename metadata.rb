@@ -210,8 +210,7 @@ attribute(
 attribute(
   'nmddrupal/files/group',
   display_name: '[:nmddrupal][:files][:path]',
-  description: 'This is the root level files directory path group owner
-  .',
+  description: 'This is the root level files directory path group owner.',
   type: 'string',
   required: 'recommended',
   recipes: ['nmddrupal::files'],
