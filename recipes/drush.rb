@@ -62,7 +62,8 @@ end
 ruby_block 'evaluate drush state' do
   block do
     unless node[:nmddrupal][:drush][:state].match(/ed$/)
-      node.set[:nmddrupal][:drush][:state] = "#{node[:nmddrupal][:drush][:state]}ed"
+      node.set[:nmddrupal][:drush][:state] =
+        "#{node[:nmddrupal][:drush][:state]}ed"
       node.save unless Chef::Config[:solo]
     end
   end
