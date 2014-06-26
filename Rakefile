@@ -88,7 +88,9 @@ end
 
 desc 'Run Foodcritic lint checks'
 task :foodcritic do
+  puts 'Starting FoodCritic'
   FoodCritic::Rake::LintTask.new(:foodcritic)
+  puts 'FoodCritic finished'
 end
 
 description = 'Run ChefSpec examples. Specify OS to test either with rake '
