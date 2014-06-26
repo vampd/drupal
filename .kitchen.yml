@@ -6,14 +6,6 @@ provisioner:
   name: chef_solo
 
 platforms:
-  - name: ubuntu-12.04-vmware
-    driver_config:
-      box: ubuntu-12.04
-      box_url: https://nmd-vmware.s3-us-west-2.amazonaws.com/nmd-ubunutu-12.04-x86_64-base.box
-  - name: ubuntu-12.04-virtualbox
-    driver_config:
-      box: ubuntu-12.04
-      box_url: https://nmd-virtualbox.s3-us-west-2.amazonaws.com/nmd-ubunutu-12.04-x86_64-base.box
   - name: ubuntu-14.04-vmware
     driver_config:
       box: ubuntu-14.04
