@@ -1,7 +1,7 @@
 # encoding: utf-8
 require 'spec_helper'
 
-describe 'nmddrupal::files', :ubuntu && :rhel do
+describe 'nmddrupal::files' do
   let(:chef_run) do
     ChefSpec::Runner.new do |node|
       node.set['nmddrupal'] = {

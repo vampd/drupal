@@ -93,27 +93,10 @@ task :foodcritic do
   puts 'FoodCritic finished'
 end
 
-description = 'Run ChefSpec examples. Specify OS to test either with rake '
-description << '"spec[rhel]" (Redhat,centos etc) or rake "spec[ubuntu]". '
-description << 'Defaults to both'
+description = 'Run ChefSpec examples.'
 desc description
-task :spec, :os do |os, args|
-  os = args[:os]
-  case os
-  when 'rhel'
-    RSpec::Core::RakeTask.new(:spec) do |t|
-      t.rspec_opts = '--tag rhel'
-    end
-  when 'ubuntu'
-    RSpec::Core::RakeTask.new(:spec) do |t|
-      t.rspec_opts = '--tag ubuntu'
-    end
-  else
-    puts "Unknown rspec operating system #{os}. Running all tests."
-    RSpec::Core::RakeTask.new(:spec) do |t|
-      t.rspec_opts = '--tag rhel --tag ubuntu'
-    end
-  end
+task :spec do
+  RSpec::Core::RakeTask.new(:spec)
 end
 
 desc 'Generate the Readme.md file.'
