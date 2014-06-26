@@ -12,7 +12,6 @@ describe 'nmddrupal::drush' do
         context "On #{platform} #{version}" do
           let(:chef_run) do
             ChefSpec::Runner.new(platform: platform, version: version) do |node|
-              puts node.platform
               node.set['nmddrupal'] = {
                 'sites' => {
                   'example' => {
