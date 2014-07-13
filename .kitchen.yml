@@ -28,6 +28,7 @@ suites:
       - recipe[git::default]
       - recipe[nmddrupal::drush]
       - recipe[nmddrupal::files]
+      - recipe[nmddrupal::deploy]
     attributes:
       nmddrupal:
         sites:
@@ -36,17 +37,9 @@ suites:
     run_list:
       - recipe[git::default]
       - recipe[nmddrupal::drush]
-    attributes:
-      nmddrupal:
-        sites:
-          - example
   - name: files
     run_list:
       - recipe[nmddrupal::files]
-    attributes:
-      nmddrupal:
-        sites:
-          - example
   - name: deploy
     run_list:
       - recipe[git::default]
