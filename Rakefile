@@ -76,7 +76,7 @@ def rake_tasks
   documentation = ''
   s = `rake -T`.split("\n")
   s.each do |l|
-    documentation << "    #{l}\n" if l =~ /^rake/
+    documentation << "#{l}\n" if l =~ /^rake/
   end
   documentation
 end
