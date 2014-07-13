@@ -40,16 +40,21 @@ def credit # rubocop:disable MethodLength
     l = log.split("\n")
     commit = l.shift
     author = l.shift.to_s.split('Author: ')[1]
-    next unless author.nil?
-    next if authors[author].nil?
-    commit_detail = Octokit.commit('DavidXArnold/drupal/tree/3.x', commit)
+
+    next if author.nil? || !authors[author].nil?
+
+    commit_detail = Octokit.commit('newmediadenver/drupal', commit)
+
     authors[author] = commit_detail[:author][:html_url]
+
     if credit[commit_detail[:author][:html_url]].nil?
       credit[commit_detail[:author][:html_url]] = {}
     end
+
     html_url = commit_detail[:author][:html_url]
     credit[html_url][author.split(' <')[0]] = author.split(' <')[1][0..-2]
   end
+
   credit.each do |key, names|
     clean_names = []
     names.each do |name, _email|

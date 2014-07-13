@@ -281,6 +281,14 @@ License and Authors
 ------------------
 
 The following users have contributed to this code: 
+*   ["https://github.com/arknoll", "Alex Knoll"]
+*   ["https://github.com/DavidXArnold", "David Arnold"]
+*   ["https://github.com/rickmanelius", "Rick Manelius"]
+*   ["https://github.com/cyberswat", "Kevin Bridges"]
+*   ["https://github.com/timodwhit", "Tim Whitney"]
+*   ["https://github.com/tannerjfco", "tannerjfco"]
+*   ["https://github.com/draenen", "Caleb Thorne"]
+*   ["https://github.com/b-ry", "bryonurbanec"]
 
 
 Copyright:: 2014, NewMedia Denver
