@@ -30,7 +30,6 @@ action :create do
     mode new_resource.mode
     action :create
     recursive true
-    not_if { ::File.exist?(new_resource.path) }
   end
 
   ssh_known_hosts_entry URI.parse(new_resource.repository).host
@@ -53,7 +52,6 @@ action :delete do
   directory new_resource.path do
     action :delete
     recursive true
-    only_if { ::File.exist?(new_resource.path) }
   end
 
   new_resource.updated_by_last_action(true)
