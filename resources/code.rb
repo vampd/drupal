@@ -2,7 +2,8 @@
 # Cookbook Name:: nmddrupal
 # Resource:: code
 #
-# Copyright 2008-2014, Chef Software, Inc.
+# Author:: NEWMEDIA Denver
+# Copyright:: 2014, NEWMEDIA Denver
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

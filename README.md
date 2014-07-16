@@ -26,7 +26,7 @@ Requirements
 Attributes
 ----------
 
-nmddrupal/path: 
+nmddrupal/path:
   display_name: "[:nmddrupal][:path]"
   description: The path of the code being requested.
   type: string
@@ -36,7 +36,7 @@ nmddrupal/path:
   default: "/srv/www/example"
   choice: []
   calculated: false
-nmddrupal/owner: 
+nmddrupal/owner:
   display_name: "[:nmddrupal][:owner]"
   description: The owner of the directory the code is being deployed to.
   type: string
@@ -46,7 +46,7 @@ nmddrupal/owner:
   default: www-data
   choice: []
   calculated: false
-nmddrupal/group: 
+nmddrupal/group:
   display_name: "[:nmddrupal][:group]"
   description: The group of the directory the code is being deployed to.
   type: string
@@ -56,7 +56,7 @@ nmddrupal/group:
   default: www-data
   choice: []
   calculated: false
-nmddrupal/mode: 
+nmddrupal/mode:
   display_name: "[:nmddrupal][:revision]"
   description: The number of releases to keep.
   type: string
@@ -66,7 +66,7 @@ nmddrupal/mode:
   default: 7.x
   choice: []
   calculated: false
-nmddrupal/drush/revision: 
+nmddrupal/drush/revision:
   display_name: "[:nmddrupal][:drush][:revision]"
   description: This is the version of drush to install.
   type: string
@@ -76,7 +76,7 @@ nmddrupal/drush/revision:
   default: 6.3.0
   choice: []
   calculated: false
-nmddrupal/drush/repository: 
+nmddrupal/drush/repository:
   display_name: "[:nmddrupal][:drush][:repository]"
   description: This is the code repository to reference.
   type: string
@@ -86,7 +86,7 @@ nmddrupal/drush/repository:
   default: https://github.com/drush-ops/drush.git
   choice: []
   calculated: false
-nmddrupal/drush/dir: 
+nmddrupal/drush/dir:
   display_name: "[:nmddrupal][:drush][:dir]"
   description: This folder stores the clone repository.
   type: string
@@ -96,7 +96,7 @@ nmddrupal/drush/dir:
   default: "/opt/drush"
   choice: []
   calculated: false
-nmddrupal/drush/executable: 
+nmddrupal/drush/executable:
   display_name: "[:nmddrupal][:drush][:executable]"
   description: This is the symlinked file to the drush binary.
   type: string
@@ -106,7 +106,7 @@ nmddrupal/drush/executable:
   default: "/usr/bin/drush"
   choice: []
   calculated: false
-nmddrupal/drush/owner: 
+nmddrupal/drush/owner:
   display_name: "[:nmddrupal][:drush][:owner]"
   description: This is owner of the executable binary.
   type: string
@@ -116,7 +116,7 @@ nmddrupal/drush/owner:
   default: root
   choice: []
   calculated: false
-nmddrupal/drush/group: 
+nmddrupal/drush/group:
   display_name: "[:nmddrupal][:drush][:group]"
   description: This is group of the executable binary.
   type: string
@@ -126,7 +126,7 @@ nmddrupal/drush/group:
   default: root
   choice: []
   calculated: false
-nmddrupal/drush/mode: 
+nmddrupal/drush/mode:
   display_name: "[:nmddrupal][:drush][:mode]"
   description: This is permissions of the executable binary.
   type: string
@@ -136,7 +136,7 @@ nmddrupal/drush/mode:
   default: '755'
   choice: []
   calculated: false
-nmddrupal/drush/state: 
+nmddrupal/drush/state:
   display_name: "[:nmddrupal][:drush][:state]"
   description: 'Controls runtime action: install, update, or purge'
   type: string
@@ -146,7 +146,7 @@ nmddrupal/drush/state:
   default: install
   choice: []
   calculated: false
-nmddrupal/files/path: 
+nmddrupal/files/path:
   display_name: "[:nmddrupal][:files][:path]"
   description: This is the root level files directory path.
   type: string
@@ -156,7 +156,7 @@ nmddrupal/files/path:
   default: "/default/files"
   choice: []
   calculated: false
-nmddrupal/files/owner: 
+nmddrupal/files/owner:
   display_name: "[:nmddrupal][:files][:owner]"
   description: This is the root level files directory owner.
   type: string
@@ -166,7 +166,7 @@ nmddrupal/files/owner:
   default: root
   choice: []
   calculated: false
-nmddrupal/files/group: 
+nmddrupal/files/group:
   display_name: "[:nmddrupal][:files][:path]"
   description: This is the root level files directory path group owner.
   type: string
@@ -176,7 +176,7 @@ nmddrupal/files/group:
   default: root
   choice: []
   calculated: false
-nmddrupal/files/mode: 
+nmddrupal/files/mode:
   display_name: "[:nmddrupal][:files][:mode]"
   description: This is the root level files directory mode.
   type: string
@@ -202,95 +202,93 @@ nmddrupal::files: Manages files
 Testing and Utility
 -------
 
-D      [kitchen::driver::vagrant command] BEGIN (vagrant --version)
-    D      [kitchen::driver::vagrant command] END (0m0.27s)
     rake foodcritic
         Run Foodcritic lint checks
-    
+
     rake integration
         Alias for kitchen:all
-    
+
     rake kitchen:all
         Run all test instances
-    
+
     rake kitchen:default-centos-65-virtualbox
         Run default-centos-65-virtualbox test instance
-    
+
     rake kitchen:default-centos-65-vmware
         Run default-centos-65-vmware test instance
-    
+
     rake kitchen:default-ubuntu-1404-virtualbox
         Run default-ubuntu-1404-virtualbox test instance
-    
+
     rake kitchen:default-ubuntu-1404-vmware
         Run default-ubuntu-1404-vmware test instance
-    
+
     rake kitchen:delete-code-centos-65-virtualbox
         Run delete-code-centos-65-virtualbox test instance
-    
+
     rake kitchen:delete-code-centos-65-vmware
         Run delete-code-centos-65-vmware test instance
-    
+
     rake kitchen:delete-code-ubuntu-1404-virtualbox
         Run delete-code-ubuntu-1404-virtualbox test instance
-    
+
     rake kitchen:delete-code-ubuntu-1404-vmware
         Run delete-code-ubuntu-1404-vmware test instance
-    
+
     rake kitchen:deploy-code-centos-65-virtualbox
         Run deploy-code-centos-65-virtualbox test instance
-    
+
     rake kitchen:deploy-code-centos-65-vmware
         Run deploy-code-centos-65-vmware test instance
-    
+
     rake kitchen:deploy-code-ubuntu-1404-virtualbox
         Run deploy-code-ubuntu-1404-virtualbox test instance
-    
+
     rake kitchen:deploy-code-ubuntu-1404-vmware
         Run deploy-code-ubuntu-1404-vmware test instance
-    
+
     rake kitchen:drush-centos-65-virtualbox
         Run drush-centos-65-virtualbox test instance
-    
+
     rake kitchen:drush-centos-65-vmware
         Run drush-centos-65-vmware test instance
-    
+
     rake kitchen:drush-ubuntu-1404-virtualbox
         Run drush-ubuntu-1404-virtualbox test instance
-    
+
     rake kitchen:drush-ubuntu-1404-vmware
         Run drush-ubuntu-1404-vmware test instance
-    
+
     rake kitchen:files-centos-65-virtualbox
         Run files-centos-65-virtualbox test instance
-    
+
     rake kitchen:files-centos-65-vmware
         Run files-centos-65-vmware test instance
-    
+
     rake kitchen:files-ubuntu-1404-virtualbox
         Run files-ubuntu-1404-virtualbox test instance
-    
+
     rake kitchen:files-ubuntu-1404-vmware
         Run files-ubuntu-1404-vmware test instance
-    
+
     rake readme
         Generate the Readme.md file.
-    
+
     rake rubocop
         Run RuboCop style and lint checks
-    
+
     rake spec
         Run ChefSpec examples.
-    
+
     rake test
         Run all tests
-    
-    
+
+
 
 License and Authors
 ------------------
 
-The following users have contributed to this code: 
+The following users have contributed to this code:
 *   ["https://github.com/cyberswat", "Kevin Bridges"]
 *   ["https://github.com/arknoll", "Alex Knoll"]
 *   ["https://github.com/DavidXArnold", "David Arnold"]

@@ -2,7 +2,8 @@
 # Cookbook Name:: drupal
 # Provider:: code
 #
-# Copyright 2010-2013, Opscode, Inc.
+# Author:: NEWMEDIA Denver
+# Copyright:: 2014, NEWMEDIA Denver
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
