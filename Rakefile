@@ -40,9 +40,8 @@ def credit # rubocop:disable MethodLength
     l = log.split("\n")
     commit = l.shift
     author = l.shift.to_s.split('Author: ')[1]
-    next unless author.nil?
-    next if authors[author].nil?
-    commit_detail = Octokit.commit('DavidXArnold/drupal/tree/3.x', commit)
+    next if author.nil? || !authors[author].nil?
+    commit_detail = Octokit.commit('newmediadenver/drupal', commit)
     authors[author] = commit_detail[:author][:html_url]
     if credit[commit_detail[:author][:html_url]].nil?
       credit[commit_detail[:author][:html_url]] = {}
@@ -72,15 +71,6 @@ def attributes(content = '', output = false)
   content
 end
 
-def rake_tasks
-  documentation = ''
-  s = `rake -T`.split("\n")
-  s.each do |l|
-    documentation << "    #{l}\n" if l =~ /^rake/
-  end
-  documentation
-end
-
 desc 'Run RuboCop style and lint checks'
 task :rubocop do
   RuboCop::RakeTask.new(:rubocop)
@@ -93,42 +83,25 @@ task :foodcritic do
   puts 'FoodCritic finished'
 end
 
-description = 'Run ChefSpec examples. Specify OS to test either with rake '
-description << '"spec[rhel]" (Redhat,centos etc) or rake "spec[ubuntu]". '
-description << 'Defaults to both'
+description = 'Run ChefSpec examples.'
 desc description
-task :spec, :os do |os, args|
-  os = args[:os]
-  case os
-  when 'rhel'
-    RSpec::Core::RakeTask.new(:spec) do |t|
-      t.rspec_opts = '--tag rhel'
-    end
-  when 'ubuntu'
-    RSpec::Core::RakeTask.new(:spec) do |t|
-      t.rspec_opts = '--tag ubuntu'
-    end
-  else
-    puts "Unknown rspec operating system #{os}. Running all tests."
-    RSpec::Core::RakeTask.new(:spec) do |t|
-      t.rspec_opts = '--tag rhel --tag ubuntu'
-    end
-  end
+task :spec do
+  RSpec::Core::RakeTask.new(:spec)
 end
 
 desc 'Generate the Readme.md file.'
 task :readme do
+  rake_tasks = `rake -D`
   metadata = Chef::Cookbook::Metadata.new
   metadata.from_file('metadata.rb')
   authors = credit
   markdown = Readme.new(
-                        metadata: metadata,
-                        attributes: attributes,
-                        recipes: recipes,
-                        rake_tasks: rake_tasks,
-                        authors: authors)
+                         metadata: metadata,
+                         rake_tasks: rake_tasks.gsub("\n", "\n    "),
+                         authors: authors)
   new_readme = markdown.render(File.read('templates/default/readme.md.erb'))
   File.open('README.md', 'w') { |file| file.write(new_readme) }
+  puts new_readme
 end
 
 desc 'Run all tests'

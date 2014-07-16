@@ -1,9 +1,9 @@
 [![Build Status](https://travis-ci.org/newmediadenver/drupal.svg?branch=3.x)](https://travis-ci.org/newmediadenver/drupal)
 
-New Media Denver's nmd-drupal cookbook
+New Media Denver's nmddrupal cookbook
 =============================
 
-nmd-drupal (3.0.0) Manages Drupal.
+nmddrupal (3.0.0) Manages Drupal.
 
 Manages the installation and configuration of Drupal.
 
@@ -20,59 +20,183 @@ Requirements
 
 `git >= 0.0.0`
 
+`ssh_known_hosts ~> 1.1.0`
+
 
 Attributes
 ----------
 
-    drupal/files/path:
-      display_name: "[:drupal][:files][:path]"
-      description: This is the root level files directory path.
-      type: string
-      required: recommended
-      recipes:
-      - nmd-drupal::files
-      default: "/default/files"
-      choice: []
-      calculated: false
-    drupal/files/owner:
-      display_name: "[:drupal][:files][:owner]"
-      description: This is the root level files directory owner.
-      type: string
-      required: recommended
-      recipes:
-      - nmd-drupal::files
-      default: root
-      choice: []
-      calculated: false
-    drupal/files/group:
-      display_name: "[:drupal][:files][:path]"
-      description: |-
-        This is the root level files directory path group owner
-                  .
-      type: string
-      required: recommended
-      recipes:
-      - nmd-drupal::files
-      default: root
-      choice: []
-      calculated: false
-    drupal/files/mode:
-      display_name: "[:drupal][:files][:mode]"
-      description: This is the root level files directory mode.
-      type: string
-      required: recommended
-      recipes:
-      - nmd-drupal::files
-      default: '755'
-      choice: []
-      calculated: false
+nmddrupal/path:
+  display_name: "[:nmddrupal][:path]"
+  description: The path of the code being requested.
+  type: string
+  required: required
+  recipes:
+  - nmddrupal::deploy_code
+  default: "/srv/www/example"
+  choice: []
+  calculated: false
+nmddrupal/owner:
+  display_name: "[:nmddrupal][:owner]"
+  description: The owner of the directory the code is being deployed to.
+  type: string
+  required: required
+  recipes:
+  - nmddrupal::deploy_code
+  default: www-data
+  choice: []
+  calculated: false
+nmddrupal/group:
+  display_name: "[:nmddrupal][:group]"
+  description: The group of the directory the code is being deployed to.
+  type: string
+  required: required
+  recipes:
+  - nmddrupal::deploy_code
+  default: www-data
+  choice: []
+  calculated: false
+nmddrupal/mode:
+  display_name: "[:nmddrupal][:revision]"
+  description: The number of releases to keep.
+  type: string
+  required: required
+  recipes:
+  - nmddrupal::deploy_code
+  default: 7.x
+  choice: []
+  calculated: false
+nmddrupal/drush/revision:
+  display_name: "[:nmddrupal][:drush][:revision]"
+  description: This is the version of drush to install.
+  type: string
+  required: recommended
+  recipes:
+  - nmddrupal::drush
+  default: 6.3.0
+  choice: []
+  calculated: false
+nmddrupal/drush/repository:
+  display_name: "[:nmddrupal][:drush][:repository]"
+  description: This is the code repository to reference.
+  type: string
+  required: recommended
+  recipes:
+  - nmddrupal::drush
+  default: https://github.com/drush-ops/drush.git
+  choice: []
+  calculated: false
+nmddrupal/drush/dir:
+  display_name: "[:nmddrupal][:drush][:dir]"
+  description: This folder stores the clone repository.
+  type: string
+  required: recommended
+  recipes:
+  - nmddrupal::drush
+  default: "/opt/drush"
+  choice: []
+  calculated: false
+nmddrupal/drush/executable:
+  display_name: "[:nmddrupal][:drush][:executable]"
+  description: This is the symlinked file to the drush binary.
+  type: string
+  required: recommended
+  recipes:
+  - nmddrupal::drush
+  default: "/usr/bin/drush"
+  choice: []
+  calculated: false
+nmddrupal/drush/owner:
+  display_name: "[:nmddrupal][:drush][:owner]"
+  description: This is owner of the executable binary.
+  type: string
+  required: recommended
+  recipes:
+  - nmddrupal::drush
+  default: root
+  choice: []
+  calculated: false
+nmddrupal/drush/group:
+  display_name: "[:nmddrupal][:drush][:group]"
+  description: This is group of the executable binary.
+  type: string
+  required: recommended
+  recipes:
+  - nmddrupal::drush
+  default: root
+  choice: []
+  calculated: false
+nmddrupal/drush/mode:
+  display_name: "[:nmddrupal][:drush][:mode]"
+  description: This is permissions of the executable binary.
+  type: string
+  required: recommended
+  recipes:
+  - nmddrupal::drush
+  default: '755'
+  choice: []
+  calculated: false
+nmddrupal/drush/state:
+  display_name: "[:nmddrupal][:drush][:state]"
+  description: 'Controls runtime action: install, update, or purge'
+  type: string
+  required: recommended
+  recipes:
+  - nmddrupal::drush
+  default: install
+  choice: []
+  calculated: false
+nmddrupal/files/path:
+  display_name: "[:nmddrupal][:files][:path]"
+  description: This is the root level files directory path.
+  type: string
+  required: recommended
+  recipes:
+  - nmddrupal::files
+  default: "/default/files"
+  choice: []
+  calculated: false
+nmddrupal/files/owner:
+  display_name: "[:nmddrupal][:files][:owner]"
+  description: This is the root level files directory owner.
+  type: string
+  required: recommended
+  recipes:
+  - nmddrupal::files
+  default: root
+  choice: []
+  calculated: false
+nmddrupal/files/group:
+  display_name: "[:nmddrupal][:files][:path]"
+  description: This is the root level files directory path group owner.
+  type: string
+  required: recommended
+  recipes:
+  - nmddrupal::files
+  default: root
+  choice: []
+  calculated: false
+nmddrupal/files/mode:
+  display_name: "[:nmddrupal][:files][:mode]"
+  description: This is the root level files directory mode.
+  type: string
+  required: recommended
+  recipes:
+  - nmddrupal::files
+  default: '0755'
+  choice: []
+  calculated: false
 
 
 Recipes
 -------
 
-        nmd-drupal::default: Manages Drupal.
-    nmd-drupal::files: Manages files
+nmddrupal::default: Manages Drupal.
+nmddrupal::delete_code: An example recipe that illustrates using the nmddrupal_code
+  LWRP to delete Drupal code.
+nmddrupal::deploy_code: An example recipe that illustrates using the nmddrupal_code
+  LWRP to deploy Drupal code.
+nmddrupal::files: Manages files
 
 
 Testing and Utility
@@ -93,29 +217,41 @@ Testing and Utility
     rake kitchen:default-centos-65-vmware
         Run default-centos-65-vmware test instance
 
-    rake kitchen:default-ubuntu-1204-virtualbox
-        Run default-ubuntu-1204-virtualbox test instance
-
-    rake kitchen:default-ubuntu-1204-vmware
-        Run default-ubuntu-1204-vmware test instance
-
     rake kitchen:default-ubuntu-1404-virtualbox
         Run default-ubuntu-1404-virtualbox test instance
 
     rake kitchen:default-ubuntu-1404-vmware
         Run default-ubuntu-1404-vmware test instance
 
+    rake kitchen:delete-code-centos-65-virtualbox
+        Run delete-code-centos-65-virtualbox test instance
+
+    rake kitchen:delete-code-centos-65-vmware
+        Run delete-code-centos-65-vmware test instance
+
+    rake kitchen:delete-code-ubuntu-1404-virtualbox
+        Run delete-code-ubuntu-1404-virtualbox test instance
+
+    rake kitchen:delete-code-ubuntu-1404-vmware
+        Run delete-code-ubuntu-1404-vmware test instance
+
+    rake kitchen:deploy-code-centos-65-virtualbox
+        Run deploy-code-centos-65-virtualbox test instance
+
+    rake kitchen:deploy-code-centos-65-vmware
+        Run deploy-code-centos-65-vmware test instance
+
+    rake kitchen:deploy-code-ubuntu-1404-virtualbox
+        Run deploy-code-ubuntu-1404-virtualbox test instance
+
+    rake kitchen:deploy-code-ubuntu-1404-vmware
+        Run deploy-code-ubuntu-1404-vmware test instance
+
     rake kitchen:drush-centos-65-virtualbox
         Run drush-centos-65-virtualbox test instance
 
     rake kitchen:drush-centos-65-vmware
         Run drush-centos-65-vmware test instance
-
-    rake kitchen:drush-ubuntu-1204-virtualbox
-        Run drush-ubuntu-1204-virtualbox test instance
-
-    rake kitchen:drush-ubuntu-1204-vmware
-        Run drush-ubuntu-1204-vmware test instance
 
     rake kitchen:drush-ubuntu-1404-virtualbox
         Run drush-ubuntu-1404-virtualbox test instance
@@ -128,12 +264,6 @@ Testing and Utility
 
     rake kitchen:files-centos-65-vmware
         Run files-centos-65-vmware test instance
-
-    rake kitchen:files-ubuntu-1204-virtualbox
-        Run files-ubuntu-1204-virtualbox test instance
-
-    rake kitchen:files-ubuntu-1204-vmware
-        Run files-ubuntu-1204-vmware test instance
 
     rake kitchen:files-ubuntu-1404-virtualbox
         Run files-ubuntu-1404-virtualbox test instance
@@ -148,24 +278,25 @@ Testing and Utility
         Run RuboCop style and lint checks
 
     rake spec
-        Run ChefSpec examples
+        Run ChefSpec examples.
 
     rake test
         Run all tests
+
 
 
 License and Authors
 ------------------
 
 The following users have contributed to this code:
-* ["https://github.com/DavidXArnold", "David Arnold"]
-* ["https://github.com/cyberswat", "Kevin Bridges"]
-* ["https://github.com/arknoll", "Alex Knoll"]
-* ["https://github.com/timodwhit", "Tim Whitney"]
-* ["https://github.com/rickmanelius", "Rick Manelius"]
-* ["https://github.com/tannerjfco", "tannerjfco"]
-* ["https://github.com/draenen", "Caleb Thorne"]
-* ["https://github.com/b-ry", "bryonurbanec"]
+*   ["https://github.com/cyberswat", "Kevin Bridges"]
+*   ["https://github.com/arknoll", "Alex Knoll"]
+*   ["https://github.com/DavidXArnold", "David Arnold"]
+*   ["https://github.com/rickmanelius", "Rick Manelius"]
+*   ["https://github.com/timodwhit", "Tim Whitney"]
+*   ["https://github.com/tannerjfco", "tannerjfco"]
+*   ["https://github.com/draenen", "Caleb Thorne"]
+*   ["https://github.com/b-ry", "bryonurbanec"]
 
 
 Copyright:: 2014, NewMedia Denver

@@ -1,9 +1,9 @@
 # encoding: utf-8
-name 'nmd-drupal'
+name 'nmddrupal'
 maintainer 'New Media Denver'
 maintainer_email 'support@newmediadenver.com'
 license 'Apache 2.0'
-description 'Installs/Configures nmd-drupal'
+description 'Installs/Configures nmddrupal'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version '3.0.0'
 supports 'ubuntu', '>= 12.04'
@@ -13,112 +13,201 @@ desc = 'Manages Drupal.'
 description desc
 
 depends 'git'
+depends 'ssh_known_hosts', '~> 1.1.0'
 
 long_description 'Manages the installation and configuration of Drupal.'
-recipe 'nmd-drupal::default', desc
-recipe 'nmd-drupal::files', 'Manages files'
+recipe 'nmddrupal::default', desc
+delete_code_desc = 'An example recipe that illustrates using the '
+delete_code_desc << 'nmddrupal_code LWRP to delete Drupal code.'
+recipe 'nmddrupal::delete_code', delete_code_desc
+deploy_code_desc = 'An example recipe that illustrates using the '
+deploy_code_desc << 'nmddrupal_code LWRP to deploy Drupal code.'
+recipe 'nmddrupal::deploy_code', deploy_code_desc
+recipe 'nmddrupal::files', 'Manages files'
 
-grouping 'nmd-drupal/drush',
-         title: 'Drush attributes',
-         description: 'Drush recipe attributes'
-
-attribute 'nmd-drupal/drush/revision',
-          display_name: '[:drupal][:drush][:revision]',
-          description: 'This is the version of drush to install.',
-          type: 'string',
-          required: 'recommended',
-          recipes: ['nmd-drupal::drush'],
-          default: '6.3.0'
-
-attribute 'nmd-drupal/drush/repository',
-          display_name: '[:drupal][:drush][:repository]',
-          description: 'This is the code repository to reference.',
-          type: 'string',
-          required: 'recommended',
-          recipes: ['nmd-drupal::drush'],
-          default: 'https://github.com/drush-ops/drush.git'
-
-attribute 'nmd-drupal/drush/dir',
-          display_name: '[:drupal][:drush][:dir]',
-          description: 'This folder stores the clone repository.',
-          type: 'string',
-          required: 'recommended',
-          recipes: ['nmd-drupal::drush'],
-          default: '/opt/drush'
-
-attribute 'nmd-drupal/drush/executable',
-          display_name: '[:drupal][:drush][:executable]',
-          description: 'This is the symlinked file to the drush binary.',
-          type: 'string',
-          required: 'recommended',
-          recipes: ['nmd-drupal::drush'],
-          default: '/usr/bin/drush'
-
-attribute 'nmd-drupal/drush/owner',
-          display_name: '[:drupal][:drush][:owner]',
-          description: 'This is owner of the executable binary.',
-          type: 'string',
-          required: 'recommended',
-          recipes: ['nmd-drupal::drush'],
-          default: 'root'
-
-attribute 'nmd-drupal/drush/group',
-          display_name: '[:drupal][:drush][:group]',
-          description: 'This is group of the executable binary.',
-          type: 'string',
-          required: 'recommended',
-          recipes: ['nmd-drupal::drush'],
-          default: 'root'
-
-attribute 'nmd-drupal/drush/mode',
-          display_name: '[:drupal][:drush][:mode]',
-          description: 'This is permissions of the executable binary.',
-          type: 'string',
-          required: 'recommended',
-          recipes: ['nmd-drupal::drush'],
-          default: '755'
-
-attribute 'nmd-drupal/drush/state',
-          display_name: '[:drupal][:drush][:state]',
-          description: 'Controls runtime action: install, update, or purge',
-          type: 'string',
-          required: 'recommended',
-          recipes: ['nmd-drupal::drush'],
-          default: 'install'
-
-grouping 'nmd-drupal/files',
-         title: 'Files attributes',
-         description: 'Files recipe attributes'
-
-attribute 'drupal/files/path',
-          display_name: '[:drupal][:files][:path]',
-          description: 'This is the root level files directory path.',
-          type: 'string',
-          required: 'recommended',
-          recipes: ['nmd-drupal::files'],
-          default: '/default/files'
-
-attribute 'drupal/files/owner',
-          display_name: '[:drupal][:files][:owner]',
-          description: 'This is the root level files directory owner.',
-          type: 'string',
-          required: 'recommended',
-          recipes: ['nmd-drupal::files'],
-          default: 'root'
-
-attribute 'drupal/files/group',
-          display_name: '[:drupal][:files][:path]',
-          description: 'This is the root level files directory path group owner
-          .',
-          type: 'string',
-          required: 'recommended',
-          recipes: ['nmd-drupal::files'],
-          default: 'root'
-
-attribute 'drupal/files/mode',
-          display_name: '[:drupal][:files][:mode]',
-          description: 'This is the root level files directory mode.',
-          type: 'string',
-          required: 'recommended',
-          recipes: ['nmd-drupal::files'],
-          default: '0755'
+grouping(
+  'nmddrupal',
+  title: 'nmddrupal attributes',
+  description: 'nmddrupal defaultattributes'
+)
+attribute(
+  'nmddrupal/path',
+  display_name: '[:nmddrupal][:path]',
+  description: 'The path of the code being requested.',
+  type: 'string',
+  required: 'required',
+  recipes: ['nmddrupal::deploy_code'],
+  default: '/srv/www/example'
+)
+attribute(
+  'nmddrupal/owner',
+  display_name: '[:nmddrupal][:owner]',
+  description: 'The owner of the directory the code is being deployed to.',
+  type: 'string',
+  required: 'required',
+  recipes: ['nmddrupal::deploy_code'],
+  default: 'www-data'
+)
+attribute(
+  'nmddrupal/group',
+  display_name: '[:nmddrupal][:group]',
+  description: 'The group of the directory the code is being deployed to.',
+  type: 'string',
+  required: 'required',
+  recipes: ['nmddrupal::deploy_code'],
+  default: 'www-data'
+)
+attribute(
+  'nmddrupal/mode',
+  display_name: '[:nmddrupal][:mode]',
+  description: 'The mode of the directory the code is being deployed to.',
+  type: 'string',
+  required: 'required',
+  recipes: ['nmddrupal::deploy_code'],
+  default: 00755
+)
+attribute(
+  'nmddrupal/mode',
+  display_name: '[:nmddrupal][:repository]',
+  description: 'The repository to request the code from.',
+  type: 'string',
+  required: 'required',
+  recipes: ['nmddrupal::deploy_code'],
+  default: 'http://git.drupal.org/project/drupal.git'
+)
+attribute(
+  'nmddrupal/mode',
+  display_name: '[:nmddrupal][:revision]',
+  description: 'The repository revision to request the code from.',
+  type: 'string',
+  required: 'required',
+  recipes: ['nmddrupal::deploy_code'],
+  default: '7.x'
+)
+attribute(
+  'nmddrupal/mode',
+  display_name: '[:nmddrupal][:revision]',
+  description: 'The number of releases to keep.',
+  type: 'string',
+  required: 'required',
+  recipes: ['nmddrupal::deploy_code'],
+  default: '7.x'
+)
+grouping(
+  'nmddrupal/drush',
+  title: 'Drush attributes',
+  description: 'Drush recipe attributes'
+)
+attribute(
+  'nmddrupal/drush/revision',
+  display_name: '[:nmddrupal][:drush][:revision]',
+  description: 'This is the version of drush to install.',
+  type: 'string',
+  required: 'recommended',
+  recipes: ['nmddrupal::drush'],
+  default: '6.3.0'
+)
+attribute(
+  'nmddrupal/drush/repository',
+  display_name: '[:nmddrupal][:drush][:repository]',
+  description: 'This is the code repository to reference.',
+  type: 'string',
+  required: 'recommended',
+  recipes: ['nmddrupal::drush'],
+  default: 'https://github.com/drush-ops/drush.git'
+)
+attribute(
+  'nmddrupal/drush/dir',
+  display_name: '[:nmddrupal][:drush][:dir]',
+  description: 'This folder stores the clone repository.',
+  type: 'string',
+  required: 'recommended',
+  recipes: ['nmddrupal::drush'],
+  default: '/opt/drush'
+)
+attribute(
+  'nmddrupal/drush/executable',
+  display_name: '[:nmddrupal][:drush][:executable]',
+  description: 'This is the symlinked file to the drush binary.',
+  type: 'string',
+  required: 'recommended',
+  recipes: ['nmddrupal::drush'],
+  default: '/usr/bin/drush'
+)
+attribute(
+  'nmddrupal/drush/owner',
+  display_name: '[:nmddrupal][:drush][:owner]',
+  description: 'This is owner of the executable binary.',
+  type: 'string',
+  required: 'recommended',
+  recipes: ['nmddrupal::drush'],
+  default: 'root'
+)
+attribute(
+  'nmddrupal/drush/group',
+  display_name: '[:nmddrupal][:drush][:group]',
+  description: 'This is group of the executable binary.',
+  type: 'string',
+  required: 'recommended',
+  recipes: ['nmddrupal::drush'],
+  default: 'root'
+)
+attribute(
+  'nmddrupal/drush/mode',
+  display_name: '[:nmddrupal][:drush][:mode]',
+  description: 'This is permissions of the executable binary.',
+  type: 'string',
+  required: 'recommended',
+  recipes: ['nmddrupal::drush'],
+  default: '755'
+)
+attribute(
+  'nmddrupal/drush/state',
+  display_name: '[:nmddrupal][:drush][:state]',
+  description: 'Controls runtime action: install, update, or purge',
+  type: 'string',
+  required: 'recommended',
+  recipes: ['nmddrupal::drush'],
+  default: 'install'
+)
+grouping(
+  'nmddrupal/files',
+  title: 'Files attributes',
+  description: 'Files recipe attributes'
+)
+attribute(
+  'nmddrupal/files/path',
+  display_name: '[:nmddrupal][:files][:path]',
+  description: 'This is the root level files directory path.',
+  type: 'string',
+  required: 'recommended',
+  recipes: ['nmddrupal::files'],
+  default: '/default/files'
+)
+attribute(
+  'nmddrupal/files/owner',
+  display_name: '[:nmddrupal][:files][:owner]',
+  description: 'This is the root level files directory owner.',
+  type: 'string',
+  required: 'recommended',
+  recipes: ['nmddrupal::files'],
+  default: 'root'
+)
+attribute(
+  'nmddrupal/files/group',
+  display_name: '[:nmddrupal][:files][:path]',
+  description: 'This is the root level files directory path group owner.',
+  type: 'string',
+  required: 'recommended',
+  recipes: ['nmddrupal::files'],
+  default: 'root'
+)
+attribute(
+  'nmddrupal/files/mode',
+  display_name: '[:nmddrupal][:files][:mode]',
+  description: 'This is the root level files directory mode.',
+  type: 'string',
+  required: 'recommended',
+  recipes: ['nmddrupal::files'],
+  default: '0755'
+)

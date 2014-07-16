@@ -1,9 +1,9 @@
-# encoding: utf-8
 #
 # Cookbook Name:: nmddrupal
-# Attributes:: files
+# Resource:: code
 #
-# Copyright:: 2014, newmedia
+# Author:: NEWMEDIA Denver
+# Copyright:: 2014, NEWMEDIA Denver
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,8 +16,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
-default[:nmddrupal][:files][:path] = '/default/files'
-default[:nmddrupal][:files][:owner] = 'root'
-default[:nmddrupal][:files][:group] = 'root'
-default[:nmddrupal][:files][:mode] = '755'
+actions :create, :delete
+default_action :create
+
+attribute :path, kind_of: String, name_attribute: true
+attribute :owner, kind_of: String
+attribute :group, kind_of: String
+attribute :mode, kind_of: Fixnum, default: 00755
+attribute :repository, kind_of: String, default: 'http://git.drupal.org/project/drupal.git'
+attribute :revision, kind_of: String, default: '7.x'
+attribute :releases, kind_of: Fixnum, default: 5
+
+def initialize(*args)
+  super
+  @action = :create
+end

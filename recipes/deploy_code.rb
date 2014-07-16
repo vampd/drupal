@@ -1,9 +1,7 @@
 # encoding: utf-8
 #
 # Cookbook Name:: nmddrupal
-# Attributes:: files
-#
-# Copyright:: 2014, newmedia
+# Recipe:: deploy_code
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,8 +14,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
-default[:nmddrupal][:files][:path] = '/default/files'
-default[:nmddrupal][:files][:owner] = 'root'
-default[:nmddrupal][:files][:group] = 'root'
-default[:nmddrupal][:files][:mode] = '755'
+include_recipe 'git::default'
+
+# This example uses each of the exposed attributes.
+nmddrupal_code node[:nmddrupal][:path] do
+  owner node[:nmddrupal][:owner]
+  group node[:nmddrupal][:group]
+  mode node[:nmddrupal][:mode]
+  repository node[:nmddrupal][:repository]
+  revision node[:nmddrupal][:revision]
+  releases node[:nmddrupal][:releases]
+end

@@ -3,17 +3,9 @@ driver:
   name: vagrant
 
 provisioner:
-  name: chef_solo
+  name: chef_zero
 
 platforms:
-  - name: ubuntu-12.04-vmware
-    driver_config:
-      box: ubuntu-12.04
-      box_url: https://nmd-vmware.s3-us-west-2.amazonaws.com/nmd-ubunutu-12.04-x86_64-base.box
-  - name: ubuntu-12.04-virtualbox
-    driver_config:
-      box: ubuntu-12.04
-      box_url: https://nmd-virtualbox.s3-us-west-2.amazonaws.com/nmd-ubunutu-12.04-x86_64-base.box
   - name: ubuntu-14.04-vmware
     driver_config:
       box: ubuntu-14.04
@@ -34,15 +26,20 @@ suites:
   - name: default
     run_list:
       - recipe[git::default]
-      - recipe[nmd-drupal::drush]
-      - recipe[nmd-drupal::files]
-    attributes:
+      - recipe[nmddrupal::drush]
+      - recipe[nmddrupal::files]
+      - recipe[nmddrupal::deploy_code]
   - name: drush
     run_list:
       - recipe[git::default]
-      - recipe[nmd-drupal::drush]
-    attributes:
+      - recipe[nmddrupal::drush]
   - name: files
     run_list:
-      - recipe[nmd-drupal::files]
-    attributes:
+      - recipe[nmddrupal::files]
+  - name: deploy-code
+    run_list:
+      - recipe[nmddrupal::deploy_code]
+  - name: delete-code
+    run_list:
+      - recipe[nmddrupal::deploy_code]
+      - recipe[nmddrupal::delete_code]

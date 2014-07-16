@@ -2,8 +2,10 @@
 require 'chefspec'
 require 'chefspec/berkshelf'
 require 'simplecov'
+
 SimpleCov.start do
   add_filter 'vendor/'
+
 end
 RSpec.configure do |config|
   # Specify the path for Chef Solo to find cookbooks
@@ -20,5 +22,6 @@ RSpec.configure do |config|
 
   # Use documentation output formatter
   config.formatter = :documentation
+
   config.treat_symbols_as_metadata_keys_with_true_values = true
 end

@@ -19,7 +19,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-directory node[:drupal][:files][:path] do
+directory node[:nmddrupal][:files][:path] do
   owner 'root'
   group 'root'
   mode '0755'
