@@ -3,7 +3,7 @@ driver:
   name: vagrant
 
 provisioner:
-  name: chef_solo
+  name: chef_zero
 
 platforms:
   - name: ubuntu-14.04-vmware
@@ -29,10 +29,6 @@ suites:
       - recipe[nmddrupal::drush]
       - recipe[nmddrupal::files]
       - recipe[nmddrupal::deploy]
-    attributes:
-      nmddrupal:
-        sites:
-          - example
   - name: drush
     run_list:
       - recipe[git::default]
@@ -40,14 +36,10 @@ suites:
   - name: files
     run_list:
       - recipe[nmddrupal::files]
-  - name: deploy
+  - name: deploy-code
     run_list:
-      - recipe[git::default]
-      - recipe[nmddrupal::deploy]
-    attributes:
-      nmddrupal:
-        sites:
-          example:
-            deploy:
-              action:
-                - deploy
+      - recipe[nmddrupal::deploy_code]
+  - name: delete-code
+    run_list:
+      - recipe[nmddrupal::deploy_code]
+      - recipe[nmddrupal::delete_code]
