@@ -77,15 +77,6 @@ def attributes(content = '', output = false)
   content
 end
 
-def rake_tasks
-  documentation = ''
-  s = `rake -D`.split("\n")
-  s.each do |l|
-    documentation << "#{l}\n" if l =~ /^rake/
-  end
-  documentation
-end
-
 desc 'Run RuboCop style and lint checks'
 task :rubocop do
   RuboCop::RakeTask.new(:rubocop)
@@ -106,17 +97,17 @@ end
 
 desc 'Generate the Readme.md file.'
 task :readme do
+  rake_tasks = `rake -D`
   metadata = Chef::Cookbook::Metadata.new
   metadata.from_file('metadata.rb')
   authors = credit
   markdown = Readme.new(
-                        metadata: metadata,
-                        attributes: attributes,
-                        recipes: recipes,
-                        rake_tasks: rake_tasks,
-                        authors: authors)
+                         metadata: metadata,
+                         rake_tasks: rake_tasks.gsub("\n", "\n    "),
+                         authors: authors)
   new_readme = markdown.render(File.read('templates/default/readme.md.erb'))
   File.open('README.md', 'w') { |file| file.write(new_readme) }
+  puts new_readme
 end
 
 desc 'Run all tests'

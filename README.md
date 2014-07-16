@@ -202,34 +202,90 @@ nmddrupal::files: Manages files
 Testing and Utility
 -------
 
-rake foodcritic
-rake integration
-rake kitchen:all
-rake kitchen:default-centos-65-virtualbox
-rake kitchen:default-centos-65-vmware
-rake kitchen:default-ubuntu-1404-virtualbox
-rake kitchen:default-ubuntu-1404-vmware
-rake kitchen:delete-code-centos-65-virtualbox
-rake kitchen:delete-code-centos-65-vmware
-rake kitchen:delete-code-ubuntu-1404-virtualbox
-rake kitchen:delete-code-ubuntu-1404-vmware
-rake kitchen:deploy-code-centos-65-virtualbox
-rake kitchen:deploy-code-centos-65-vmware
-rake kitchen:deploy-code-ubuntu-1404-virtualbox
-rake kitchen:deploy-code-ubuntu-1404-vmware
-rake kitchen:drush-centos-65-virtualbox
-rake kitchen:drush-centos-65-vmware
-rake kitchen:drush-ubuntu-1404-virtualbox
-rake kitchen:drush-ubuntu-1404-vmware
-rake kitchen:files-centos-65-virtualbox
-rake kitchen:files-centos-65-vmware
-rake kitchen:files-ubuntu-1404-virtualbox
-rake kitchen:files-ubuntu-1404-vmware
-rake readme
-rake rubocop
-rake spec
-rake test
-
+D      [kitchen::driver::vagrant command] BEGIN (vagrant --version)
+    D      [kitchen::driver::vagrant command] END (0m0.27s)
+    rake foodcritic
+        Run Foodcritic lint checks
+    
+    rake integration
+        Alias for kitchen:all
+    
+    rake kitchen:all
+        Run all test instances
+    
+    rake kitchen:default-centos-65-virtualbox
+        Run default-centos-65-virtualbox test instance
+    
+    rake kitchen:default-centos-65-vmware
+        Run default-centos-65-vmware test instance
+    
+    rake kitchen:default-ubuntu-1404-virtualbox
+        Run default-ubuntu-1404-virtualbox test instance
+    
+    rake kitchen:default-ubuntu-1404-vmware
+        Run default-ubuntu-1404-vmware test instance
+    
+    rake kitchen:delete-code-centos-65-virtualbox
+        Run delete-code-centos-65-virtualbox test instance
+    
+    rake kitchen:delete-code-centos-65-vmware
+        Run delete-code-centos-65-vmware test instance
+    
+    rake kitchen:delete-code-ubuntu-1404-virtualbox
+        Run delete-code-ubuntu-1404-virtualbox test instance
+    
+    rake kitchen:delete-code-ubuntu-1404-vmware
+        Run delete-code-ubuntu-1404-vmware test instance
+    
+    rake kitchen:deploy-code-centos-65-virtualbox
+        Run deploy-code-centos-65-virtualbox test instance
+    
+    rake kitchen:deploy-code-centos-65-vmware
+        Run deploy-code-centos-65-vmware test instance
+    
+    rake kitchen:deploy-code-ubuntu-1404-virtualbox
+        Run deploy-code-ubuntu-1404-virtualbox test instance
+    
+    rake kitchen:deploy-code-ubuntu-1404-vmware
+        Run deploy-code-ubuntu-1404-vmware test instance
+    
+    rake kitchen:drush-centos-65-virtualbox
+        Run drush-centos-65-virtualbox test instance
+    
+    rake kitchen:drush-centos-65-vmware
+        Run drush-centos-65-vmware test instance
+    
+    rake kitchen:drush-ubuntu-1404-virtualbox
+        Run drush-ubuntu-1404-virtualbox test instance
+    
+    rake kitchen:drush-ubuntu-1404-vmware
+        Run drush-ubuntu-1404-vmware test instance
+    
+    rake kitchen:files-centos-65-virtualbox
+        Run files-centos-65-virtualbox test instance
+    
+    rake kitchen:files-centos-65-vmware
+        Run files-centos-65-vmware test instance
+    
+    rake kitchen:files-ubuntu-1404-virtualbox
+        Run files-ubuntu-1404-virtualbox test instance
+    
+    rake kitchen:files-ubuntu-1404-vmware
+        Run files-ubuntu-1404-vmware test instance
+    
+    rake readme
+        Generate the Readme.md file.
+    
+    rake rubocop
+        Run RuboCop style and lint checks
+    
+    rake spec
+        Run ChefSpec examples.
+    
+    rake test
+        Run all tests
+    
+    
 
 License and Authors
 ------------------
