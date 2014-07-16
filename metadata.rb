@@ -17,95 +17,81 @@ depends 'ssh_known_hosts', '~> 1.1.0'
 
 long_description 'Manages the installation and configuration of Drupal.'
 recipe 'nmddrupal::default', desc
-recipe 'nmddrupal::deploy', 'Deploys a Drupal Site'
+delete_code_desc = 'An example recipe that illustrates using the '
+delete_code_desc << 'nmddrupal_code LWRP to delete Drupal code.'
+recipe 'nmddrupal::delete_code', delete_code_desc
+deploy_code_desc = 'An example recipe that illustrates using the '
+deploy_code_desc << 'nmddrupal_code LWRP to deploy Drupal code.'
+recipe 'nmddrupal::deploy_code', deploy_code_desc
 recipe 'nmddrupal::files', 'Manages files'
 
 grouping(
-  'nmddrupal/deploy',
-  title: 'Deploy attributes',
-  description: 'Deploy recipe attributes'
+  'nmddrupal',
+  title: 'nmddrupal attributes',
+  description: 'nmddrupal defaultattributes'
 )
 attribute(
-  'nmddrupal/deploy/base',
-  display_name: '[:nmddrupal][:server][:base]',
-  description: 'This is the base directory for all sites.',
+  'nmddrupal/path',
+  display_name: '[:nmddrupal][:path]',
+  description: 'The path of the code being requested.',
   type: 'string',
   required: 'required',
-  recipes: ['nmddrupal::deploy'],
-  default: '/srv/www'
+  recipes: ['nmddrupal::deploy_code'],
+  default: '/srv/www/example'
 )
 attribute(
-  'nmddrupal/deploy/web_user',
-  display_name: '[:nmddrupal][:server][:users][:web]',
-  description: 'This is the linux user and group which owns the site.',
+  'nmddrupal/owner',
+  display_name: '[:nmddrupal][:owner]',
+  description: 'The owner of the directory the code is being deployed to.',
   type: 'string',
   required: 'required',
-  recipes: ['nmddrupal::deploy'],
-  default: 'www-data:www-data'
+  recipes: ['nmddrupal::deploy_code'],
+  default: 'www-data'
 )
 attribute(
-  'nmddrupal/deploy/files_user',
-  display_name: '[:nmddrupal][:server][:users][:files]',
-  description: 'This is the linux user and group which owns the files.',
+  'nmddrupal/group',
+  display_name: '[:nmddrupal][:group]',
+  description: 'The group of the directory the code is being deployed to.',
   type: 'string',
   required: 'required',
-  recipes: ['nmddrupal::deploy'],
-  default: 'www-data:www-data'
+  recipes: ['nmddrupal::deploy_code'],
+  default: 'www-data'
 )
 attribute(
-  'nmddrupal/deploy/action',
-  display_name: '[:nmddrupal][:sites][SITE][:deploy][:action]',
-  description: 'Site actions. (e.g., deploy)',
-  type: 'string',
-  recipes: ['nmddrupal::deploy'],
-  choice: ['deploy'],
-  default: ''
-)
-attribute(
-  'nmddrupal/deploy/releases',
-  display_name: '[:nmddrupal][:sites][SITE][:deploy][:releases]',
-  description: 'The number of previous deployed releases to keep in the releases
-   folder.',
+  'nmddrupal/mode',
+  display_name: '[:nmddrupal][:mode]',
+  description: 'The mode of the directory the code is being deployed to.',
   type: 'string',
   required: 'required',
-  recipes: ['nmddrupal::deploy'],
-  default: '5'
+  recipes: ['nmddrupal::deploy_code'],
+  default: 00755
 )
 attribute(
-  'nmddrupal/deploy/host',
-  display_name: '[:nmddrupal][:sites][SITE][:repository][:host]',
-  description: 'Host of git repository.',
+  'nmddrupal/mode',
+  display_name: '[:nmddrupal][:repository]',
+  description: 'The repository to request the code from.',
   type: 'string',
   required: 'required',
-  recipes: ['nmddrupal::deploy'],
-  default: 'github.com'
+  recipes: ['nmddrupal::deploy_code'],
+  default: 'http://git.drupal.org/project/drupal.git'
 )
 attribute(
-  'nmddrupal/deploy/uri',
-  display_name: '[:nmddrupal][:sites][SITE][:repository][:uri]',
-  description: 'Git repository uri.',
+  'nmddrupal/mode',
+  display_name: '[:nmddrupal][:revision]',
+  description: 'The repository revision to request the code from.',
   type: 'string',
   required: 'required',
-  recipes: ['nmddrupal::deploy'],
-  default: 'https://github.com/drupal/drupal.git'
+  recipes: ['nmddrupal::deploy_code'],
+  default: '7.x'
 )
 attribute(
-  'nmddrupal/deploy/revision',
-  display_name: '[:nmddrupal][:sites][SITE][:repository][:revision]',
-  description: 'Git repository revision.',
+  'nmddrupal/mode',
+  display_name: '[:nmddrupal][:revision]',
+  description: 'The number of releases to keep.',
   type: 'string',
   required: 'required',
-  recipes: ['nmddrupal::deploy'],
-  default: '7.28'
-)
-attribute(
-  'nmddrupal/deploy/shallow_clone',
-  display_name: '[:nmddrupal][:sites][SITE][:repository][:shallow_clone]',
-  description: 'Whether to perform a git shallow clone or not.',
-  type: 'boolean',
-  required: 'required',
-  recipes: ['nmddrupal::deploy'],
-  default: 'false'
+  recipes: ['nmddrupal::deploy_code'],
+  default: '7.x'
 )
 grouping(
   'nmddrupal/drush',

@@ -28,7 +28,7 @@ suites:
       - recipe[git::default]
       - recipe[nmddrupal::drush]
       - recipe[nmddrupal::files]
-      - recipe[nmddrupal::deploy]
+      - recipe[nmddrupal::deploy_code]
   - name: drush
     run_list:
       - recipe[git::default]
