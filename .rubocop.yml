@@ -5,3 +5,5 @@ AllCops:
     - Rakefile
   Exclude:
     - vendor/**/*
+Style/FileName:
+  Enabled: false

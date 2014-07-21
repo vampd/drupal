@@ -22,6 +22,4 @@ RSpec.configure do |config|
 
   # Use documentation output formatter
   config.formatter = :documentation
-
-  config.treat_symbols_as_metadata_keys_with_true_values = true
 end
