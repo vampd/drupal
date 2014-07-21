@@ -1,5 +1,5 @@
 # encoding: utf-8
-require 'serverspec'
+require 'serverspec' # rubocop:disable Style/FileName
 
 include Serverspec::Helper::Exec
 include Serverspec::Helper::DetectOS
