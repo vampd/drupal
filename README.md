@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/newmediadenver/drupal.svg?branch=3.x)](https://travis-ci.org/newmediadenver/drupal)
-
 New Media Denver's nmddrupal cookbook
 =============================
 
@@ -26,278 +24,283 @@ Requirements
 Attributes
 ----------
 
-nmddrupal/path:
-  display_name: "[:nmddrupal][:path]"
-  description: The path of the code being requested.
-  type: string
-  required: required
-  recipes:
-  - nmddrupal::deploy_code
-  default: "/srv/www/example"
-  choice: []
-  calculated: false
-nmddrupal/owner:
-  display_name: "[:nmddrupal][:owner]"
-  description: The owner of the directory the code is being deployed to.
-  type: string
-  required: required
-  recipes:
-  - nmddrupal::deploy_code
-  default: www-data
-  choice: []
-  calculated: false
-nmddrupal/group:
-  display_name: "[:nmddrupal][:group]"
-  description: The group of the directory the code is being deployed to.
-  type: string
-  required: required
-  recipes:
-  - nmddrupal::deploy_code
-  default: www-data
-  choice: []
-  calculated: false
-nmddrupal/mode:
-  display_name: "[:nmddrupal][:revision]"
-  description: The number of releases to keep.
-  type: string
-  required: required
-  recipes:
-  - nmddrupal::deploy_code
-  default: 7.x
-  choice: []
-  calculated: false
-nmddrupal/drush/revision:
-  display_name: "[:nmddrupal][:drush][:revision]"
-  description: This is the version of drush to install.
-  type: string
-  required: recommended
-  recipes:
-  - nmddrupal::drush
-  default: 6.3.0
-  choice: []
-  calculated: false
-nmddrupal/drush/repository:
-  display_name: "[:nmddrupal][:drush][:repository]"
-  description: This is the code repository to reference.
-  type: string
-  required: recommended
-  recipes:
-  - nmddrupal::drush
-  default: https://github.com/drush-ops/drush.git
-  choice: []
-  calculated: false
-nmddrupal/drush/dir:
-  display_name: "[:nmddrupal][:drush][:dir]"
-  description: This folder stores the clone repository.
-  type: string
-  required: recommended
-  recipes:
-  - nmddrupal::drush
-  default: "/opt/drush"
-  choice: []
-  calculated: false
-nmddrupal/drush/executable:
-  display_name: "[:nmddrupal][:drush][:executable]"
-  description: This is the symlinked file to the drush binary.
-  type: string
-  required: recommended
-  recipes:
-  - nmddrupal::drush
-  default: "/usr/bin/drush"
-  choice: []
-  calculated: false
-nmddrupal/drush/owner:
-  display_name: "[:nmddrupal][:drush][:owner]"
-  description: This is owner of the executable binary.
-  type: string
-  required: recommended
-  recipes:
-  - nmddrupal::drush
-  default: root
-  choice: []
-  calculated: false
-nmddrupal/drush/group:
-  display_name: "[:nmddrupal][:drush][:group]"
-  description: This is group of the executable binary.
-  type: string
-  required: recommended
-  recipes:
-  - nmddrupal::drush
-  default: root
-  choice: []
-  calculated: false
-nmddrupal/drush/mode:
-  display_name: "[:nmddrupal][:drush][:mode]"
-  description: This is permissions of the executable binary.
-  type: string
-  required: recommended
-  recipes:
-  - nmddrupal::drush
-  default: '755'
-  choice: []
-  calculated: false
-nmddrupal/drush/state:
-  display_name: "[:nmddrupal][:drush][:state]"
-  description: 'Controls runtime action: install, update, or purge'
-  type: string
-  required: recommended
-  recipes:
-  - nmddrupal::drush
-  default: install
-  choice: []
-  calculated: false
-nmddrupal/files/path:
-  display_name: "[:nmddrupal][:files][:path]"
-  description: This is the root level files directory path.
-  type: string
-  required: recommended
-  recipes:
-  - nmddrupal::files
-  default: "/default/files"
-  choice: []
-  calculated: false
-nmddrupal/files/owner:
-  display_name: "[:nmddrupal][:files][:owner]"
-  description: This is the root level files directory owner.
-  type: string
-  required: recommended
-  recipes:
-  - nmddrupal::files
-  default: root
-  choice: []
-  calculated: false
-nmddrupal/files/group:
-  display_name: "[:nmddrupal][:files][:path]"
-  description: This is the root level files directory path group owner.
-  type: string
-  required: recommended
-  recipes:
-  - nmddrupal::files
-  default: root
-  choice: []
-  calculated: false
-nmddrupal/files/mode:
-  display_name: "[:nmddrupal][:files][:mode]"
-  description: This is the root level files directory mode.
-  type: string
-  required: recommended
-  recipes:
-  - nmddrupal::files
-  default: '0755'
-  choice: []
-  calculated: false
+    nmddrupal/path
+      calculated: false
+      choice: []
+      default: /srv/www/example
+      description: The path of the code being requested.
+      display_name: [:nmddrupal][:path]
+      type: string
+      recipes: ["nmddrupal::deploy_code"]
+      required: required
+
+    nmddrupal/owner
+      calculated: false
+      choice: []
+      default: www-data
+      description: The owner of the directory the code is being deployed to.
+      display_name: [:nmddrupal][:owner]
+      type: string
+      recipes: ["nmddrupal::deploy_code"]
+      required: required
+
+    nmddrupal/group
+      calculated: false
+      choice: []
+      default: www-data
+      description: The group of the directory the code is being deployed to.
+      display_name: [:nmddrupal][:group]
+      type: string
+      recipes: ["nmddrupal::deploy_code"]
+      required: required
+
+    nmddrupal/mode
+      calculated: false
+      choice: []
+      default: 7.x
+      description: The number of releases to keep.
+      display_name: [:nmddrupal][:revision]
+      type: string
+      recipes: ["nmddrupal::deploy_code"]
+      required: required
+
+    nmddrupal/drush/revision
+      calculated: false
+      choice: []
+      default: 6.3.0
+      description: This is the version of drush to install.
+      display_name: [:nmddrupal][:drush][:revision]
+      type: string
+      recipes: ["nmddrupal::drush"]
+      required: recommended
+
+    nmddrupal/drush/repository
+      calculated: false
+      choice: []
+      default: https://github.com/drush-ops/drush.git
+      description: This is the code repository to reference.
+      display_name: [:nmddrupal][:drush][:repository]
+      type: string
+      recipes: ["nmddrupal::drush"]
+      required: recommended
+
+    nmddrupal/drush/dir
+      calculated: false
+      choice: []
+      default: /opt/drush
+      description: This folder stores the clone repository.
+      display_name: [:nmddrupal][:drush][:dir]
+      type: string
+      recipes: ["nmddrupal::drush"]
+      required: recommended
+
+    nmddrupal/drush/executable
+      calculated: false
+      choice: []
+      default: /usr/bin/drush
+      description: This is the symlinked file to the drush binary.
+      display_name: [:nmddrupal][:drush][:executable]
+      type: string
+      recipes: ["nmddrupal::drush"]
+      required: recommended
+
+    nmddrupal/drush/owner
+      calculated: false
+      choice: []
+      default: root
+      description: This is owner of the executable binary.
+      display_name: [:nmddrupal][:drush][:owner]
+      type: string
+      recipes: ["nmddrupal::drush"]
+      required: recommended
+
+    nmddrupal/drush/group
+      calculated: false
+      choice: []
+      default: root
+      description: This is group of the executable binary.
+      display_name: [:nmddrupal][:drush][:group]
+      type: string
+      recipes: ["nmddrupal::drush"]
+      required: recommended
+
+    nmddrupal/drush/mode
+      calculated: false
+      choice: []
+      default: 755
+      description: This is permissions of the executable binary.
+      display_name: [:nmddrupal][:drush][:mode]
+      type: string
+      recipes: ["nmddrupal::drush"]
+      required: recommended
+
+    nmddrupal/drush/state
+      calculated: false
+      choice: []
+      default: install
+      description: Controls runtime action: install, update, or purge
+      display_name: [:nmddrupal][:drush][:state]
+      type: string
+      recipes: ["nmddrupal::drush"]
+      required: recommended
+
+    nmddrupal/files/path
+      calculated: false
+      choice: []
+      default: /default/files
+      description: This is the root level files directory path.
+      display_name: [:nmddrupal][:files][:path]
+      type: string
+      recipes: ["nmddrupal::files"]
+      required: recommended
+
+    nmddrupal/files/owner
+      calculated: false
+      choice: []
+      default: root
+      description: This is the root level files directory owner.
+      display_name: [:nmddrupal][:files][:owner]
+      type: string
+      recipes: ["nmddrupal::files"]
+      required: recommended
+
+    nmddrupal/files/group
+      calculated: false
+      choice: []
+      default: root
+      description: This is the root level files directory path group owner.
+      display_name: [:nmddrupal][:files][:path]
+      type: string
+      recipes: ["nmddrupal::files"]
+      required: recommended
+
+    nmddrupal/files/mode
+      calculated: false
+      choice: []
+      default: 0755
+      description: This is the root level files directory mode.
+      display_name: [:nmddrupal][:files][:mode]
+      type: string
+      recipes: ["nmddrupal::files"]
+      required: recommended
 
 
 Recipes
 -------
 
-nmddrupal::default: Manages Drupal.
-nmddrupal::delete_code: An example recipe that illustrates using the nmddrupal_code
-  LWRP to delete Drupal code.
-nmddrupal::deploy_code: An example recipe that illustrates using the nmddrupal_code
-  LWRP to deploy Drupal code.
-nmddrupal::files: Manages files
+    nmddrupal::default
+      Manages Drupal.
 
+    nmddrupal::delete_code
+      An example recipe that illustrates using the nmddrupal_code LWRP to delete Drupal code.
+
+    nmddrupal::deploy_code
+      An example recipe that illustrates using the nmddrupal_code LWRP to deploy Drupal code.
+
+    nmddrupal::files
+      Manages files
 
 Testing and Utility
 -------
+    <Rake::Task default => [test]>
 
-    rake foodcritic
-        Run Foodcritic lint checks
+    <Rake::Task foodcritic => []>
+      Run Foodcritic lint checks
 
-    rake integration
-        Alias for kitchen:all
+    <Rake::Task integration => [kitchen:all]>
+      Alias for kitchen:all
 
-    rake kitchen:all
-        Run all test instances
+    <Rake::Task kitchen:all => [default-ubuntu-1404-vmware, default-ubuntu-1404-virtualbox, default-centos-65-vmware, default-centos-65-virtualbox, drush-ubuntu-1404-vmware, drush-ubuntu-1404-virtualbox, drush-centos-65-vmware, drush-centos-65-virtualbox, files-ubuntu-1404-vmware, files-ubuntu-1404-virtualbox, files-centos-65-vmware, files-centos-65-virtualbox, deploy-code-ubuntu-1404-vmware, deploy-code-ubuntu-1404-virtualbox, deploy-code-centos-65-vmware, deploy-code-centos-65-virtualbox, delete-code-ubuntu-1404-vmware, delete-code-ubuntu-1404-virtualbox, delete-code-centos-65-vmware, delete-code-centos-65-virtualbox]>
+      Run all test instances
 
-    rake kitchen:default-centos-65-virtualbox
-        Run default-centos-65-virtualbox test instance
+    <Rake::Task kitchen:default-centos-65-virtualbox => []>
+      Run default-centos-65-virtualbox test instance
 
-    rake kitchen:default-centos-65-vmware
-        Run default-centos-65-vmware test instance
+    <Rake::Task kitchen:default-centos-65-vmware => []>
+      Run default-centos-65-vmware test instance
 
-    rake kitchen:default-ubuntu-1404-virtualbox
-        Run default-ubuntu-1404-virtualbox test instance
+    <Rake::Task kitchen:default-ubuntu-1404-virtualbox => []>
+      Run default-ubuntu-1404-virtualbox test instance
 
-    rake kitchen:default-ubuntu-1404-vmware
-        Run default-ubuntu-1404-vmware test instance
+    <Rake::Task kitchen:default-ubuntu-1404-vmware => []>
+      Run default-ubuntu-1404-vmware test instance
 
-    rake kitchen:delete-code-centos-65-virtualbox
-        Run delete-code-centos-65-virtualbox test instance
+    <Rake::Task kitchen:delete-code-centos-65-virtualbox => []>
+      Run delete-code-centos-65-virtualbox test instance
 
-    rake kitchen:delete-code-centos-65-vmware
-        Run delete-code-centos-65-vmware test instance
+    <Rake::Task kitchen:delete-code-centos-65-vmware => []>
+      Run delete-code-centos-65-vmware test instance
 
-    rake kitchen:delete-code-ubuntu-1404-virtualbox
-        Run delete-code-ubuntu-1404-virtualbox test instance
+    <Rake::Task kitchen:delete-code-ubuntu-1404-virtualbox => []>
+      Run delete-code-ubuntu-1404-virtualbox test instance
 
-    rake kitchen:delete-code-ubuntu-1404-vmware
-        Run delete-code-ubuntu-1404-vmware test instance
+    <Rake::Task kitchen:delete-code-ubuntu-1404-vmware => []>
+      Run delete-code-ubuntu-1404-vmware test instance
 
-    rake kitchen:deploy-code-centos-65-virtualbox
-        Run deploy-code-centos-65-virtualbox test instance
+    <Rake::Task kitchen:deploy-code-centos-65-virtualbox => []>
+      Run deploy-code-centos-65-virtualbox test instance
 
-    rake kitchen:deploy-code-centos-65-vmware
-        Run deploy-code-centos-65-vmware test instance
+    <Rake::Task kitchen:deploy-code-centos-65-vmware => []>
+      Run deploy-code-centos-65-vmware test instance
 
-    rake kitchen:deploy-code-ubuntu-1404-virtualbox
-        Run deploy-code-ubuntu-1404-virtualbox test instance
+    <Rake::Task kitchen:deploy-code-ubuntu-1404-virtualbox => []>
+      Run deploy-code-ubuntu-1404-virtualbox test instance
 
-    rake kitchen:deploy-code-ubuntu-1404-vmware
-        Run deploy-code-ubuntu-1404-vmware test instance
+    <Rake::Task kitchen:deploy-code-ubuntu-1404-vmware => []>
+      Run deploy-code-ubuntu-1404-vmware test instance
 
-    rake kitchen:drush-centos-65-virtualbox
-        Run drush-centos-65-virtualbox test instance
+    <Rake::Task kitchen:drush-centos-65-virtualbox => []>
+      Run drush-centos-65-virtualbox test instance
 
-    rake kitchen:drush-centos-65-vmware
-        Run drush-centos-65-vmware test instance
+    <Rake::Task kitchen:drush-centos-65-vmware => []>
+      Run drush-centos-65-vmware test instance
 
-    rake kitchen:drush-ubuntu-1404-virtualbox
-        Run drush-ubuntu-1404-virtualbox test instance
+    <Rake::Task kitchen:drush-ubuntu-1404-virtualbox => []>
+      Run drush-ubuntu-1404-virtualbox test instance
 
-    rake kitchen:drush-ubuntu-1404-vmware
-        Run drush-ubuntu-1404-vmware test instance
+    <Rake::Task kitchen:drush-ubuntu-1404-vmware => []>
+      Run drush-ubuntu-1404-vmware test instance
 
-    rake kitchen:files-centos-65-virtualbox
-        Run files-centos-65-virtualbox test instance
+    <Rake::Task kitchen:files-centos-65-virtualbox => []>
+      Run files-centos-65-virtualbox test instance
 
-    rake kitchen:files-centos-65-vmware
-        Run files-centos-65-vmware test instance
+    <Rake::Task kitchen:files-centos-65-vmware => []>
+      Run files-centos-65-vmware test instance
 
-    rake kitchen:files-ubuntu-1404-virtualbox
-        Run files-ubuntu-1404-virtualbox test instance
+    <Rake::Task kitchen:files-ubuntu-1404-virtualbox => []>
+      Run files-ubuntu-1404-virtualbox test instance
 
-    rake kitchen:files-ubuntu-1404-vmware
-        Run files-ubuntu-1404-vmware test instance
+    <Rake::Task kitchen:files-ubuntu-1404-vmware => []>
+      Run files-ubuntu-1404-vmware test instance
 
-    rake readme
-        Generate the Readme.md file.
+    <Rake::Task readme => []>
+      Generate the Readme.md file.
 
-    rake rubocop
-        Run RuboCop style and lint checks
+    <Rake::Task rubocop => []>
+      Run RuboCop style and lint checks
 
-    rake spec
-        Run ChefSpec examples.
+    <Rake::Task rubocop:auto_correct => []>
+      Auto-correct RuboCop offenses
 
-    rake test
-        Run all tests
+    <Rake::Task spec => []>
+      Run ChefSpec examples
 
-
+    <Rake::Task test => [rubocop, foodcritic, spec, integration]>
+      Run all tests
 
 License and Authors
 ------------------
 
-The following users have contributed to this code:
-*   ["https://github.com/cyberswat", "Kevin Bridges"]
-*   ["https://github.com/arknoll", "Alex Knoll"]
-*   ["https://github.com/DavidXArnold", "David Arnold"]
-*   ["https://github.com/rickmanelius", "Rick Manelius"]
-*   ["https://github.com/timodwhit", "Tim Whitney"]
-*   ["https://github.com/tannerjfco", "tannerjfco"]
-*   ["https://github.com/draenen", "Caleb Thorne"]
-*   ["https://github.com/b-ry", "bryonurbanec"]
-
+The following engineers have contributed to this code:
+ * [Kevin Bridges](https://github.com/cyberswat) - 68 commits
+ * [Alex Knoll, arknoll](https://github.com/arknoll) - 75 commits
+ * [David Arnold](https://github.com/DavidXArnold) - 28 commits
+ * [Rick Manelius](https://github.com/rickmanelius) - 17 commits
+ * [Tim Whitney](https://github.com/timodwhit) - 44 commits
+ * [Chris Caldwell](https://github.com/chrisolof) - 11 commits
+ * [tannerjfco](https://github.com/tannerjfco) - 1 commits
+ * [Caleb Thorne](https://github.com/draenen) - 2 commits
+ * [bryonurbanec](https://github.com/b-ry) - 1 commits
 
 Copyright:: 2014, NewMedia Denver
 

@@ -16,6 +16,6 @@
 # limitations under the License.
 #
 # This example removes code installed in deploy_code.
-nmddrupal_code node[:nmddrupal][:path] do
+nmddrupal_code node['nmddrupal']['path'] do
   action :delete
 end

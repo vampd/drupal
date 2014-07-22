@@ -20,50 +20,48 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-directory node[:nmddrupal][:drush][:dir] do
-  owner node[:nmddrupal][:drush][:owner]
-  group node[:nmddrupal][:drush][:group]
-  mode node[:nmddrupal][:drush][:mode]
+directory node['nmddrupal']['drush']['dir'] do
+  owner node['nmddrupal']['drush']['owner']
+  group node['nmddrupal']['drush']['group']
+  mode node['nmddrupal']['drush']['mode']
   action :create
   recursive true
-  not_if { ::File.directory?(node[:nmddrupal][:drush][:dir]) }
-  only_if { node[:nmddrupal][:drush][:state] == 'install' }
+  not_if { ::File.directory?(node['nmddrupal']['drush']['dir']) }
+  only_if { node['nmddrupal']['drush']['state'] == 'install' }
 end
 
-directory "#{node[:nmddrupal][:drush][:dir]}/shared" do
-  owner node[:nmddrupal][:drush][:owner]
-  group node[:nmddrupal][:drush][:group]
-  mode node[:nmddrupal][:drush][:mode]
+directory "#{node['nmddrupal']['drush']['dir']}/shared" do
+  owner node['nmddrupal']['drush']['owner']
+  group node['nmddrupal']['drush']['group']
+  mode node['nmddrupal']['drush']['mode']
   action :create
-  not_if { ::File.directory?("#{node[:nmddrupal][:drush][:dir]}/shared") }
-  only_if { node[:nmddrupal][:drush][:state] == 'install' }
+  not_if { ::File.directory?("#{node['nmddrupal']['drush']['dir']}/shared") }
+  only_if { node['nmddrupal']['drush']['state'] == 'install' }
 end
 
-deploy node[:nmddrupal][:drush][:dir] do
-  repository node[:nmddrupal][:drush][:repository]
-  revision node[:nmddrupal][:drush][:revision]
+deploy node['nmddrupal']['drush']['dir'] do
+  repository node['nmddrupal']['drush']['repository']
+  revision node['nmddrupal']['drush']['revision']
   keep_releases 1
   symlink_before_migrate.clear
   create_dirs_before_symlink.clear
   purge_before_symlink.clear
   symlinks.clear
-  # rubocop:disable WordArray
-  only_if { ['install', 'update'].include?(node[:nmddrupal][:drush][:state]) }
-  # rubocop:enable WordArray
+  only_if node['nmddrupal']['drush']['state'].match('install,update')
 end
 
-link node[:nmddrupal][:drush][:executable] do
-  to "#{node[:nmddrupal][:drush][:dir]}/current/drush"
+link node['nmddrupal']['drush']['executable'] do
+  to "#{node['nmddrupal']['drush']['dir']}/current/drush"
   link_type :symbolic
-  not_if { ::File.exist?(node[:nmddrupal][:drush][:executable]) }
-  only_if { node[:nmddrupal][:drush][:state] == 'install' }
+  not_if { ::File.exist?(node['nmddrupal']['drush']['executable']) }
+  only_if { node['nmddrupal']['drush']['state'] == 'install' }
 end
 
 ruby_block 'evaluate drush state' do
   block do
-    unless node[:nmddrupal][:drush][:state].match(/ed$/)
-      node.set[:nmddrupal][:drush][:state] =
-        "#{node[:nmddrupal][:drush][:state]}ed"
+    unless node['nmddrupal']['drush']['state'].match(/ed$/)
+      node.set['nmddrupal']['drush']['state'] =
+        "#{node['nmddrupal']['drush']['state']}ed"
       node.save unless Chef::Config[:solo]
     end
   end

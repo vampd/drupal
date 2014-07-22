@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-default[:nmddrupal][:files][:path] = '/default/files'
-default[:nmddrupal][:files][:owner] = 'root'
-default[:nmddrupal][:files][:group] = 'root'
-default[:nmddrupal][:files][:mode] = '755'
+default['nmddrupal']['files']['path'] = '/default/files'
+default['nmddrupal']['files']['owner'] = 'root'
+default['nmddrupal']['files']['group'] = 'root'
+default['nmddrupal']['files']['mode'] = 0755
