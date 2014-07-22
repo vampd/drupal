@@ -8,7 +8,7 @@ notifications:
   hipchat:
     rooms:
       secure: Ij74xOw2IAZyAlkrSNhm/ItEuNJq+XufuZTnMU3lcDMHQ44pwWotKhmdr6guU1OqYXaIl+fqxZ53EG/UlWPeJYHRpOH59wFJr+8dxq4GTFSpFwY0dzoRe7KIY/Fh0h/LcKjN0AwME+yR2S4BboKJXriyl59+vqe7tdqFWvVBTM0=
-script: bundle exec rake test
+script: bundle exec rake travis
 env:
   global:
     secure: QExYR7OwUCYDDf9vge8KJssdpnj/vaykZjHzI4Og5dKRHAi+4psOCyymiBwLTKj/s5OUlu3Lf5SbbRI8cWrwUQE7r65ZB+A2HapEgwj1AxstV8v7XCR82b6vf7+tuM9y8qYZX3zr3vtc+M7OTMwpWqKpKXrySDQ0g1B8sW4hqGc=
