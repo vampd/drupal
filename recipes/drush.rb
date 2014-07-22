@@ -47,7 +47,7 @@ deploy node['nmddrupal']['drush']['dir'] do
   create_dirs_before_symlink.clear
   purge_before_symlink.clear
   symlinks.clear
-  only_if %w(install update).include?(node['nmddrupal']['drush']['state'])
+  only_if node['nmddrupal']['drush']['state'].match('install,update')
 end
 
 link node['nmddrupal']['drush']['executable'] do
