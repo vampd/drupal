@@ -19,11 +19,11 @@
 include_recipe 'git::default'
 
 # This example uses each of the exposed attributes.
-nmddrupal_code node[:nmddrupal][:path] do
-  owner node[:nmddrupal][:owner]
-  group node[:nmddrupal][:group]
-  mode node[:nmddrupal][:mode]
-  repository node[:nmddrupal][:repository]
-  revision node[:nmddrupal][:revision]
-  releases node[:nmddrupal][:releases]
+nmddrupal_code node['nmddrupal']['path'] do
+  owner node['nmddrupal']['owner']
+  group node['nmddrupal']['group']
+  mode node['nmddrupal']['mode']
+  repository node['nmddrupal']['repository']
+  revision node['nmddrupal']['revision']
+  releases node['nmddrupal']['releases']
 end

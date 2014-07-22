@@ -18,18 +18,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-default[:nmddrupal][:drush][:revision] = '6.3.0'
-default[:nmddrupal][:drush][:repository] =
+default['nmddrupal']['drush']['revision'] = '6.3.0'
+default['nmddrupal']['drush']['repository'] =
   'https://github.com/drush-ops/drush.git'
-default[:nmddrupal][:drush][:dir] = '/opt/drush'
-default[:nmddrupal][:drush][:executable] = '/usr/bin/drush'
-default[:nmddrupal][:drush][:owner] = 'root'
-default[:nmddrupal][:drush][:group] = 'root'
-default[:nmddrupal][:drush][:mode] = '0755'
+default['nmddrupal']['drush']['dir'] = '/opt/drush'
+default['nmddrupal']['drush']['executable'] = '/usr/bin/drush'
+default['nmddrupal']['drush']['owner'] = 'root'
+default['nmddrupal']['drush']['group'] = 'root'
+default['nmddrupal']['drush']['mode'] = '0755'
 
 # States control what happens during the run. Listed below are the start and
 # end states that we trigger events from.
 # - install -> installed
 # - update -> updated
 # - purge -> purged
-default[:nmddrupal][:drush][:state] = 'install'
+default['nmddrupal']['drush']['state'] = 'install'
