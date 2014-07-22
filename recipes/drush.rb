@@ -47,11 +47,7 @@ deploy node['nmddrupal']['drush']['dir'] do
   create_dirs_before_symlink.clear
   purge_before_symlink.clear
   symlinks.clear
-  only_if do
-    # rubocop:disable WordArray
-    ['install', 'update'].include?(node['nmddrupal']['drush']['state'])
-    # rubocop:enable WordArray
-  end
+  only_if %w(install update).include?(node['nmddrupal']['drush']['state'])
 end
 
 link node['nmddrupal']['drush']['executable'] do
