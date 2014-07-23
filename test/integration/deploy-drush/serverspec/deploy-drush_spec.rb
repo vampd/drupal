@@ -11,5 +11,6 @@ RSpec.configure do |c|
 end
 
 describe command('which drush') do
+  it { should return_exit_status 0 }
   it { should return_stdout '/usr/bin/drush' }
 end

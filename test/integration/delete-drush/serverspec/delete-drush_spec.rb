@@ -10,11 +10,9 @@ RSpec.configure do |c|
   end
 end
 
-# This makes sure that the www directory was created during a deploy-code.
-describe file('/srv/www') do
-  it { should be_directory }
-end
-
-describe command('ls /srv/www/example') do
+describe command('ls /opt/drush') do
   it { should return_exit_status 2 }
+end
+describe command('which drush') do
+  it { should return_exit_status 1 }
 end
