@@ -434,15 +434,7 @@ License and Authors
 ------------------
 
 The following engineers have contributed to this code:
-<<<<<<< HEAD
-<<<<<<< HEAD
- * [Kevin Bridges](https://github.com/cyberswat) - 99 commits
-=======
- * [Kevin Bridges](https://github.com/cyberswat) - 88 commits
->>>>>>> Updating readme.
-=======
- * [Kevin Bridges](https://github.com/cyberswat) - 88 commits
->>>>>>> fe1e4dac4d6f46af224e57e5dc8cd267fff423ef
+ * [Kevin Bridges](https://github.com/cyberswat) - 107 commits
  * [Alex Knoll, arknoll](https://github.com/arknoll) - 75 commits
  * [David Arnold](https://github.com/DavidXArnold) - 28 commits
  * [Rick Manelius](https://github.com/rickmanelius) - 17 commits
