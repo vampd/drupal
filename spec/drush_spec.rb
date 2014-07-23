@@ -33,3 +33,32 @@ describe 'nmddrupal::deploy_drush' do
     end
   end
 end
+
+describe 'nmddrupal::delete_drush' do
+  platforms = {
+    'ubuntu' => {
+      'versions' => ['12.04', '13.04', '14.04']
+    },
+    'centos' => {
+      'versions' => ['5.9', '6.0', '6.2', '6.3', '6.4', '6.5', '7.0']
+    }
+  }
+  platforms.each do |platform, versions|
+    versions['versions'].each do |version|
+      context "On #{platform} #{version}" do
+        before do
+          Fauxhai.mock(platform: platform, version: version)
+        end
+
+        let(:chef_run) { ChefSpec::Runner.new.converge(described_recipe) }
+
+        it 'deletes drush' do
+          expect(chef_run).to delete_nmddrupal_drush('/opt/drush').with(
+            executable: '/usr/bin/drush',
+            action: [:delete]
+          )
+        end
+      end
+    end
+  end
+end
