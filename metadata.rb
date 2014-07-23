@@ -129,9 +129,9 @@ attribute(
   default: 'https://github.com/drush-ops/drush.git'
 )
 attribute(
-  'nmddrupal/drush/dir',
-  display_name: '[:nmddrupal][:drush][:dir]',
-  description: 'This folder stores the clone repository.',
+  'nmddrupal/drush/path',
+  display_name: '[:nmddrupal][:drush][:path]',
+  description: 'The path to deploy to.',
   type: 'string',
   required: 'recommended',
   recipes: ['nmddrupal::drush'],

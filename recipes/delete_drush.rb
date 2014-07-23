@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 # This example removes code installed in deploy_code.
-nmddrupal_drush node[:nmddrupal][:drush][:path] do
-  executable node[:nmddrupal][:drush][:executable]
+nmddrupal_drush node['nmddrupal']['drush']['path'] do
+  executable node['nmddrupal']['drush']['executable']
   action :delete
 end

@@ -19,12 +19,12 @@
 include_recipe 'git::default'
 
 # This example uses each of the exposed attributes.
-nmddrupal_drush node[:nmddrupal][:drush][:path] do
-  owner node[:nmddrupal][:drush][:owner]
-  group node[:nmddrupal][:drush][:group]
-  mode node[:nmddrupal][:drush][:mode]
-  repository node[:nmddrupal][:drush][:repository]
-  revision node[:nmddrupal][:drush][:revision]
-  releases node[:nmddrupal][:drush][:releases]
-  executable node[:nmddrupal][:drush][:executable]
+nmddrupal_drush node['nmddrupal']['drush']['path'] do
+  owner node['nmddrupal']['drush']['owner']
+  group node['nmddrupal']['drush']['group']
+  mode node['nmddrupal']['drush']['mode']
+  repository node['nmddrupal']['drush']['repository']
+  revision node['nmddrupal']['drush']['revision']
+  releases node['nmddrupal']['drush']['releases']
+  executable node['nmddrupal']['drush']['executable']
 end
