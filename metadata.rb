@@ -14,15 +14,27 @@ description desc
 
 depends 'git'
 depends 'ssh_known_hosts', '~> 1.1.0'
+depends 'mysql', '~> 5.3.6'
+depends 'database', '~> 2.2.0'
 
 long_description 'Manages the installation and configuration of Drupal.'
 recipe 'nmddrupal::default', desc
 delete_code_desc = 'An example recipe that illustrates using the '
 delete_code_desc << 'nmddrupal_code LWRP to delete Drupal code.'
 recipe 'nmddrupal::delete_code', delete_code_desc
+
 deploy_code_desc = 'An example recipe that illustrates using the '
 deploy_code_desc << 'nmddrupal_code LWRP to deploy Drupal code.'
 recipe 'nmddrupal::deploy_code', deploy_code_desc
+
+deploy_mysql = 'Example wrapper recipe that creates a mysql database, mysql '
+deploy_mysql << 'database user, and sets grants for Drupal.'
+recipe 'nmddrupal::deploy_mysql', deploy_mysql
+
+delete_mysql = 'Example wrapper recipe that removes a mysql database, user '
+delete_mysql << 'and grants.'
+recipe 'nmddrupal::delete_mysql', delete_mysql
+
 recipe 'nmddrupal::files', 'Manages files'
 
 grouping(
@@ -67,7 +79,7 @@ attribute(
   default: 00755
 )
 attribute(
-  'nmddrupal/mode',
+  'nmddrupal/repository',
   display_name: '[:nmddrupal][:repository]',
   description: 'The repository to request the code from.',
   type: 'string',
@@ -76,7 +88,7 @@ attribute(
   default: 'http://git.drupal.org/project/drupal.git'
 )
 attribute(
-  'nmddrupal/mode',
+  'nmddrupal/revision',
   display_name: '[:nmddrupal][:revision]',
   description: 'The repository revision to request the code from.',
   type: 'string',
@@ -85,8 +97,8 @@ attribute(
   default: '7.x'
 )
 attribute(
-  'nmddrupal/mode',
-  display_name: '[:nmddrupal][:revision]',
+  'nmddrupal/releases',
+  display_name: '[:nmddrupal][:releases]',
   description: 'The number of releases to keep.',
   type: 'string',
   required: 'required',
@@ -210,4 +222,71 @@ attribute(
   required: 'recommended',
   recipes: ['nmddrupal::files'],
   default: '0755'
+)
+grouping(
+  'nmddrupal/database',
+  title: 'Files attributes',
+  description: 'Files recipe attributes'
+)
+
+driver_desc = 'The driver property indicates what Drupal database driver the '
+driver_desc << 'connection should use.'
+attribute(
+  'nmddrupal/database/driver',
+  display_name: '[:nmddrupal][:databse][:driver]',
+  description: driver_desc,
+  type: 'string',
+  required: 'recommended',
+  recipes: ['nmddrupal::database'],
+  default: 'mysql'
+)
+
+attribute(
+  'nmddrupal/database/database',
+  display_name: '[:nmddrupal][:database][:database]',
+  description: 'The name of the database.',
+  type: 'string',
+  required: 'recommended',
+  recipes: ['nmddrupal::database'],
+  default: 'example'
+)
+
+attribute(
+  'nmddrupal/database/username',
+  display_name: '[:nmddrupal][:database][:username]',
+  description: 'The database username for the site.',
+  type: 'string',
+  required: 'recommended',
+  recipes: ['nmddrupal::database'],
+  default: 'drupal_db_user'
+)
+
+attribute(
+  'nmddrupal/database/password',
+  display_name: '[:nmddrupal][:database][:password]',
+  description: 'The database user\'s password for the site.',
+  type: 'string',
+  required: 'recommended',
+  recipes: ['nmddrupal::database'],
+  default: 'randompassword'
+)
+
+attribute(
+  'nmddrupal/database/host',
+  display_name: '[:nmddrupal][:database][:host]',
+  description: 'The host for the database.',
+  type: 'string',
+  required: 'recommended',
+  recipes: ['nmddrupal::database'],
+  default: 'localhost'
+)
+
+attribute(
+  'nmddrupal/database/prefix',
+  display_name: '[:nmddrupal][:database][:prefix]',
+  description: 'An optional prefix for the database tables.',
+  type: 'string',
+  required: 'recommended',
+  recipes: ['nmddrupal::database'],
+  default: ''
 )

@@ -26,6 +26,7 @@ suites:
   - name: default
     run_list:
       - recipe[git::default]
+      - recipe[mysql::server]
       - recipe[nmddrupal::drush]
       - recipe[nmddrupal::files]
       - recipe[nmddrupal::deploy_code]
@@ -43,3 +44,12 @@ suites:
     run_list:
       - recipe[nmddrupal::deploy_code]
       - recipe[nmddrupal::delete_code]
+  - name: deploy-mysql
+    run_list:
+      - recipe[mysql::server]
+      - recipe[nmddrupal::deploy_mysql]
+  - name: delete-mysql
+    run_list:
+      - recipe[mysql::server]
+      - recipe[nmddrupal::deploy_mysql]
+      - recipe[nmddrupal::delete_mysql]
