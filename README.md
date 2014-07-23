@@ -20,6 +20,10 @@ Requirements
 
 `ssh_known_hosts ~> 1.1.0`
 
+`mysql ~> 5.3.6`
+
+`database ~> 2.2.0`
+
 
 Attributes
 ----------
@@ -57,9 +61,39 @@ Attributes
     nmddrupal/mode
       calculated: false
       choice: []
+      default: 493
+      description: The mode of the directory the code is being deployed to.
+      display_name: [:nmddrupal][:mode]
+      type: string
+      recipes: ["nmddrupal::deploy_code"]
+      required: required
+
+    nmddrupal/repository
+      calculated: false
+      choice: []
+      default: http://git.drupal.org/project/drupal.git
+      description: The repository to request the code from.
+      display_name: [:nmddrupal][:repository]
+      type: string
+      recipes: ["nmddrupal::deploy_code"]
+      required: required
+
+    nmddrupal/revision
+      calculated: false
+      choice: []
+      default: 7.x
+      description: The repository revision to request the code from.
+      display_name: [:nmddrupal][:revision]
+      type: string
+      recipes: ["nmddrupal::deploy_code"]
+      required: required
+
+    nmddrupal/releases
+      calculated: false
+      choice: []
       default: 7.x
       description: The number of releases to keep.
-      display_name: [:nmddrupal][:revision]
+      display_name: [:nmddrupal][:releases]
       type: string
       recipes: ["nmddrupal::deploy_code"]
       required: required
@@ -184,6 +218,66 @@ Attributes
       recipes: ["nmddrupal::files"]
       required: recommended
 
+    nmddrupal/database/driver
+      calculated: false
+      choice: []
+      default: mysql
+      description: The driver property indicates what Drupal database driver the connection should use.
+      display_name: [:nmddrupal][:databse][:driver]
+      type: string
+      recipes: ["nmddrupal::database"]
+      required: recommended
+
+    nmddrupal/database/database
+      calculated: false
+      choice: []
+      default: example
+      description: The name of the database.
+      display_name: [:nmddrupal][:database][:database]
+      type: string
+      recipes: ["nmddrupal::database"]
+      required: recommended
+
+    nmddrupal/database/username
+      calculated: false
+      choice: []
+      default: drupal_db_user
+      description: The database username for the site.
+      display_name: [:nmddrupal][:database][:username]
+      type: string
+      recipes: ["nmddrupal::database"]
+      required: recommended
+
+    nmddrupal/database/password
+      calculated: false
+      choice: []
+      default: randompassword
+      description: The database user's password for the site.
+      display_name: [:nmddrupal][:database][:password]
+      type: string
+      recipes: ["nmddrupal::database"]
+      required: recommended
+
+    nmddrupal/database/host
+      calculated: false
+      choice: []
+      default: localhost
+      description: The host for the database.
+      display_name: [:nmddrupal][:database][:host]
+      type: string
+      recipes: ["nmddrupal::database"]
+      required: recommended
+
+    nmddrupal/database/prefix
+      calculated: false
+      choice: []
+      default: 
+      description: An optional prefix for the database tables.
+      display_name: [:nmddrupal][:database][:prefix]
+      type: string
+      recipes: ["nmddrupal::database"]
+      required: recommended
+
 
 Recipes
 -------
@@ -197,102 +291,138 @@ Recipes
     nmddrupal::deploy_code
       An example recipe that illustrates using the nmddrupal_code LWRP to deploy Drupal code.
 
+    nmddrupal::deploy_mysql
+      Example wrapper recipe that creates a mysql database, mysql database user, and sets grants for Drupal.
+
+    nmddrupal::delete_mysql
+      Example wrapper recipe that removes a mysql database, user and grants.
+
     nmddrupal::files
       Manages files
 
 Testing and Utility
 -------
-    <Rake::Task default => [test]>
+    <Rake::Task default => [style, integration:kitchen:all]>
 
-    <Rake::Task foodcritic => []>
-      Run Foodcritic lint checks
-
-    <Rake::Task integration => [kitchen:all]>
-      Alias for kitchen:all
-
-    <Rake::Task kitchen:all => [default-ubuntu-1404-vmware, default-ubuntu-1404-virtualbox, default-centos-65-vmware, default-centos-65-virtualbox, drush-ubuntu-1404-vmware, drush-ubuntu-1404-virtualbox, drush-centos-65-vmware, drush-centos-65-virtualbox, files-ubuntu-1404-vmware, files-ubuntu-1404-virtualbox, files-centos-65-vmware, files-centos-65-virtualbox, deploy-code-ubuntu-1404-vmware, deploy-code-ubuntu-1404-virtualbox, deploy-code-centos-65-vmware, deploy-code-centos-65-virtualbox, delete-code-ubuntu-1404-vmware, delete-code-ubuntu-1404-virtualbox, delete-code-centos-65-vmware, delete-code-centos-65-virtualbox]>
+    <Rake::Task integration:kitchen:all => [default-ubuntu-1404-vmware, default-ubuntu-1404-virtualbox, default-centos-65-vmware, default-centos-65-virtualbox, drush-ubuntu-1404-vmware, drush-ubuntu-1404-virtualbox, drush-centos-65-vmware, drush-centos-65-virtualbox, files-ubuntu-1404-vmware, files-ubuntu-1404-virtualbox, files-centos-65-vmware, files-centos-65-virtualbox, deploy-code-ubuntu-1404-vmware, deploy-code-ubuntu-1404-virtualbox, deploy-code-centos-65-vmware, deploy-code-centos-65-virtualbox, delete-code-ubuntu-1404-vmware, delete-code-ubuntu-1404-virtualbox, delete-code-centos-65-vmware, delete-code-centos-65-virtualbox, deploy-mysql-ubuntu-1404-vmware, deploy-mysql-ubuntu-1404-virtualbox, deploy-mysql-centos-65-vmware, deploy-mysql-centos-65-virtualbox, delete-mysql-ubuntu-1404-vmware, delete-mysql-ubuntu-1404-virtualbox, delete-mysql-centos-65-vmware, delete-mysql-centos-65-virtualbox]>
       Run all test instances
 
-    <Rake::Task kitchen:default-centos-65-virtualbox => []>
+    <Rake::Task integration:kitchen:default-centos-65-virtualbox => []>
       Run default-centos-65-virtualbox test instance
 
-    <Rake::Task kitchen:default-centos-65-vmware => []>
+    <Rake::Task integration:kitchen:default-centos-65-vmware => []>
       Run default-centos-65-vmware test instance
 
-    <Rake::Task kitchen:default-ubuntu-1404-virtualbox => []>
+    <Rake::Task integration:kitchen:default-ubuntu-1404-virtualbox => []>
       Run default-ubuntu-1404-virtualbox test instance
 
-    <Rake::Task kitchen:default-ubuntu-1404-vmware => []>
+    <Rake::Task integration:kitchen:default-ubuntu-1404-vmware => []>
       Run default-ubuntu-1404-vmware test instance
 
-    <Rake::Task kitchen:delete-code-centos-65-virtualbox => []>
+    <Rake::Task integration:kitchen:delete-code-centos-65-virtualbox => []>
       Run delete-code-centos-65-virtualbox test instance
 
-    <Rake::Task kitchen:delete-code-centos-65-vmware => []>
+    <Rake::Task integration:kitchen:delete-code-centos-65-vmware => []>
       Run delete-code-centos-65-vmware test instance
 
-    <Rake::Task kitchen:delete-code-ubuntu-1404-virtualbox => []>
+    <Rake::Task integration:kitchen:delete-code-ubuntu-1404-virtualbox => []>
       Run delete-code-ubuntu-1404-virtualbox test instance
 
-    <Rake::Task kitchen:delete-code-ubuntu-1404-vmware => []>
+    <Rake::Task integration:kitchen:delete-code-ubuntu-1404-vmware => []>
       Run delete-code-ubuntu-1404-vmware test instance
 
-    <Rake::Task kitchen:deploy-code-centos-65-virtualbox => []>
+    <Rake::Task integration:kitchen:delete-mysql-centos-65-virtualbox => []>
+      Run delete-mysql-centos-65-virtualbox test instance
+
+    <Rake::Task integration:kitchen:delete-mysql-centos-65-vmware => []>
+      Run delete-mysql-centos-65-vmware test instance
+
+    <Rake::Task integration:kitchen:delete-mysql-ubuntu-1404-virtualbox => []>
+      Run delete-mysql-ubuntu-1404-virtualbox test instance
+
+    <Rake::Task integration:kitchen:delete-mysql-ubuntu-1404-vmware => []>
+      Run delete-mysql-ubuntu-1404-vmware test instance
+
+    <Rake::Task integration:kitchen:deploy-code-centos-65-virtualbox => []>
       Run deploy-code-centos-65-virtualbox test instance
 
-    <Rake::Task kitchen:deploy-code-centos-65-vmware => []>
+    <Rake::Task integration:kitchen:deploy-code-centos-65-vmware => []>
       Run deploy-code-centos-65-vmware test instance
 
-    <Rake::Task kitchen:deploy-code-ubuntu-1404-virtualbox => []>
+    <Rake::Task integration:kitchen:deploy-code-ubuntu-1404-virtualbox => []>
       Run deploy-code-ubuntu-1404-virtualbox test instance
 
-    <Rake::Task kitchen:deploy-code-ubuntu-1404-vmware => []>
+    <Rake::Task integration:kitchen:deploy-code-ubuntu-1404-vmware => []>
       Run deploy-code-ubuntu-1404-vmware test instance
 
-    <Rake::Task kitchen:drush-centos-65-virtualbox => []>
+    <Rake::Task integration:kitchen:deploy-mysql-centos-65-virtualbox => []>
+      Run deploy-mysql-centos-65-virtualbox test instance
+
+    <Rake::Task integration:kitchen:deploy-mysql-centos-65-vmware => []>
+      Run deploy-mysql-centos-65-vmware test instance
+
+    <Rake::Task integration:kitchen:deploy-mysql-ubuntu-1404-virtualbox => []>
+      Run deploy-mysql-ubuntu-1404-virtualbox test instance
+
+    <Rake::Task integration:kitchen:deploy-mysql-ubuntu-1404-vmware => []>
+      Run deploy-mysql-ubuntu-1404-vmware test instance
+
+    <Rake::Task integration:kitchen:drush-centos-65-virtualbox => []>
       Run drush-centos-65-virtualbox test instance
 
-    <Rake::Task kitchen:drush-centos-65-vmware => []>
+    <Rake::Task integration:kitchen:drush-centos-65-vmware => []>
       Run drush-centos-65-vmware test instance
 
-    <Rake::Task kitchen:drush-ubuntu-1404-virtualbox => []>
+    <Rake::Task integration:kitchen:drush-ubuntu-1404-virtualbox => []>
       Run drush-ubuntu-1404-virtualbox test instance
 
-    <Rake::Task kitchen:drush-ubuntu-1404-vmware => []>
+    <Rake::Task integration:kitchen:drush-ubuntu-1404-vmware => []>
       Run drush-ubuntu-1404-vmware test instance
 
-    <Rake::Task kitchen:files-centos-65-virtualbox => []>
+    <Rake::Task integration:kitchen:files-centos-65-virtualbox => []>
       Run files-centos-65-virtualbox test instance
 
-    <Rake::Task kitchen:files-centos-65-vmware => []>
+    <Rake::Task integration:kitchen:files-centos-65-vmware => []>
       Run files-centos-65-vmware test instance
 
-    <Rake::Task kitchen:files-ubuntu-1404-virtualbox => []>
+    <Rake::Task integration:kitchen:files-ubuntu-1404-virtualbox => []>
       Run files-ubuntu-1404-virtualbox test instance
 
-    <Rake::Task kitchen:files-ubuntu-1404-vmware => []>
+    <Rake::Task integration:kitchen:files-ubuntu-1404-vmware => []>
       Run files-ubuntu-1404-vmware test instance
 
-    <Rake::Task readme => []>
-      Generate the Readme.md file.
+    <Rake::Task readme => [utility:readme]>
+      Generate README.md
 
-    <Rake::Task rubocop => []>
-      Run RuboCop style and lint checks
+    <Rake::Task spec => [style:spec]>
+      Run rspec tests.
 
-    <Rake::Task rubocop:auto_correct => []>
+    <Rake::Task style => [style:chef, style:ruby, style:spec]>
+      Run all style checks
+
+    <Rake::Task style:chef => []>
+      Run Chef style checks
+
+    <Rake::Task style:ruby => []>
+      Run Ruby style checks
+
+    <Rake::Task style:ruby:auto_correct => []>
       Auto-correct RuboCop offenses
 
-    <Rake::Task spec => []>
-      Run ChefSpec examples
+    <Rake::Task style:spec => []>
+      Run rspec tests.
 
-    <Rake::Task test => [rubocop, foodcritic, spec, integration]>
-      Run all tests
+    <Rake::Task travis => [style]>
+      Run all tests on Travis
+
+    <Rake::Task utility:readme => []>
+      Generate the Readme.md file.
 
 License and Authors
 ------------------
 
 The following engineers have contributed to this code:
- * [Kevin Bridges](https://github.com/cyberswat) - 68 commits
+ * [Kevin Bridges](https://github.com/cyberswat) - 84 commits
  * [Alex Knoll, arknoll](https://github.com/arknoll) - 75 commits
  * [David Arnold](https://github.com/DavidXArnold) - 28 commits
  * [Rick Manelius](https://github.com/rickmanelius) - 17 commits

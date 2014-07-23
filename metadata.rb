@@ -22,9 +22,19 @@ recipe 'nmddrupal::default', desc
 delete_code_desc = 'An example recipe that illustrates using the '
 delete_code_desc << 'nmddrupal_code LWRP to delete Drupal code.'
 recipe 'nmddrupal::delete_code', delete_code_desc
+
 deploy_code_desc = 'An example recipe that illustrates using the '
 deploy_code_desc << 'nmddrupal_code LWRP to deploy Drupal code.'
 recipe 'nmddrupal::deploy_code', deploy_code_desc
+
+deploy_mysql = 'Example wrapper recipe that creates a mysql database, mysql '
+deploy_mysql << 'database user, and sets grants for Drupal.'
+recipe 'nmddrupal::deploy_mysql', deploy_mysql
+
+delete_mysql = 'Example wrapper recipe that removes a mysql database, user '
+delete_mysql << 'and grants.'
+recipe 'nmddrupal::delete_mysql', delete_mysql
+
 recipe 'nmddrupal::files', 'Manages files'
 
 grouping(
