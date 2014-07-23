@@ -42,6 +42,7 @@ grouping(
   title: 'nmddrupal attributes',
   description: 'nmddrupal defaultattributes'
 )
+
 attribute(
   'nmddrupal/path',
   display_name: '[:nmddrupal][:path]',
@@ -51,6 +52,7 @@ attribute(
   recipes: ['nmddrupal::deploy_code'],
   default: '/srv/www/example'
 )
+
 attribute(
   'nmddrupal/owner',
   display_name: '[:nmddrupal][:owner]',
@@ -60,6 +62,7 @@ attribute(
   recipes: ['nmddrupal::deploy_code'],
   default: 'www-data'
 )
+
 attribute(
   'nmddrupal/group',
   display_name: '[:nmddrupal][:group]',
@@ -69,6 +72,7 @@ attribute(
   recipes: ['nmddrupal::deploy_code'],
   default: 'www-data'
 )
+
 attribute(
   'nmddrupal/mode',
   display_name: '[:nmddrupal][:mode]',
@@ -78,6 +82,7 @@ attribute(
   recipes: ['nmddrupal::deploy_code'],
   default: 00755
 )
+
 attribute(
   'nmddrupal/repository',
   display_name: '[:nmddrupal][:repository]',
@@ -87,6 +92,7 @@ attribute(
   recipes: ['nmddrupal::deploy_code'],
   default: 'http://git.drupal.org/project/drupal.git'
 )
+
 attribute(
   'nmddrupal/revision',
   display_name: '[:nmddrupal][:revision]',
@@ -96,6 +102,7 @@ attribute(
   recipes: ['nmddrupal::deploy_code'],
   default: '7.x'
 )
+
 attribute(
   'nmddrupal/releases',
   display_name: '[:nmddrupal][:releases]',
@@ -105,11 +112,13 @@ attribute(
   recipes: ['nmddrupal::deploy_code'],
   default: '7.x'
 )
+
 grouping(
   'nmddrupal/drush',
   title: 'Drush attributes',
   description: 'Drush recipe attributes'
 )
+
 attribute(
   'nmddrupal/drush/revision',
   display_name: '[:nmddrupal][:drush][:revision]',
@@ -119,6 +128,7 @@ attribute(
   recipes: ['nmddrupal::drush'],
   default: '6.3.0'
 )
+
 attribute(
   'nmddrupal/drush/repository',
   display_name: '[:nmddrupal][:drush][:repository]',
@@ -128,6 +138,7 @@ attribute(
   recipes: ['nmddrupal::drush'],
   default: 'https://github.com/drush-ops/drush.git'
 )
+
 attribute(
   'nmddrupal/drush/path',
   display_name: '[:nmddrupal][:drush][:path]',
@@ -137,6 +148,7 @@ attribute(
   recipes: ['nmddrupal::drush'],
   default: '/opt/drush'
 )
+
 attribute(
   'nmddrupal/drush/executable',
   display_name: '[:nmddrupal][:drush][:executable]',
@@ -146,6 +158,7 @@ attribute(
   recipes: ['nmddrupal::drush'],
   default: '/usr/bin/drush'
 )
+
 attribute(
   'nmddrupal/drush/owner',
   display_name: '[:nmddrupal][:drush][:owner]',
@@ -155,6 +168,7 @@ attribute(
   recipes: ['nmddrupal::drush'],
   default: 'root'
 )
+
 attribute(
   'nmddrupal/drush/group',
   display_name: '[:nmddrupal][:drush][:group]',
@@ -164,6 +178,7 @@ attribute(
   recipes: ['nmddrupal::drush'],
   default: 'root'
 )
+
 attribute(
   'nmddrupal/drush/mode',
   display_name: '[:nmddrupal][:drush][:mode]',
@@ -173,6 +188,7 @@ attribute(
   recipes: ['nmddrupal::drush'],
   default: '755'
 )
+
 attribute(
   'nmddrupal/drush/state',
   display_name: '[:nmddrupal][:drush][:state]',
@@ -182,11 +198,13 @@ attribute(
   recipes: ['nmddrupal::drush'],
   default: 'install'
 )
+
 grouping(
   'nmddrupal/files',
   title: 'Files attributes',
   description: 'Files recipe attributes'
 )
+
 attribute(
   'nmddrupal/files/path',
   display_name: '[:nmddrupal][:files][:path]',
@@ -196,6 +214,7 @@ attribute(
   recipes: ['nmddrupal::files'],
   default: '/default/files'
 )
+
 attribute(
   'nmddrupal/files/owner',
   display_name: '[:nmddrupal][:files][:owner]',
@@ -205,6 +224,7 @@ attribute(
   recipes: ['nmddrupal::files'],
   default: 'root'
 )
+
 attribute(
   'nmddrupal/files/group',
   display_name: '[:nmddrupal][:files][:path]',
@@ -214,6 +234,7 @@ attribute(
   recipes: ['nmddrupal::files'],
   default: 'root'
 )
+
 attribute(
   'nmddrupal/files/mode',
   display_name: '[:nmddrupal][:files][:mode]',
@@ -223,6 +244,7 @@ attribute(
   recipes: ['nmddrupal::files'],
   default: '0755'
 )
+
 grouping(
   'nmddrupal/database',
   title: 'Files attributes',
