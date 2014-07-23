@@ -21,7 +21,7 @@
 default['nmddrupal']['drush']['revision'] = '6.3.0'
 default['nmddrupal']['drush']['repository'] =
   'https://github.com/drush-ops/drush.git'
-default['nmddrupal']['drush']['dir'] = '/opt/drush'
+default['nmddrupal']['drush']['path'] = '/opt/drush'
 default['nmddrupal']['drush']['executable'] = '/usr/bin/drush'
 default['nmddrupal']['drush']['owner'] = 'root'
 default['nmddrupal']['drush']['group'] = 'root'
