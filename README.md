@@ -118,12 +118,12 @@ Attributes
       recipes: ["nmddrupal::drush"]
       required: recommended
 
-    nmddrupal/drush/dir
+    nmddrupal/drush/path
       calculated: false
       choice: []
       default: /opt/drush
-      description: This folder stores the clone repository.
-      display_name: [:nmddrupal][:drush][:dir]
+      description: The path to deploy to.
+      display_name: [:nmddrupal][:drush][:path]
       type: string
       recipes: ["nmddrupal::drush"]
       required: recommended
@@ -304,7 +304,7 @@ Testing and Utility
 -------
     <Rake::Task default => [style, integration:kitchen:all]>
 
-    <Rake::Task integration:kitchen:all => [default-ubuntu-1404-vmware, default-ubuntu-1404-virtualbox, default-centos-65-vmware, default-centos-65-virtualbox, drush-ubuntu-1404-vmware, drush-ubuntu-1404-virtualbox, drush-centos-65-vmware, drush-centos-65-virtualbox, files-ubuntu-1404-vmware, files-ubuntu-1404-virtualbox, files-centos-65-vmware, files-centos-65-virtualbox, deploy-code-ubuntu-1404-vmware, deploy-code-ubuntu-1404-virtualbox, deploy-code-centos-65-vmware, deploy-code-centos-65-virtualbox, delete-code-ubuntu-1404-vmware, delete-code-ubuntu-1404-virtualbox, delete-code-centos-65-vmware, delete-code-centos-65-virtualbox, deploy-mysql-ubuntu-1404-vmware, deploy-mysql-ubuntu-1404-virtualbox, deploy-mysql-centos-65-vmware, deploy-mysql-centos-65-virtualbox, delete-mysql-ubuntu-1404-vmware, delete-mysql-ubuntu-1404-virtualbox, delete-mysql-centos-65-vmware, delete-mysql-centos-65-virtualbox]>
+    <Rake::Task integration:kitchen:all => [default-ubuntu-1404-vmware, default-ubuntu-1404-virtualbox, default-centos-65-vmware, default-centos-65-virtualbox, deploy-drush-ubuntu-1404-vmware, deploy-drush-ubuntu-1404-virtualbox, deploy-drush-centos-65-vmware, deploy-drush-centos-65-virtualbox, delete-drush-ubuntu-1404-vmware, delete-drush-ubuntu-1404-virtualbox, delete-drush-centos-65-vmware, delete-drush-centos-65-virtualbox, files-ubuntu-1404-vmware, files-ubuntu-1404-virtualbox, files-centos-65-vmware, files-centos-65-virtualbox, deploy-code-ubuntu-1404-vmware, deploy-code-ubuntu-1404-virtualbox, deploy-code-centos-65-vmware, deploy-code-centos-65-virtualbox, delete-code-ubuntu-1404-vmware, delete-code-ubuntu-1404-virtualbox, delete-code-centos-65-vmware, delete-code-centos-65-virtualbox, deploy-mysql-ubuntu-1404-vmware, deploy-mysql-ubuntu-1404-virtualbox, deploy-mysql-centos-65-vmware, deploy-mysql-centos-65-virtualbox, delete-mysql-ubuntu-1404-vmware, delete-mysql-ubuntu-1404-virtualbox, delete-mysql-centos-65-vmware, delete-mysql-centos-65-virtualbox]>
       Run all test instances
 
     <Rake::Task integration:kitchen:default-centos-65-virtualbox => []>
@@ -331,6 +331,18 @@ Testing and Utility
     <Rake::Task integration:kitchen:delete-code-ubuntu-1404-vmware => []>
       Run delete-code-ubuntu-1404-vmware test instance
 
+    <Rake::Task integration:kitchen:delete-drush-centos-65-virtualbox => []>
+      Run delete-drush-centos-65-virtualbox test instance
+
+    <Rake::Task integration:kitchen:delete-drush-centos-65-vmware => []>
+      Run delete-drush-centos-65-vmware test instance
+
+    <Rake::Task integration:kitchen:delete-drush-ubuntu-1404-virtualbox => []>
+      Run delete-drush-ubuntu-1404-virtualbox test instance
+
+    <Rake::Task integration:kitchen:delete-drush-ubuntu-1404-vmware => []>
+      Run delete-drush-ubuntu-1404-vmware test instance
+
     <Rake::Task integration:kitchen:delete-mysql-centos-65-virtualbox => []>
       Run delete-mysql-centos-65-virtualbox test instance
 
@@ -355,6 +367,18 @@ Testing and Utility
     <Rake::Task integration:kitchen:deploy-code-ubuntu-1404-vmware => []>
       Run deploy-code-ubuntu-1404-vmware test instance
 
+    <Rake::Task integration:kitchen:deploy-drush-centos-65-virtualbox => []>
+      Run deploy-drush-centos-65-virtualbox test instance
+
+    <Rake::Task integration:kitchen:deploy-drush-centos-65-vmware => []>
+      Run deploy-drush-centos-65-vmware test instance
+
+    <Rake::Task integration:kitchen:deploy-drush-ubuntu-1404-virtualbox => []>
+      Run deploy-drush-ubuntu-1404-virtualbox test instance
+
+    <Rake::Task integration:kitchen:deploy-drush-ubuntu-1404-vmware => []>
+      Run deploy-drush-ubuntu-1404-vmware test instance
+
     <Rake::Task integration:kitchen:deploy-mysql-centos-65-virtualbox => []>
       Run deploy-mysql-centos-65-virtualbox test instance
 
@@ -366,18 +390,6 @@ Testing and Utility
 
     <Rake::Task integration:kitchen:deploy-mysql-ubuntu-1404-vmware => []>
       Run deploy-mysql-ubuntu-1404-vmware test instance
-
-    <Rake::Task integration:kitchen:drush-centos-65-virtualbox => []>
-      Run drush-centos-65-virtualbox test instance
-
-    <Rake::Task integration:kitchen:drush-centos-65-vmware => []>
-      Run drush-centos-65-vmware test instance
-
-    <Rake::Task integration:kitchen:drush-ubuntu-1404-virtualbox => []>
-      Run drush-ubuntu-1404-virtualbox test instance
-
-    <Rake::Task integration:kitchen:drush-ubuntu-1404-vmware => []>
-      Run drush-ubuntu-1404-vmware test instance
 
     <Rake::Task integration:kitchen:files-centos-65-virtualbox => []>
       Run files-centos-65-virtualbox test instance
@@ -422,7 +434,7 @@ License and Authors
 ------------------
 
 The following engineers have contributed to this code:
- * [Kevin Bridges](https://github.com/cyberswat) - 84 commits
+ * [Kevin Bridges](https://github.com/cyberswat) - 99 commits
  * [Alex Knoll, arknoll](https://github.com/arknoll) - 75 commits
  * [David Arnold](https://github.com/DavidXArnold) - 28 commits
  * [Rick Manelius](https://github.com/rickmanelius) - 17 commits

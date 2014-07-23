@@ -30,10 +30,13 @@ suites:
       - recipe[nmddrupal::drush]
       - recipe[nmddrupal::files]
       - recipe[nmddrupal::deploy_code]
-  - name: drush
+  - name: deploy-drush
     run_list:
-      - recipe[git::default]
-      - recipe[nmddrupal::drush]
+      - recipe[nmddrupal::deploy_drush]
+  - name: delete-drush
+    run_list:
+      - recipe[nmddrupal::deploy_drush]
+      - recipe[nmddrupal::delete_drush]
   - name: files
     run_list:
       - recipe[nmddrupal::files]

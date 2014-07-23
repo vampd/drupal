@@ -1,10 +1,7 @@
 # encoding: utf-8
 #
 # Cookbook Name:: nmddrupal
-# Attributes:: files
-#
-# Author:: NEWMEDIA Denver
-# Copyright:: 2014, NEWMEDIA Denver
+# Library:: matchers
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,12 +14,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+if defined?(ChefSpec)
+  ChefSpec::Runner.define_runner_method(:nmddrupal_drush)
 
-default['nmddrupal']['drush']['revision'] = '6.3.0'
-default['nmddrupal']['drush']['repository'] =
-  'https://github.com/drush-ops/drush.git'
-default['nmddrupal']['drush']['path'] = '/opt/drush'
-default['nmddrupal']['drush']['executable'] = '/usr/bin/drush'
-default['nmddrupal']['drush']['owner'] = 'root'
-default['nmddrupal']['drush']['group'] = 'root'
-default['nmddrupal']['drush']['mode'] = 00755
+  def create_nmddrupal_drush(resource)
+    ChefSpec::Matchers::ResourceMatcher.new(:nmddrupal_drush, :create, resource)
+  end
+
+  def delete_nmddrupal_drush(resource)
+    ChefSpec::Matchers::ResourceMatcher.new(:nmddrupal_drush, :delete, resource)
+  end
+end
