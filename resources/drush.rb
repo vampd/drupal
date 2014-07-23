@@ -1,7 +1,6 @@
-# encoding: utf-8
 #
 # Cookbook Name:: nmddrupal
-# Attributes:: files
+# Resource:: code
 #
 # Author:: NEWMEDIA Denver
 # Copyright:: 2014, NEWMEDIA Denver
@@ -17,12 +16,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
-default['nmddrupal']['drush']['revision'] = '6.3.0'
-default['nmddrupal']['drush']['repository'] =
-  'https://github.com/drush-ops/drush.git'
-default['nmddrupal']['drush']['dir'] = '/opt/drush'
-default['nmddrupal']['drush']['executable'] = '/usr/bin/drush'
-default['nmddrupal']['drush']['owner'] = 'root'
-default['nmddrupal']['drush']['group'] = 'root'
-default['nmddrupal']['drush']['mode'] = 00755
+actions :create, :delete
+default_action :create
+
+attribute :path, kind_of: String, name_attribute: true
+attribute :owner, kind_of: String
+attribute :group, kind_of: String
+attribute :mode, kind_of: Fixnum, default: 00755
+repository_string = 'https://github.com/drush-ops/drush.git'
+attribute :repository, kind_of: String, default: repository_string
+attribute :revision, kind_of: String, default: '6.3.0'
+attribute :releases, kind_of: Fixnum, default: 5
+attribute :executable, kind_of: String, default: '/usr/bin/drush'
+
+def initialize(*args)
+  super
+  @action = :create
+end
