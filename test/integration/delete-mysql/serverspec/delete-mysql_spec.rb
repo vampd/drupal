@@ -21,3 +21,10 @@ grant_select = '"SHOW GRANTS for drupal_db_user"'
 describe command("#{mysql}#{grant_select}") do
   it { should return_exit_status 1 }
 end
+
+database_select = '"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE '
+database_select << 'SCHEMA_NAME = \'example\'"'
+describe command("#{mysql}#{database_select}") do
+  it { should return_exit_status 0 }
+  it { should return_stdout(//) }
+end
