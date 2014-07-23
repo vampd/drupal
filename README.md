@@ -422,7 +422,7 @@ License and Authors
 ------------------
 
 The following engineers have contributed to this code:
- * [Kevin Bridges](https://github.com/cyberswat) - 84 commits
+ * [Kevin Bridges](https://github.com/cyberswat) - 88 commits
  * [Alex Knoll, arknoll](https://github.com/arknoll) - 75 commits
  * [David Arnold](https://github.com/DavidXArnold) - 28 commits
  * [Rick Manelius](https://github.com/rickmanelius) - 17 commits
