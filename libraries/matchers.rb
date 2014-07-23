@@ -25,4 +25,14 @@ if defined?(ChefSpec)
   def delete_nmddrupal_drush(resource)
     ChefSpec::Matchers::ResourceMatcher.new(:nmddrupal_drush, :delete, resource)
   end
+
+  ChefSpec::Runner.define_runner_method(:nmddrupal_code)
+
+  def create_nmddrupal_code(resource)
+    ChefSpec::Matchers::ResourceMatcher.new(:nmddrupal_code, :create, resource)
+  end
+
+  def delete_nmddrupal_code(resource)
+    ChefSpec::Matchers::ResourceMatcher.new(:nmddrupal_code, :delete, resource)
+  end
 end
