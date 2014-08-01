@@ -1,0 +1,37 @@
+<VirtualHost *:<%= @port %>><% if @server_name -%>
+  ServerName <%= @server_name %><% end -%><% if @server_aliases -%>
+  ServerAlias <%= @server_aliases.join ' ' %><% end %><% if @docroot -%>
+  DocumentRoot <%= @docroot %><% end -%><% if @log_level -%>
+  LogLevel <%= @log_level %><% end -%><% if @error_log -%>
+  ErrorLog <%= @error_log %><% end -%><% if @custom_log -%>
+  CustomLog <%= @custom_log %><% end -%><% if @script_alias -%>
+  ScriptAlias <%= @script_alias %><% end -%><% if @rewrite_engine -%>
+  RewriteEngine <%= @rewrite_engine %><% end -%><% if @rewrite_log -%>
+  RewriteLog <%= @rewrite_log %><% end -%><% if @rewrite_log_level -%>
+  RewriteLogLevel <%= @rewrite_log_level %><% end -%><% if @directory_index -%>
+  DirectoryIndex <%= @directory_index.join ' ' %><% end -%><% if @redirect -%><% @redirect.each do |src, dest| %>
+  Redirect <%= src %> <%= dest %><% end %><% end -%><% if @ssl_engine -%>
+  SSLEngine <%= @ssl_engine %><% end -%><% if @ssl_certificate_file -%>
+  SSLCertificateFile <%= @ssl_certificate_file %><% end -%><% if @ssl_certificate_key_file -%>
+  SSLCertificateKeyFile <%= @ssl_certificate_key_file %><% end -%><% if @ssl_protocol -%>
+  SSLProtocol <%= [@ssl_protocol].flatten.join " " %><% end -%><% if @ssl_cipher_suite -%>
+  SSLCipherSuite <%= [@ssl_cipher_suite].flatten.join ":" %><% end -%><% if @set_env_if -%><% @set_env_if.each do |a| %>
+  SetEnvIf <%= a %><% end %><% end -%><% if @aliases -%><% @aliases.each do |src, dest| %>
+  Alias <%= src %> <%= dest %><% end %><% end -%><% if @directories -%>
+  <% @directories.each do |directory, directives| %>
+
+  <Directory <%= directory %>>
+  <% directives.each do |d, a| %>
+    <%= d %> <%= a %>
+<% end %>
+  </Directory>
+<% end %><% end -%><% if @locations -%><% @locations.each do |location, directives| %>
+  <Location <%= location %>>
+  <% directives.each do |d, a| %>
+    <%= d %> <%= a %>
+<% end %>
+  </Location><% end %><% end -%><% if @rewrite -%>
+<% @rewrite.each do |a| %><% if a['conditions'] -%>
+<% a['conditions'].each do |condition| %>  RewriteCond <%= condition %>
+<% end %><% end %><% if a['rules'] -%>  <% a['rules'].each do |rule| %>RewriteRule <%= rule %><% end %><% end %><% end %><% end -%>
+</VirtualHost>
