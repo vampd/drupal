@@ -22,16 +22,12 @@
 actions :create, :delete
 default_action :create
 
-attribute :path, kind_of: String, name_attribute: true
-attribute :owner, kind_of: String
-attribute :group, kind_of: String
-attribute :mode, kind_of: Fixnum, default: 00755
-repository_string = 'http://git.drupal.org/project/drupal.git'
-attribute :repository, kind_of: String, default: repository_string
-attribute :revision, kind_of: String, default: '7.x'
-attribute :releases, kind_of: Fixnum, default: 5
-attribute :directories, kind_of: Array, default: ['sites/all', 'sites/default']
-attribute :symlinks, kind_of: Hash, default: { 'files' => 'sites/default/files' }
+attribute :database, kind_of: String, name_attribute: true
+attribute :host, kind_of: String
+attribute :username, kind_of: String
+attribute :password, kind_of: String
+attribute :create_username, kind_of: String
+attribute :create_password, kind_of: String
 
 def initialize(*args)
   super

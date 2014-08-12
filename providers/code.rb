@@ -34,16 +34,20 @@ action :create do
     recursive true
   end
 
-  ssh_known_hosts_entry URI.parse(new_resource.repository).host
+  if /@([^:]*)/.match(new_resource.repository)
+    host = /@([^:]*)/.match(new_resource.repository)[1]
+  else
+    host = URI.parse(new_resource.repository).host
+  end
+  ssh_known_hosts_entry host
 
   deploy new_resource.path do
     repository new_resource.repository
     revision new_resource.revision
     keep_releases new_resource.releases
+    create_dirs_before_symlink new_resource.directories
+    symlinks new_resource.symlinks
     symlink_before_migrate.clear
-    create_dirs_before_symlink.clear
-    purge_before_symlink.clear
-    symlinks.clear
   end
 
   new_resource.updated_by_last_action(true)
