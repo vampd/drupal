@@ -5,7 +5,7 @@ maintainer_email 'support@newmediadenver.com'
 license 'Apache 2.0'
 description 'Installs/Configures nmddrupal'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version '3.0.1'
+version '3.0.3'
 supports 'ubuntu', '>= 12.04'
 supports 'centos', '>= 6.0'
 
@@ -13,7 +13,7 @@ desc = 'Manages Drupal.'
 description desc
 
 depends 'git'
-depends 'ssh_known_hosts', '~> 1.1.0'
+depends 'ssh_known_hosts', '~> 1.3.0'
 depends 'mysql', '~> 5.3.6'
 depends 'database', '~> 2.2.0'
 
