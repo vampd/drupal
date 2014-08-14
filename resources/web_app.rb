@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-actions :create, :delete
+actions :create, :delete, :update
 default_action :create
 
 attribute :group, kind_of: String

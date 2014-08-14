@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-actions :create, :delete
+actions :create, :delete, :update
 default_action :create
 
 attribute :path, kind_of: String, name_attribute: true
@@ -32,6 +32,8 @@ attribute :revision, kind_of: String, default: '7.x'
 attribute :releases, kind_of: Fixnum, default: 5
 attribute :directories, kind_of: Array, default: ['sites/all', 'sites/default']
 attribute :symlinks, kind_of: Hash, default: { 'files' => 'sites/default/files' }
+attribute :update, kind_of: Array
+attribute :create, kind_of: Array
 
 def initialize(*args)
   super

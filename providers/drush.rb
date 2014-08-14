@@ -34,6 +34,14 @@ action :create do
     recursive true
   end
 
+  directory '/etc/drush' do
+    owner new_resource.owner
+    group new_resource.group
+    mode new_resource.mode
+    action :create
+    recursive true
+  end
+
   ssh_known_hosts_entry URI.parse(new_resource.repository).host
 
   deploy new_resource.path do

@@ -84,3 +84,8 @@ action :delete do
 
   new_resource.updated_by_last_action(true)
 end
+
+action :update do
+
+  new_resource.updated_by_last_action(true)
+end
