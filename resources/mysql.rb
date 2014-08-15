@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-actions :create, :delete, :update
+actions :create, :delete, :update, :sleep
 default_action :create
 
 attribute :database, kind_of: String, name_attribute: true
