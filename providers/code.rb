@@ -44,11 +44,10 @@ action :create do
   deploy new_resource.path do
     repository new_resource.repository
     revision new_resource.revision
-    keep_releases new_resource.releases
     create_dirs_before_symlink new_resource.directories
     symlinks new_resource.symlinks
     symlink_before_migrate.clear
-    restart_command new_resource.create.join ' && '
+    restart_command new_resource.create.join ' && ' unless new_resource.create.nil?
   end
 
   new_resource.updated_by_last_action(true)
