@@ -32,6 +32,7 @@ attribute :revision, kind_of: String, default: '7.x'
 attribute :releases, kind_of: Fixnum, default: 5
 attribute :directories, kind_of: Array, default: ['sites/all', 'sites/default']
 attribute :symlinks, kind_of: Hash, default: { 'files' => 'sites/default/files' }
+attribute :before_update, kind_of: Array
 attribute :update, kind_of: Array
 attribute :create, kind_of: Array
 

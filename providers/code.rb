@@ -47,7 +47,7 @@ action :create do
     create_dirs_before_symlink new_resource.directories
     symlinks new_resource.symlinks
     symlink_before_migrate.clear
-    restart_command new_resource.create.join ' && ' unless new_resource.create.nil?
+    restart_command new_resource.create.join ' && ' unless new_resource.create.length == 0
   end
 
   new_resource.updated_by_last_action(true)
@@ -64,6 +64,13 @@ action :delete do
 end
 
 action :update do
+  unless new_resource.before_update.length == 0
+    new_resource.before_update.each do |cmd|
+      execute "Pre-update: #{cmd}" do
+        command cmd
+      end
+    end
+  end
 
   deploy new_resource.path do
     repository new_resource.repository
@@ -72,7 +79,7 @@ action :update do
     create_dirs_before_symlink new_resource.directories
     symlinks new_resource.symlinks
     symlink_before_migrate.clear
-    restart_command new_resource.update.join ' && '
+    restart_command new_resource.update.join ' && ' unless new_resource.update.length == 0
   end
 
   new_resource.updated_by_last_action(true)
