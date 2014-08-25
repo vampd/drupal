@@ -109,6 +109,18 @@ node[:drupal][:sites].each do |site_name, site|
       keep_releases site[:deploy][:releases]
 
       before_migrate do
+        if site[:repository][:submodule]
+          bash 'Git submodule init and submodule update' do
+          cwd release_path
+          cmd = 'git submodule init && git submodule update';
+          code <<-EOH
+              set -x
+              set -e
+              #{cmd}
+            EOH
+          end
+        end
+
         # If the Drush make hash is nil, then do nothing, else make the site
         if site.has_key?("drush_make") && !site[:drush_make][:files].nil?
 
