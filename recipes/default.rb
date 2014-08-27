@@ -343,12 +343,22 @@ node[:drupal][:sites].each do |site_name, site|
       EOH
     end
 
-    bash "drush-site-registry-rebuild-#{site_name}" do
-      cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
-      cmd = "drush dl registry_rebuild; drush cc all; drush rr"
+    bash "drush-download-registry-rebuild-#{site_name}" do
+      cwd "#{base}"
+      cmd = "drush dl registry_rebuild; "
       code <<-EOH
         set -x
-        set -e
+        #{cmd}
+      EOH
+      only_if { site[:drupal][:registry_rebuild] }
+    end
+
+
+    bash "drush-site-registry-rebuild-#{site_name}" do
+      cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
+      cmd = "drush rr; drush cc all; drush rr"
+      code <<-EOH
+        set -x
         #{cmd}
       EOH
       only_if { site[:drupal][:registry_rebuild] }
