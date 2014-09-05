@@ -353,7 +353,6 @@ node[:drupal][:sites].each do |site_name, site|
       only_if { site[:drupal][:registry_rebuild] }
     end
 
-
     bash "drush-site-registry-rebuild-#{site_name}" do
       cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
       cmd = "drush rr; drush cc all; drush rr"
@@ -362,6 +361,20 @@ node[:drupal][:sites].each do |site_name, site|
         #{cmd}
       EOH
       only_if { site[:drupal][:registry_rebuild] }
+    end
+
+    bash "drush-update-admin-password-on-import" do
+      cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
+      user 'root'
+      cmd = "drush upwd #{drupal_user['admin_user']} --password=#{drupal_user['admin_pass']}"
+      only_if { site[:deploy][:action].any? { |action| action == 'import' } }
+
+      Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action].any? { |action| action == 'import' }
+      code <<-EOH
+        set -x
+        set -e
+        #{cmd}
+      EOH
     end
 
     bash "drush-site-update-#{site_name}" do
