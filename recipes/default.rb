@@ -239,6 +239,21 @@ node[:drupal][:sites].each do |site_name, site|
             end
           end
         end
+        # Generate the drush aliases folder
+        if site.has_key?("drush_aliases") && !site[:drush_aliases][:location].nil?
+          # Generate drush aliases file
+          Chef::Log.debug("Drupal::default: before_migrate: template #{release_path}/#{site[:drush_aliases][:location]}")
+          Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{site[:drush_aliases][:aliases]}")
+          template "#{release_path}/#{site[:drush_aliases][:location]}" do
+            path "#{release_path}/#{site[:drush_aliases][:location]}"
+            version = site[:drupal][:version].split('.')[0]
+            source "d#{version}.aliases.drushrc.php.erb"
+            mode 0644
+            variables(
+             :aliases => site[:drush_aliases][:aliases]
+            )
+          end
+        end
       end
 
       after_restart do
