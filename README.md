@@ -52,6 +52,15 @@ This JSON is found in the drupal-lamp repo under infrastructure/drupal_lamp.json
           "import" .
         }
       },
+      "drush_aliases": { //Not necessary, but a nice helper to sync sites, databases, files, etc
+        "location": "sites/all/drush/aliases.drushrc.php", //Relative to the release path of the drupal install
+        "aliases": { // From example.aliases.drushrc.php, grab the variables you need they will be passed as json to the aliases file
+          "live": {
+            'root': '/path/to/drupal',
+            'uri': 'dev.mydrupalsite.com'
+          }
+        }
+      },
       "repository": {
         "host": "github.com",
         "uri": "https://github.com/drupal/drupal.git",
