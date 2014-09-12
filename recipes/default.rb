@@ -72,8 +72,6 @@ node[:drupal][:sites].each do |site_name, site|
     end
 
     directory assets do
-#        owner node[:drupal][:server][:web_user]
-#        group node[:drupal][:server][:web_group]
       mode 00755
       action :create
       not_if { ::File.exists?(assets) }
@@ -85,16 +83,19 @@ node[:drupal][:sites].each do |site_name, site|
 
     directory "#{assets}/files" do
       not_if { ::File.exists?("#{assets}/files") }
-#        owner node[:drupal][:server][:web_user]
-#        group node[:drupal][:server][:web_group]
-      mode 00755
+      mode 00770
+      action :create
+      recursive true
+    end
+
+    directory "#{assets}/tmp" do
+      not_if { ::File.exists?("#{assets}/tmp") }
+      mode 00770
       action :create
       recursive true
     end
 
     directory "#{assets}/shared" do
-#        owner node[:drupal][:server][:web_user]
-#        group node[:drupal][:server][:web_group]
       mode 00755
       action :create
       recursive true
@@ -228,6 +229,17 @@ node[:drupal][:sites].each do |site_name, site|
            :prefix => site[:drupal][:settings][:db_prefix],
            :settings_custom => site[:drupal][:settings][:settings]
           )
+        end
+        bash "Ignore the #{site_name} settings.php but don't place it in the gitignore" do
+          user 'root'
+          cwd release_path
+          cmd = "git update-index --assume-unchanged #{site[:drupal][:settings][:settings][:default][:location]}"
+          code <<-EOH
+            set -x
+            set -e
+            #{cmd}
+          EOH
+          only_if { site[:drupal][:settings][:settings][:default][:ignore] == true }
         end
         Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{site[:drupal][:settings]}")
         site[:drupal][:settings][:settings].each do |setting_name, setting|
