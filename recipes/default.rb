@@ -85,7 +85,7 @@ node[:drupal][:sites].each do |site_name, site|
       not_if { ::File.exists?("#{assets}/files") }
       owner node[:drupal][:server][:web_user]
       group node[:drupal][:server][:web_group]
-      mode 00770
+      mode 00775
       action :create
       recursive true
     end
