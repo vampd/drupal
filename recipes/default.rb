@@ -222,6 +222,18 @@ node[:drupal][:sites].each do |site_name, site|
             end
           end
         end
+        bash "drush-archive-restore-#{site_name}" do
+          only_if { site[:deploy][:action].any? { |action| action == 'restore' } }
+          cwd release_path
+          user 'root'
+          cmd = "drush arr #{site[:drupal][:archive_file]} --overwrite  --destination=#{release_path}"
+          Chef::Log.debug("Drupal::default: action = 'restore' execute = #{cmd.inspect}") if site[:deploy][:action].any? { |action| action == 'restore' }
+          code <<-EOH
+            set -x
+            set -e
+            #{cmd}
+          EOH
+        end
       end
 
       after_restart do
