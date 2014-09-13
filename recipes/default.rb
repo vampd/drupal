@@ -83,18 +83,7 @@ node[:drupal][:sites].each do |site_name, site|
 
     directory "#{assets}/files" do
       not_if { ::File.exists?("#{assets}/files") }
-      owner node[:drupal][:server][:web_user]
-      group node[:drupal][:server][:web_group]
-      mode 00775
-      action :create
-      recursive true
-    end
-
-    directory "#{assets}/tmp" do
-      not_if { ::File.exists?("#{assets}/tmp") }
-      owner node[:drupal][:server][:web_user]
-      group node[:drupal][:server][:web_group]
-      mode 00770
+      mode 00755
       action :create
       recursive true
     end
@@ -411,7 +400,7 @@ node[:drupal][:sites].each do |site_name, site|
     bash "drush-site-update-#{site_name}" do
       cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
       user 'root'
-      cmd = 'drush updb -y; drush cc all'
+      cmd = "drush updb -y; drush cc all"
       only_if { site[:deploy][:action].any? { |action| action == 'update' } }
       Chef::Log.debug("Drupal::default: action = 'update' execute = #{cmd.inspect}") if site[:deploy][:action].any? { |action| action == 'update' }
       code <<-EOH
