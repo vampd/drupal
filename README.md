@@ -2,6 +2,8 @@ Drupal Cookbook
 ===============
 This cookbook installs a Drupal site on a LAMP stack.
 
+https://travis-ci.org/newmediadenver/drupal.svg?branch=2.x
+
 Usage
 -----
 This cookbook has been designed to work with [drupal-lamp](http://github.com/newmediadenver/drupal-lamp).
@@ -55,7 +57,8 @@ This JSON is found in the drupal-lamp repo under infrastructure/drupal_lamp.json
       "repository": {
         "host": "github.com",
         "uri": "https://github.com/drupal/drupal.git",
-        "revision": "7.26" # branch, tag, or hash
+        "revision": "7.26", # branch, tag, or hash
+        "shallow_clone": false # Indicates that the clone depth is set to 5. Default value: false.
       },
       # Apache configuration options
       "web_app": { # See "Web App Config Options"

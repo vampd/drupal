@@ -25,7 +25,7 @@ include_recipe 'database'
 include_recipe 'database::mysql'
 
 passwords = data_bag_item('users', 'mysql')[node.chef_environment]
-Chef::Log::debug "drupal::mysql passwords = #{passwords.inspect}"
+Chef::Log.debug "drupal::mysql passwords = #{passwords.inspect}"
 
 if Chef::Config[:solo]
   Chef::Log.debug 'drupal::mysql Setting chef solo node mysql passwords.'
@@ -41,18 +41,18 @@ mysql_connection_info = {
 }
 Chef::Log.debug "drupal::mysql - mysql_connection_info = #{mysql_connection_info.inspect}"
 
-drupal_user = data_bag_item('users', 'drupal')[node.chef_environment]
-Chef::Log.debug "drupal::mysql - drupal_user = #{drupal_user.inspect}"
-
-# Set up each drupal site.
-Chef::Log.debug "drupal::mysql - node[:drupal] = #{node[:drupal].inspect}"
-
 node[:drupal][:sites].each do |site_name, site|
 
   if site[:active]
+
+    drupal_user = data_bag_item('sites', site_name)[node.chef_environment]
+    Chef::Log.debug "drupal::mysql - drupal_user = #{drupal_user.inspect}"
+
+    # Set up each drupal site.
+    Chef::Log.debug "drupal::mysql - node[:drupal] = #{node[:drupal].inspect}"
     Chef::Log.debug "drupal::mysql site #{site_name.inspect} is active."
 
-    if site[:deploy][:action].any? { |action| %w[install import].include? action }
+    if site[:deploy][:action].any? { |action| %w(install import).include? action }
 
       Chef::Log.debug("drupal::mysql clean install: purging database: #{site[:drupal][:settings][:db_name]}")
       mysql_database site[:drupal][:settings][:db_name] do

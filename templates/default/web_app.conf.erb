@@ -26,5 +26,6 @@
   SSLCipherSuite <%= [@params[:ssl_cipher_suite]].flatten.join ":" %><% end -%><% if @params[:ssl_certificate_file] -%>
   SSLCertificateFile <%= @params[:ssl_certificate_file] %><% end -%><% if @params[:ssl_certificate_key_file] -%>
   SSLCertificateKeyFile <%= @params[:ssl_certificate_key_file] %><% end -%><% if @params[:set_env_if] -%><% @params[:set_env_if].each do |a| %>
+  SSLCertificateChainFile <%= @params[:ssl_certificate_chain_file] %><% end -%><% if @params[:ssl_certificate_chain_file] -%>
   SetEnvIf <%= a %><% end %><% end %>
 </VirtualHost>
