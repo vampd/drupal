@@ -369,24 +369,24 @@ node[:drupal][:sites].each do |site_name, site|
       EOH
     end
 
-    bash "drush-download-registry-rebuild-#{site_name}" do
-      cwd "#{base}"
-      cmd = "drush dl registry_rebuild; "
-      code <<-EOH
-        set -x
-        #{cmd}
-      EOH
-      only_if { site[:drupal][:registry_rebuild] }
-    end
+    if site[:drupal][:registry_rebuild]
+      bash "drush-download-registry-rebuild-#{site_name}" do
+        cwd "#{base}"
+        cmd = "drush dl registry_rebuild; "
+        code <<-EOH
+          set -x
+          #{cmd}
+        EOH
+      end
 
-    bash "drush-site-registry-rebuild-#{site_name}" do
-      cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
-      cmd = "drush rr; drush cc all; drush rr"
-      code <<-EOH
-        set -x
-        #{cmd}
-      EOH
-      only_if { site[:drupal][:registry_rebuild] }
+      bash "drush-site-registry-rebuild-#{site_name}" do
+        cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
+        cmd = "drush rr; drush cc all; drush rr"
+        code <<-EOH
+          set -x
+          #{cmd}
+        EOH
+      end
     end
 
     bash "drush-update-admin-password-on-import" do

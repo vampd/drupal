@@ -47,7 +47,7 @@ node[:drupal][:sites].each do |site_name, site|
   default[:drupal][:sites][site_name][:repository][:shallow_clone] = false
 
   default[:drupal][:sites][site_name][:drupal][:version] = '7.26'
-  default[:drupal][:sites][site_name][:drupal][:registry_rebuild] = 0
+  default[:drupal][:sites][site_name][:drupal][:registry_rebuild] = false
   default[:drupal][:sites][site_name][:drupal][:install]['install_configure_form.update_status_module'] = "'array(FALSE,FALSE)'"
   default[:drupal][:sites][site_name][:drupal][:install]['--clean-url'] = 1
 
