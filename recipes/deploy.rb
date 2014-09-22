@@ -53,7 +53,13 @@ node[:drupal][:sites].each do |site_name, site|
     Chef::Log.debug "drupal::default base = #{base}"
     Chef::Log.debug "drupal::default assets = #{assets}"
 
-    drupal_user = data_bag_item('sites', site_name)[node.chef_environment]
+    databag = search(:sites, "id:#{site_name}")
+    Chef::Log.info "drupal::default databag = #{databag}"
+    if !databag.empty?
+      drupal_user = data_bag_item('sites', site_name)[node.chef_environment]
+    else
+      drupal_user = site[:drupal_user]
+    end
     Chef::Log.debug "drupal::default drupal_user #{drupal_user.inspect}"
 
     ssh_known_hosts_entry site[:repository][:host]
@@ -113,6 +119,19 @@ node[:drupal][:sites].each do |site_name, site|
       shallow_clone site[:repository][:shallow_clone]
 
       before_migrate do
+
+        if site[:repository][:submodule]
+          bash 'Git submodule init and submodule update' do
+          cwd release_path
+          cmd = 'git submodule init && git submodule update';
+          code <<-EOH
+              set -x
+              set -e
+              #{cmd}
+            EOH
+          end
+        end
+
         # If the Drush make hash is nil, then do nothing, else make the site
         if site.key?('drush_make') && !site[:drush_make][:files].nil?
 
@@ -219,6 +238,19 @@ node[:drupal][:sites].each do |site_name, site|
            :settings_custom => site[:drupal][:settings][:settings]
           )
         end
+
+        bash "Ignore the #{site_name} settings.php but don't place it in the gitignore" do
+          user 'root'
+          cwd release_path
+          cmd = "git update-index --assume-unchanged #{site[:drupal][:settings][:settings][:default][:location]}"
+          code <<-EOH
+            set -x
+            set -e
+            #{cmd}
+          EOH
+          only_if { site[:drupal][:settings][:settings][:default][:ignore] == true }
+        end
+
         Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{site[:drupal][:settings]}")
         site[:drupal][:settings][:settings].each do |setting_name, setting|
           unless setting[:template].nil?
@@ -227,6 +259,21 @@ node[:drupal][:sites].each do |site_name, site|
               cookbook site[:drupal][:settings][:cookbook]
               source setting[:template]
             end
+          end
+        end
+        # Generate the drush aliases folder
+        if site.has_key?("drush_aliases") && !site[:drush_aliases][:location].nil?
+          # Generate drush aliases file
+          Chef::Log.debug("Drupal::default: before_migrate: template #{release_path}/#{site[:drush_aliases][:location]}")
+          Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{site[:drush_aliases][:aliases]}")
+          template "#{release_path}/#{site[:drush_aliases][:location]}" do
+            path "#{release_path}/#{site[:drush_aliases][:location]}"
+            version = site[:drupal][:version].split('.')[0]
+            source "d#{version}.aliases.drushrc.php.erb"
+            mode 0644
+            variables(
+             :aliases => site[:drush_aliases][:aliases]
+            )
           end
         end
       end

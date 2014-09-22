@@ -70,6 +70,7 @@ node[:drupal][:sites].each do |site_name, site|
   default[:drupal][:sites][site_name][:drupal][:settings][:files] = 'sites/default/files'
   default[:drupal][:sites][site_name][:drupal][:settings][:cookbook] = 'drupal'
   default[:drupal][:sites][site_name][:drupal][:settings][:settings][:default][:location] = 'sites/default/settings.php'
+  default[:drupal][:sites][site_name][:drupal][:settings][:settings][:default][:ignore] = true
   default[:drupal][:sites][site_name][:drupal][:settings][:db_name] = site_name.gsub('-', '_')
   default[:drupal][:sites][site_name][:drupal][:settings][:db_host] = 'localhost'
   default[:drupal][:sites][site_name][:drupal][:settings][:db_prefix] = ''
@@ -78,4 +79,10 @@ node[:drupal][:sites].each do |site_name, site|
   default[:drupal][:sites][site_name][:web_app]['80'][:rewrite_engine] = 'On'
   default[:drupal][:sites][site_name][:web_app]['80'][:docroot] = "#{node[:drupal][:server][:base]}/#{site_name}/current"
   default[:drupal][:sites][site_name][:web_app]['80'][:error_log] = "/var/log/apache2/#{site_name}-error.log"
+
+  default[:drupal][:sites][site_name][:drupal_user][:id] = site_name
+  default[:drupal][:sites][site_name][:drupal_user][:db_user] = 'drupal'
+  default[:drupal][:sites][site_name][:drupal_user][:db_password] = 'drupal'
+  default[:drupal][:sites][site_name][:drupal_user][:admin_user] = 'admin'
+  default[:drupal][:sites][site_name][:drupal_user][:admin_pass] = 'admin'
 end
