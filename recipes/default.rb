@@ -50,7 +50,13 @@ node[:drupal][:sites].each do |site_name, site|
     Chef::Log.debug "drupal::default base = #{base}"
     Chef::Log.debug "drupal::default assets = #{assets}"
 
-    drupal_user = data_bag_item('sites', site_name)[node.chef_environment]
+    databag = search(:sites, "id:#{site_name}")
+    Chef::Log.info "drupal::default databag = #{databag}"
+    if !databag.empty?
+      drupal_user = data_bag_item('sites', site_name)[node.chef_environment]
+    else
+      drupal_user = site[:drupal_user]
+    end
     Chef::Log.debug "drupal::default drupal_user #{drupal_user.inspect}"
 
 #      mysql = "mysql -u #{drupal_user['db_user']} -p#{drupal_user['db_password']} #{site[:drupal][:settings][:db_name]} -h #{site[:drupal][:settings][:db_host]} -e "
