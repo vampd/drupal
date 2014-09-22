@@ -17,16 +17,46 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-include_recipe 'apache2'
-include_recipe 'apache2::mod_php5'
-include_recipe 'apache2::mod_rewrite'
-include_recipe "apache2::mod_fastcgi"
-include_recipe "apache2::mod_ssl"
+service 'apache2' do
+  case node[:platform]
+  when 'redhat', 'centos', 'scientific', 'fedora', 'suse', 'amazon', 'oracle'
+    service_name 'httpd'
+    # If restarted/reloaded too quickly httpd has a habit of failing.
+    # This may happen with multiple recipes notifying apache to restart - like
+    # during the initial bootstrap.
+    restart_command '/sbin/service httpd restart && sleep 1'
+    reload_command '/sbin/service httpd reload && sleep 1'
+  when 'debian', 'ubuntu'
+    service_name 'apache2'
+    restart_command '/usr/sbin/invoke-rc.d apache2 restart && sleep 1'
+    reload_command '/usr/sbin/invoke-rc.d apache2 reload && sleep 1'
+  when 'arch'
+    service_name 'httpd'
+  when 'freebsd'
+    service_name 'apache22'
+  end
+  supports [:restart, :reload, :status]
+  action :enable
+end
 
 node[:drupal][:sites].each do |site_name, site|
   if site[:active]
     site['web_app'].each do |port, app|
-      web_app "#{site_name}-#{port}" do
+
+      # Remove virtualhost settings if action = remove
+      file "#{node[:drupal][:server][:available]}/#{site_name}-#{port}.conf" do
+        action :delete
+        only_if { site[:deploy][:action].any? { |action| action == 'remove' } }
+        notifies :reload, 'service[apache2]'
+      end
+
+      file "#{node[:drupal][:server][:enabled]}/#{site_name}-#{port}.conf" do
+        action :delete
+        only_if { site[:deploy][:action].any? { |action| action == 'remove' } }
+        notifies :reload, 'service[apache2]'
+      end
+
+      drupal_web_app "#{site_name}-#{port}" do
         port port
         docroot app['docroot'] unless app['docroot'].nil?
         server_name app['server_name'] unless app['server_name'].nil?

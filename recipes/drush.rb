@@ -23,6 +23,7 @@ directory node[:drupal][:drush][:dir] do
   group 'root'
   mode '0755'
   action :create
+  recursive true
 end
 
 directory "#{node[:drupal][:drush][:dir]}/shared" do
@@ -45,4 +46,17 @@ end
 link node[:drupal][:drush][:executable] do
   to "#{node[:drupal][:drush][:dir]}/current/drush"
   link_type :symbolic
+end
+
+execute 'install-drush-using-composer' do
+  cwd "#{node[:drupal][:drush][:dir]}/current"
+  version = node[:drupal][:drush][:revision].split('.')[0]
+  cmd = 'composer global require drush/drush:dev-master'
+  cmd << ' && composer install'
+  command <<-EOF
+    set -x
+    set -e
+    #{cmd}
+  EOF
+  only_if { version == '8' }
 end

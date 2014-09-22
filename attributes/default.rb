@@ -21,6 +21,25 @@
 default[:drupal][:server][:base] = '/srv/www'
 default[:drupal][:server][:assets] = '/assets'
 
+# apache virtual host folders
+case node['platform']
+when 'redhat', 'centos', 'scientific', 'fedora', 'suse', 'amazon', 'oracle'
+  default[:drupal][:server][:available] = '/etc/httpd/sites-available'
+  default[:drupal][:server][:enabled] = '/etc/httpd/sites-enabled'
+when 'debian', 'ubuntu'
+  default[:drupal][:server][:available] = '/etc/apache2/sites-available'
+  default[:drupal][:server][:enabled] = '/etc/apache2/sites-enabled'
+when 'arch'
+  default[:drupal][:server][:available] = '/etc/httpd/sites-available'
+  default[:drupal][:server][:enabled] = '/etc/httpd/sites-enabled'
+when 'freebsd'
+  default[:drupal][:server][:available] = '/usr/local/etc/apache22/sites-available'
+  default[:drupal][:server][:enabled] = '/usr/local/etc/apache22/sites-enabled'
+else
+  default[:drupal][:server][:available] = '/etc/apache2/sites-available'
+  default[:drupal][:server][:enabled] = '/etc/apache2/sites-enabled'
+end
+
 # set drush attributes
 default[:drupal][:drush][:revision] = '6.2.0'
 default[:drupal][:drush][:repository] = 'https://github.com/drush-ops/drush.git'
