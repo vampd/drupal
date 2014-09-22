@@ -64,7 +64,7 @@ node[:drupal][:sites].each do |site_name, site|
   default[:drupal][:sites][site_name][:drupal][:settings][:profile] = 'standard'
   default[:drupal][:sites][site_name][:drupal][:settings][:files] = "#{docroot_before}sites/default/files"
   default[:drupal][:sites][site_name][:drupal][:settings][:cookbook] = 'drupal'
-  default[:drupal][:sites][site_name][:drupal][:settings][:settings][:default][:location] = 'sites/default/settings.php'
+  default[:drupal][:sites][site_name][:drupal][:settings][:settings][:default][:location] = "#{docroot_before}sites/default/settings.php"
   default[:drupal][:sites][site_name][:drupal][:settings][:settings][:default][:ignore] = false
   default[:drupal][:sites][site_name][:drupal][:settings][:db_name] = site_name.gsub('-', '_')
   default[:drupal][:sites][site_name][:drupal][:settings][:db_host] = 'localhost'
