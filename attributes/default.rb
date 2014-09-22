@@ -47,11 +47,22 @@ node[:drupal][:sites].each do |site_name, site|
   default[:drupal][:sites][site_name][:repository][:shallow_clone] = false
 
   default[:drupal][:sites][site_name][:drupal][:version] = '7.26'
+  default[:drupal][:sites][site_name][:drupal][:registry_rebuild] = 0
   default[:drupal][:sites][site_name][:drupal][:install]['install_configure_form.update_status_module'] = "'array(FALSE,FALSE)'"
   default[:drupal][:sites][site_name][:drupal][:install]['--clean-url'] = 1
 
+  #Set up the docroot to be used as a default
+  default[:drupal][:sites][site_name][:drupal][:settings][:docroot] = ''
+  docroot = site[:drupal][:settings][:docroot]
+  docroot_before = ''
+  docoot_after = ''
+  if !docroot.empty?
+    docroot_before = "#{docroot}/"
+    docoot_after = "/#{docroot}"
+  end
+
   default[:drupal][:sites][site_name][:drupal][:settings][:profile] = 'standard'
-  default[:drupal][:sites][site_name][:drupal][:settings][:files] = 'sites/default/files'
+  default[:drupal][:sites][site_name][:drupal][:settings][:files] = "#{docroot_before}sites/default/files"
   default[:drupal][:sites][site_name][:drupal][:settings][:cookbook] = 'drupal'
   default[:drupal][:sites][site_name][:drupal][:settings][:settings][:default][:location] = 'sites/default/settings.php'
   default[:drupal][:sites][site_name][:drupal][:settings][:settings][:default][:ignore] = false
@@ -61,7 +72,7 @@ node[:drupal][:sites].each do |site_name, site|
   default[:drupal][:sites][site_name][:drupal][:settings][:db_driver] = 'mysql'
   default[:drupal][:sites][site_name][:web_app]['80'][:server_name] = "#{site_name}.local"
   default[:drupal][:sites][site_name][:web_app]['80'][:rewrite_engine] = 'On'
-  default[:drupal][:sites][site_name][:web_app]['80'][:docroot] = "#{node[:drupal][:server][:base]}/#{site_name}/current"
+  default[:drupal][:sites][site_name][:web_app]['80'][:docroot] = "#{node[:drupal][:server][:base]}/#{site_name}/current#{docoot_after}"
   default[:drupal][:sites][site_name][:web_app]['80'][:error_log] = "/var/log/apache2/#{site_name}-error.log"
 
   default[:drupal][:sites][site_name][:drupal_user][:id] = site_name
