@@ -1,9 +1,9 @@
 #! /bin/bash
 if [ -d "<%= @assets %>" ]; then
-  chown -R <%= @owner %>:<%= @group %> <%= @assets %>
+  chown -R <%= @web_owner %>:<%= @web_group %> <%= @assets %>
 fi
 if [ -d "<%= @files %>" ]; then
-  chown <%= @owner %>:<%= @group %> <%= @files %>
+  chown <%= @files_owner %>:<%= @files_group %> <%= @files %>
   chmod 755 <%= @files %>
   find <%= @files %> -type d -exec chmod 755 {} \;
   find <%= @files %> -type f -exec chmod 664 {} \;

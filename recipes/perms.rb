@@ -17,3 +17,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+node[:drupal][:sites].each do |site_name, site|
+  if site[:active]
+    Chef::Log.debug("Drupal::perms: execute: /root/#{site_name}-files.sh")
+    bash 'change file ownership' do
+      code <<-EOH
+        /root/#{site_name}-files.sh
+      EOH
+    end
+  end
+end
