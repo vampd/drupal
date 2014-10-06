@@ -56,7 +56,7 @@ node[:drupal][:sites].each do |site_name, site|
   docroot = site[:drupal][:settings][:docroot]
   docroot_before = ''
   docoot_after = ''
-  if !docroot.empty?
+  if !docroot.nil?
     docroot_before = "#{docroot}/"
     docoot_after = "/#{docroot}"
   end
