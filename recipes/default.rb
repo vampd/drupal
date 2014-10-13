@@ -372,7 +372,7 @@ node[:drupal][:sites].each do |site_name, site|
     if site[:drupal][:registry_rebuild]
       bash "drush-download-registry-rebuild-#{site_name}" do
         cwd "#{base}"
-        cmd = "drush dl registry_rebuild; "
+        cmd = 'drush dl registry_rebuild; '
         code <<-EOH
           set -x
           #{cmd}
@@ -381,7 +381,7 @@ node[:drupal][:sites].each do |site_name, site|
 
       bash "drush-site-registry-rebuild-#{site_name}" do
         cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
-        cmd = "drush rr; drush cc all; drush rr"
+        cmd = 'drush rr; drush cc all; drush rr'
         code <<-EOH
           set -x
           #{cmd}
@@ -389,7 +389,7 @@ node[:drupal][:sites].each do |site_name, site|
       end
     end
 
-    bash "drush-update-admin-password-on-import" do
+    bash "drush-update-#{site_name}-admin-password-on-import" do
       cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
       user 'root'
       cmd = "drush upwd #{drupal_user['admin_user']} --password=#{drupal_user['admin_pass']}"
@@ -406,7 +406,7 @@ node[:drupal][:sites].each do |site_name, site|
     bash "drush-site-update-#{site_name}" do
       cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
       user 'root'
-      cmd = "drush updb -y; drush cc all"
+      cmd = 'drush updb -y; drush cc all'
       only_if { site[:deploy][:action].any? { |action| action == 'update' } }
       Chef::Log.debug("Drupal::default: action = 'update' execute = #{cmd.inspect}") if site[:deploy][:action].any? { |action| action == 'update' }
       code <<-EOH

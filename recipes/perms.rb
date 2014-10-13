@@ -1,9 +1,9 @@
 #
-# Author::  Kevin Bridges (<kevin@cyberswat.com>)
+# Author::  Tim Whitney (tim.d.whitney@gmail.com)
 # Cookbook Name:: drupal
-# Recipe:: default
+# Recipe:: perms
 #
-# Copyright 2013, Cyberswat Industries, LLC.
+# Copyright 2013, Tim Whitney
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
