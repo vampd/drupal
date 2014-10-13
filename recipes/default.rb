@@ -50,7 +50,13 @@ node[:drupal][:sites].each do |site_name, site|
     Chef::Log.debug "drupal::default base = #{base}"
     Chef::Log.debug "drupal::default assets = #{assets}"
 
-    drupal_user = data_bag_item('sites', site_name)[node.chef_environment]
+    databag = search(:sites, "id:#{site_name}")
+    Chef::Log.info "drupal::default databag = #{databag}"
+    if !databag.empty?
+      drupal_user = data_bag_item('sites', site_name)[node.chef_environment]
+    else
+      drupal_user = site[:drupal_user]
+    end
     Chef::Log.debug "drupal::default drupal_user #{drupal_user.inspect}"
 
 #      mysql = "mysql -u #{drupal_user['db_user']} -p#{drupal_user['db_password']} #{site[:drupal][:settings][:db_name]} -h #{site[:drupal][:settings][:db_host]} -e "
@@ -72,8 +78,6 @@ node[:drupal][:sites].each do |site_name, site|
     end
 
     directory assets do
-#        owner node[:drupal][:server][:web_user]
-#        group node[:drupal][:server][:web_group]
       mode 00755
       action :create
       not_if { ::File.exists?(assets) }
@@ -85,16 +89,12 @@ node[:drupal][:sites].each do |site_name, site|
 
     directory "#{assets}/files" do
       not_if { ::File.exists?("#{assets}/files") }
-#        owner node[:drupal][:server][:web_user]
-#        group node[:drupal][:server][:web_group]
       mode 00755
       action :create
       recursive true
     end
 
     directory "#{assets}/shared" do
-#        owner node[:drupal][:server][:web_user]
-#        group node[:drupal][:server][:web_group]
       mode 00755
       action :create
       recursive true
@@ -109,6 +109,18 @@ node[:drupal][:sites].each do |site_name, site|
       keep_releases site[:deploy][:releases]
 
       before_migrate do
+        if site[:repository][:submodule]
+          bash 'Git submodule init and submodule update' do
+          cwd release_path
+          cmd = 'git submodule init && git submodule update';
+          code <<-EOH
+              set -x
+              set -e
+              #{cmd}
+            EOH
+          end
+        end
+
         # If the Drush make hash is nil, then do nothing, else make the site
         if site.has_key?("drush_make") && !site[:drush_make][:files].nil?
 
@@ -217,6 +229,17 @@ node[:drupal][:sites].each do |site_name, site|
            :settings_custom => site[:drupal][:settings][:settings]
           )
         end
+        bash "Ignore the #{site_name} settings.php but don't place it in the gitignore" do
+          user 'root'
+          cwd release_path
+          cmd = "git update-index --assume-unchanged #{site[:drupal][:settings][:settings][:default][:location]}"
+          code <<-EOH
+            set -x
+            set -e
+            #{cmd}
+          EOH
+          only_if { site[:drupal][:settings][:settings][:default][:ignore] == true }
+        end
         Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{site[:drupal][:settings]}")
         site[:drupal][:settings][:settings].each do |setting_name, setting|
           unless setting[:template].nil?
@@ -225,6 +248,21 @@ node[:drupal][:sites].each do |site_name, site|
               cookbook site[:drupal][:settings][:cookbook]
               source setting[:template]
             end
+          end
+        end
+        # Generate the drush aliases folder
+        if site.has_key?("drush_aliases") && !site[:drush_aliases][:location].nil?
+          # Generate drush aliases file
+          Chef::Log.debug("Drupal::default: before_migrate: template #{release_path}/#{site[:drush_aliases][:location]}")
+          Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{site[:drush_aliases][:aliases]}")
+          template "#{release_path}/#{site[:drush_aliases][:location]}" do
+            path "#{release_path}/#{site[:drush_aliases][:location]}"
+            version = site[:drupal][:version].split('.')[0]
+            source "d#{version}.aliases.drushrc.php.erb"
+            mode 0644
+            variables(
+             :aliases => site[:drush_aliases][:aliases]
+            )
           end
         end
       end
@@ -324,6 +362,40 @@ node[:drupal][:sites].each do |site_name, site|
       only_if { site[:deploy][:action].any? { |action| action == 'install' } }
 
       Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action].any? { |action| action == 'install' }
+      code <<-EOH
+        set -x
+        set -e
+        #{cmd}
+      EOH
+    end
+
+    if site[:drupal][:registry_rebuild]
+      bash "drush-download-registry-rebuild-#{site_name}" do
+        cwd "#{base}"
+        cmd = 'drush dl registry_rebuild; '
+        code <<-EOH
+          set -x
+          #{cmd}
+        EOH
+      end
+
+      bash "drush-site-registry-rebuild-#{site_name}" do
+        cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
+        cmd = 'drush rr; drush cc all; drush rr'
+        code <<-EOH
+          set -x
+          #{cmd}
+        EOH
+      end
+    end
+
+    bash "drush-update-#{site_name}-admin-password-on-import" do
+      cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
+      user 'root'
+      cmd = "drush upwd #{drupal_user['admin_user']} --password=#{drupal_user['admin_pass']}"
+      only_if { site[:deploy][:action].any? { |action| action == 'import' } }
+
+      Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action].any? { |action| action == 'import' }
       code <<-EOH
         set -x
         set -e

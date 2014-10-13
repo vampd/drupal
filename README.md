@@ -1,13 +1,17 @@
 Drupal Cookbook
 ===============
-This cookbook installs a Drupal site on a LAMP stack.
+This cookbook deploys, installs, imports, and/or updates a Drupal site on a LAMP stack.
+This cookbook looks to be a full featured deployment strategy for a drupal site
+without the need to pass the napkin.
+
+This cookbook is a fork of [drupal](http://github.com/newmediadenver/drupal)
 
 Usage
 -----
-This cookbook has been designed to work with [drupal-lamp](http://github.com/newmediadenver/drupal-lamp).
+This cookbook has been redesigned and featurized to work with [vampd](http://github.com/vampd/vampd).
 
 ## JSON Explained
-This JSON is found in the drupal-lamp repo under infrastructure/drupal_lamp.json.
+This JSON is found in the vampd repo under chef/roles. Create a new role based on example and place the settings under drupal.
 
 ```
 "drupal": { # Name of the cookbook
@@ -50,6 +54,15 @@ This JSON is found in the drupal-lamp repo under infrastructure/drupal_lamp.json
           "db_driver": "mysql", # database driver
           "db_file": "/vagrant/backup.sql" # path of db file to be imported, if "action" has
           "import" .
+        }
+      },
+      "drush_aliases": { //Not necessary, but a nice helper to sync sites, databases, files, etc
+        "location": "sites/all/drush/aliases.drushrc.php", //Relative to the release path of the drupal install
+        "aliases": { // From example.aliases.drushrc.php, grab the variables you need they will be passed as json to the aliases file
+          "live": {
+            'root': '/path/to/drupal',
+            'uri': 'dev.mydrupalsite.com'
+          }
         }
       },
       "repository": {
