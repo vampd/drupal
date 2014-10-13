@@ -1,13 +1,17 @@
 Drupal Cookbook
 ===============
-This cookbook installs a Drupal site on a LAMP stack.
+This cookbook deploys, installs, imports, and/or updates a Drupal site on a LAMP stack.
+This cookbook looks to be a full featured deployment strategy for a drupal site
+without the need to pass the napkin.
+
+This cookbook is a fork of [drupal](http://github.com/newmediadenver/drupal)
 
 Usage
 -----
-This cookbook has been designed to work with [drupal-lamp](http://github.com/newmediadenver/drupal-lamp).
+This cookbook has been redesigned and featurized to work with [vampd](http://github.com/vampd/vampd).
 
 ## JSON Explained
-This JSON is found in the drupal-lamp repo under infrastructure/drupal_lamp.json.
+This JSON is found in the vampd repo under chef/roles. Create a new role based on example and place the settings under drupal.
 
 ```
 "drupal": { # Name of the cookbook
