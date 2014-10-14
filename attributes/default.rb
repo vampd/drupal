@@ -52,16 +52,13 @@ node[:drupal][:sites].each do |site_name, site|
   default[:drupal][:sites][site_name][:drupal][:install]['--clean-url'] = 1
 
   #Set up the docroot to be used as a default
-  if node[:drupal][:sites][site_name][:drupal][:settings][:docroot].nil?
-    default[:drupal][:sites][site_name][:drupal][:settings][:docroot] = ''
-    docroot = ''
-  else
-    docroot = node[:drupal][:sites][site_name][:drupal][:settings][:docroot]
-  end
+  default[:drupal][:sites][site_name][:drupal][:settings][:docroot] = ''
+
+  docroot = default[:drupal][:sites][site_name][:drupal][:settings][:docroot]
 
   docroot_before = ''
   docoot_after = ''
-  if !docroot.nil?
+  if !docroot.empty?
     docroot_before = "#{docroot}/"
     docoot_after = "/#{docroot}"
   end
