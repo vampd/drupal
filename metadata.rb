@@ -4,7 +4,7 @@ maintainer_email 'tim.d.whitney@gmail.com'
 license          'Apache 2.0'
 description      'Manages Drupal'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '1.1.0'
+version          '4.0.3'
 
 depends 'apt', '~> 2.3.0'
 depends 'apache2', '~> 1.8.14'
