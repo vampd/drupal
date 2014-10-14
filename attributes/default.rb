@@ -60,7 +60,7 @@ node[:drupal][:sites].each do |site_name, site|
           docroot = ''
         end
       end
-    else
+    end
   else
     docroot = site[:drupal][:settings][:docroot]
   end
