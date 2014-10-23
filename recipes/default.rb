@@ -369,6 +369,22 @@ node[:drupal][:sites].each do |site_name, site|
       EOH
     end
 
+    template "/root/#{site_name}-update.sh" do
+      source 'update.sh.erb'
+      mode 0755
+      owner 'root'
+      group 'root'
+      variables(
+        :db_name => site[:drupal][:settings][:db_name],
+        :db_user => drupal_user['db_user'],
+        :db_pw => drupal_user['db_password'],
+        :db_file => site[:drupal][:settings][:db_file],
+        :drupal_user => drupal_user['admin_user'],
+        :drupal_pass => drupal_user['admin_pass']
+      )
+      only_if { site[:deploy][:action].any? { |action| action == 'import' } }
+    end
+
     if site[:drupal][:registry_rebuild]
       bash "drush-download-registry-rebuild-#{site_name}" do
         cwd "#{base}"
