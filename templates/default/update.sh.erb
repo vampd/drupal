@@ -1,0 +1,10 @@
+#! /bin/bash
+# Drop and create the database
+mysqladmin -u <%= @db_user %> -p<%= @db_pw %> drop <%= @db_name %>
+mysqladmin -u <%= @db_user %> -p<%= @db_pw %> create <%= @db_name %>
+# Import the existing db
+mysql -u <%= @db_user %> -p<%= @db_pw %> <%= @db_name %> < <%= @db_file %>
+# Run Updates
+drush updb -y
+# Update the password
+drush upwd <%= @drupal_user %> --password=<%= @drupal_pass %>
