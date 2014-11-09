@@ -1,6 +1,6 @@
 #
-# Cookbook Name:: drupal-developer
-# Recipe:: default
+# Cookbook Name:: drupal
+# Recipe:: xdebug
 #
 # Copyright (C) 2014 Alex Knoll <arknoll@gmail.com>
 #
