@@ -4,85 +4,73 @@ This cookbook deploys, installs, imports, and/or updates a Drupal site on a LAMP
 This cookbook looks to be a full featured deployment strategy for a drupal site
 without the need to pass the napkin.
 
-This cookbook is a fork of [drupal](http://github.com/newmediadenver/drupal)
+This cookbook is a fork of [drupal](http://github.com/newmediadenver/drupal) from an
+earlier release and is now a separate project.
 
 Usage
 -----
-This cookbook has been redesigned and featurized to work with [vampd](http://github.com/vampd/vampd).
+This cookbook is designed and featurized to work with [vampd](http://github.com/vampd/vampd).
 
-## JSON Explained
-This JSON is found in the vampd repo under chef/roles. Create a new role based on example and place the settings under drupal.
+The cookbook does three top level categories: Server, Drush and Sites:
 
+### The default attributes for `server` are:
 ```
-"drupal": { # Name of the cookbook
-  "sites": { # Handling of sites
-    "example": {  # site name
-      "active": true, # true or false
-      "deploy": {
-        "action": ["deploy", "import", "update"], # see "Available Deploy Actions"
-        "releases": 1 # number of git releases to store (in addition to the active release)
-      },
-      "drush_make": { # Use drush make (See "Using Drush Make")
-        "api": "2",
-        "files": { # Pull in all drush make files needed for the make
-          "default": "build-profile.make",
-          "core": "drupal-org-core.make"
-        },
-        "arguments": { # Add drush make arguments
-          "--working-copy" # Example argument
-        },
-        "template": false # Use a template or use the "default" file
-      },
-      "drupal": {
-        "version": "7.0", # drupal version 8.0, 7.0 or 6.0
-        "install": { # key->value pair passed to 'drush site-install'
-          "install_configure_form.update_status_module": "'array(FALSE,FALSE)'",
-          "--clean-url": 1 # enable clean urls on site install
-        },
-        "settings": {
-          "profile": "standard", # if action is clean, this install profile will be installed
-          "files": "sites/default/files", # location of the files directory
-          "cookbook": "drupal", # the name of this cookbook
-          "settings": { # See "Working with multiple settings.php"
-            "default": {
-              "location": "sites/default/settings.php" # location of the settings.php file
-            },
-          },
-          "db_name": "example", # database name
-          "db_host": "localhost", # database host
-          "db_prefix": "", # database prefix
-          "db_driver": "mysql", # database driver
-          "db_file": "/vagrant/backup.sql" # path of db file to be imported, if "action" has
-          "import" .
-        }
-      },
-      "drush_aliases": { //Not necessary, but a nice helper to sync sites, databases, files, etc
-        "location": "sites/all/drush/aliases.drushrc.php", //Relative to the release path of the drupal install
-        "aliases": { // From example.aliases.drushrc.php, grab the variables you need they will be passed as json to the aliases file
-          "live": {
-            'root': '/path/to/drupal',
-            'uri': 'dev.mydrupalsite.com'
-          }
-        }
-      },
-      "repository": {
-        "host": "github.com",
-        "uri": "https://github.com/drupal/drupal.git",
-        "revision": "7.26" # branch, tag, or hash
-      },
-      # Apache configuration options
-      "web_app": { # See "Web App Config Options"
-        "80": { # port (Necessary)
-          "server_name": "drupal.local", (Necessary)
-          "rewrite_engine": "On", (Necessary)
-          "docroot": "/srv/www/example/current", (Necessary)
-        }
-      }
-    }
-  }
-}
-````
+[:server][:web_user] = 'www-data'
+[:server][:web_group] = 'www-data'
+[:server][:base] = '/srv/www'
+[:server][:assets] = '/assets'
+```
 
+### The default attributes for `drush` are:
+```
+[:drush][:revision] = '6.2.0'
+[:drush][:repository] = 'https://github.com/drush-ops/drush.git'
+[:drush][:dir] = '/opt/drush'
+[:drush][:executable] = '/usr/bin/drush'
+```
+
+### The default attributes for `sites` are:
+
+`sites` is an array of sites that is looped over and given default values. `site_name`
+is the id of the of the site being looped over.
+```
+[:sites][site_name][:active] = 0
+[:sites][site_name][:deploy][:action] = []
+[:sites][site_name][:deploy][:releases] = 5
+
+# default to bringing in latest drupal
+[:sites][site_name][:repository][:host] = 'github.com'
+[:sites][site_name][:repository][:uri] = 'https://github.com/drupal/drupal.git'
+[:sites][site_name][:repository][:revision] = '7.26'
+[:sites][site_name][:repository][:shallow_clone] = false
+
+[:sites][site_name][:drupal][:version] = '7.26'
+[:sites][site_name][:drupal][:registry_rebuild] = false
+[:sites][site_name][:drupal][:install]['install_configure_form.update_status_module'] = "'array(FALSE,FALSE)'"
+[:sites][site_name][:drupal][:install]['--clean-url'] = 1
+
+# Set up the docroot to be used as a default
+[:sites][site_name][:drupal][:settings][:profile] = 'standard'
+[:sites][site_name][:drupal][:settings][:files] = "#{docroot_before}sites/default/files"
+[:sites][site_name][:drupal][:settings][:cookbook] = 'drupal'
+[:sites][site_name][:drupal][:settings][:settings][:default][:location] = "#{docroot_before}sites/default/settings.php"
+[:sites][site_name][:drupal][:settings][:settings][:default][:ignore] = false
+[:sites][site_name][:drupal][:settings][:db_name] = site_name.gsub('-', '_')
+[:sites][site_name][:drupal][:settings][:db_host] = 'localhost'
+[:sites][site_name][:drupal][:settings][:db_prefix] = ''
+[:sites][site_name][:drupal][:settings][:db_driver] = 'mysql'
+[:sites][site_name][:web_app]['80'][:server_name] = "#{site_name}.local"
+[:sites][site_name][:web_app]['80'][:rewrite_engine] = 'On'
+[:sites][site_name][:web_app]['80'][:docroot] = "#{node[:drupal][:server][:base]}/#{site_name}/current#{docoot_after}"
+[:sites][site_name][:web_app]['80'][:error_log] = "/var/log/apache2/#{site_name}-error.log"
+
+[:sites][site_name][:drupal_user][:id] = site_name
+[:sites][site_name][:drupal_user][:db_user] = 'drupal'
+[:sites][site_name][:drupal_user][:db_password] = 'drupal'
+[:sites][site_name][:drupal_user][:admin_user] = 'admin'
+[:sites][site_name][:drupal_user][:admin_pass] = 'admin'
+[:sites][site_name][:drupal_user][:update_password] = true
+```
 ## Available Deploy Actions
 #### deploy
 deploy will pull down a fresh copy of your repo.
