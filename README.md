@@ -34,9 +34,10 @@ The cookbook does three top level categories: Server, Drush and Sites:
 `sites` is an array of sites that is looped over and given default values. `site_name`
 is the id of the of the site being looped over.
 ```
-[:sites][site_name][:active] = 0
-[:sites][site_name][:deploy][:action] = []
-[:sites][site_name][:deploy][:releases] = 5
+
+[:sites][site_name][:active] = 0 // Can be true or false
+[:sites][site_name][:deploy][:action] = [] // See 'Available Deploy Actions'
+[:sites][site_name][:deploy][:releases] = 5 // Number of git releases.
 
 # default to bringing in latest drupal
 [:sites][site_name][:repository][:host] = 'github.com'
@@ -44,14 +45,14 @@ is the id of the of the site being looped over.
 [:sites][site_name][:repository][:revision] = '7.26'
 [:sites][site_name][:repository][:shallow_clone] = false
 
-[:sites][site_name][:drupal][:version] = '7.26'
-[:sites][site_name][:drupal][:registry_rebuild] = false
-[:sites][site_name][:drupal][:install]['install_configure_form.update_status_module'] = "'array(FALSE,FALSE)'"
+[:sites][site_name][:drupal][:version] = '7.26' // Drupal version 8.0, 7.0 or 6.0
+[:sites][site_name][:drupal][:registry_rebuild] = false // Whether or not to download and run drush rr.
+[:sites][site_name][:drupal][:install]['install_configure_form.update_status_module'] = "'array(FALSE,FALSE)'" // Install flags
 [:sites][site_name][:drupal][:install]['--clean-url'] = 1
 
 # Set up the docroot to be used as a default
-[:sites][site_name][:drupal][:settings][:profile] = 'standard'
-[:sites][site_name][:drupal][:settings][:files] = "#{docroot_before}sites/default/files"
+[:sites][site_name][:drupal][:settings][:profile] = 'standard' // If action includes install, this profile will be installed.
+[:sites][site_name][:drupal][:settings][:files] = "#{docroot_before}sites/default/files" // Where the sites live
 [:sites][site_name][:drupal][:settings][:cookbook] = 'drupal'
 [:sites][site_name][:drupal][:settings][:settings][:default][:location] = "#{docroot_before}sites/default/settings.php"
 [:sites][site_name][:drupal][:settings][:settings][:default][:ignore] = false
