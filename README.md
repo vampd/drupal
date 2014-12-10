@@ -52,7 +52,7 @@ is the id of the of the site being looped over.
 
 # Set up the docroot to be used as a default
 [:sites][site_name][:drupal][:settings][:profile] = 'standard' // If action includes install, this profile will be installed.
-[:sites][site_name][:drupal][:settings][:files] = "#{docroot_before}sites/default/files" // Where the sites live
+[:sites][site_name][:drupal][:settings][:files] = "#{docroot_before}sites/default/files" // Where the sites files live
 [:sites][site_name][:drupal][:settings][:cookbook] = 'drupal'
 [:sites][site_name][:drupal][:settings][:settings][:default][:location] = "#{docroot_before}sites/default/settings.php"
 [:sites][site_name][:drupal][:settings][:settings][:default][:ignore] = false
