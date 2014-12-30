@@ -345,6 +345,20 @@ node[:drupal][:sites].each do |site_name, site|
       create_dirs_before_symlink.clear
       purge_before_symlink.clear
       symlinks.clear
+
+      # Run post-deploy scripts if any are defined.
+      bash "Run post-deployment scripts for #{site_name}" do
+        only_if { site[:deploy][:scripts][:post_deploy].any? }
+        site[:deploy][:scripts][:post_deploy].each do |script|
+          cwd "#{base}/current"
+          user 'root'
+          cmd = "sh #{script}"
+          code <<-EOH
+            set -x
+            set -e
+            #{cmd}
+          EOH
+      end
     end
 
     bash "drush-site-install-#{site_name}" do
@@ -367,6 +381,20 @@ node[:drupal][:sites].each do |site_name, site|
         set -e
         #{cmd}
       EOH
+
+      # Run post-install scripts if any are defined.
+      bash "Run post-install scripts for #{site_name}" do
+        only_if { site[:deploy][:scripts][:post_install].any? }
+        site[:deploy][:scripts][:post_install].each do |script|
+          cwd "#{base}/current"
+          user 'root'
+          cmd = "sh #{script}"
+          code <<-EOH
+            set -x
+            set -e
+            #{cmd}
+          EOH
+      end
     end
 
     template "/root/#{site_name}-update.sh" do
@@ -416,6 +444,20 @@ node[:drupal][:sites].each do |site_name, site|
         set -e
         #{cmd}
       EOH
+
+      # Run post-update scripts if any are defined.
+      bash "Run post-update scripts for #{site_name}" do
+        only_if { site[:deploy][:scripts][:post_update].any? }
+        site[:deploy][:scripts][:post_update].each do |script|
+          cwd "#{base}/current"
+          user 'root'
+          cmd = "sh #{script}"
+          code <<-EOH
+            set -x
+            set -e
+            #{cmd}
+          EOH
+      end
     end
 
     bash "drush-update-#{site_name}-admin-password-on-import" do

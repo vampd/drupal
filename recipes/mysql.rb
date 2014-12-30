@@ -77,6 +77,20 @@ node[:drupal][:sites].each do |site_name, site|
           set -e
           #{cmd}
         EOH
+
+        # Run post-import scripts if any are defined.
+        bash "Run post-import scripts for #{site_name}" do
+          only_if { site[:deploy][:scripts][:post_import].any? }
+          site[:deploy][:scripts][:post_import].each do |script|
+            cwd "#{node[:drupal][:server][:base]}/#{site_name}/current"
+            user 'root'
+            cmd = "sh #{script}"
+            code <<-EOH
+              set -x
+              set -e
+              #{cmd}
+            EOH
+        end
       end
 
       node[:db][:grant_hosts].each do |host_name|
