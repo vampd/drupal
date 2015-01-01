@@ -345,11 +345,12 @@ node[:drupal][:sites].each do |site_name, site|
       create_dirs_before_symlink.clear
       purge_before_symlink.clear
       symlinks.clear
+    end
 
-      # Run post-deploy scripts if any are defined.
-      bash "Run post-deployment scripts for #{site_name}" do
-        only_if { site[:deploy][:scripts][:post_deploy].any? }
-        site[:deploy][:scripts][:post_deploy].each do |script|
+    # Run post-deploy scripts if any are defined.
+    if site[:deploy][:action].any? { |action| action == 'deploy' } && defined?(site[:deploy][:scripts][:post_deploy]) != nil
+      site[:deploy][:scripts][:post_deploy].each do |script|
+        bash "Run post-deployment script #{script} for #{site_name}" do
           cwd "#{base}/current"
           user 'root'
           cmd = "sh #{script}"
@@ -358,6 +359,7 @@ node[:drupal][:sites].each do |site_name, site|
             set -e
             #{cmd}
           EOH
+        end
       end
     end
 
@@ -381,11 +383,12 @@ node[:drupal][:sites].each do |site_name, site|
         set -e
         #{cmd}
       EOH
+    end
 
-      # Run post-install scripts if any are defined.
-      bash "Run post-install scripts for #{site_name}" do
-        only_if { site[:deploy][:scripts][:post_install].any? }
-        site[:deploy][:scripts][:post_install].each do |script|
+    # Run post-install scripts if any are defined.
+    if site[:deploy][:action].any? { |action| action == 'install' } && defined?(site[:deploy][:scripts][:post_install]) != nil
+      site[:deploy][:scripts][:post_install].each do |script|
+        bash "Run post-install script #{script} for #{site_name}" do
           cwd "#{base}/current"
           user 'root'
           cmd = "sh #{script}"
@@ -394,6 +397,7 @@ node[:drupal][:sites].each do |site_name, site|
             set -e
             #{cmd}
           EOH
+        end
       end
     end
 
@@ -444,11 +448,12 @@ node[:drupal][:sites].each do |site_name, site|
         set -e
         #{cmd}
       EOH
+    end
 
-      # Run post-update scripts if any are defined.
-      bash "Run post-update scripts for #{site_name}" do
-        only_if { site[:deploy][:scripts][:post_update].any? }
-        site[:deploy][:scripts][:post_update].each do |script|
+    # Run post-update scripts if any are defined.
+    if site[:deploy][:action].any? { |action| action == 'update' } && defined?(site[:deploy][:scripts][:post_update]) != nil
+      site[:deploy][:scripts][:post_update].each do |script|
+        bash "Run post-update script #{script} for #{site_name}" do
           cwd "#{base}/current"
           user 'root'
           cmd = "sh #{script}"
@@ -457,6 +462,7 @@ node[:drupal][:sites].each do |site_name, site|
             set -e
             #{cmd}
           EOH
+        end
       end
     end
 
@@ -472,6 +478,22 @@ node[:drupal][:sites].each do |site_name, site|
         set -e
         #{cmd}
       EOH
+    end
+
+    # Run post-everything scripts if any are defined.
+    if defined?(site[:deploy][:scripts][:post_everything]) != nil
+      site[:deploy][:scripts][:post_everything].each do |script|
+        bash "Run post-everything script #{script} for #{site_name}" do
+          cwd "#{base}/current"
+          user 'root'
+          cmd = "sh #{script}"
+          code <<-EOH
+            set -x
+            set -e
+            #{cmd}
+          EOH
+        end
+      end
     end
   end
 end
