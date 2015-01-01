@@ -348,7 +348,7 @@ node[:drupal][:sites].each do |site_name, site|
     end
 
     # Run post-deploy scripts if any are defined.
-    if site[:deploy][:action].any? { |action| action == 'deploy' } && defined?(site[:deploy][:scripts][:post_deploy]) != nil
+    if site[:deploy][:action].any? { |action| action == 'deploy' } && site[:deploy][:scripts][:post_deploy].any?
       site[:deploy][:scripts][:post_deploy].each do |script|
         bash "Run post-deployment script #{script} for #{site_name}" do
           cwd "#{base}/current"
@@ -386,7 +386,7 @@ node[:drupal][:sites].each do |site_name, site|
     end
 
     # Run post-install scripts if any are defined.
-    if site[:deploy][:action].any? { |action| action == 'install' } && defined?(site[:deploy][:scripts][:post_install]) != nil
+    if site[:deploy][:action].any? { |action| action == 'install' } && site[:deploy][:scripts][:post_install].any?
       site[:deploy][:scripts][:post_install].each do |script|
         bash "Run post-install script #{script} for #{site_name}" do
           cwd "#{base}/current"
@@ -451,7 +451,7 @@ node[:drupal][:sites].each do |site_name, site|
     end
 
     # Run post-update scripts if any are defined.
-    if site[:deploy][:action].any? { |action| action == 'update' } && defined?(site[:deploy][:scripts][:post_update]) != nil
+    if site[:deploy][:action].any? { |action| action == 'update' } && site[:deploy][:scripts][:post_update].any?
       site[:deploy][:scripts][:post_update].each do |script|
         bash "Run post-update script #{script} for #{site_name}" do
           cwd "#{base}/current"
@@ -466,22 +466,8 @@ node[:drupal][:sites].each do |site_name, site|
       end
     end
 
-    bash "drush-update-#{site_name}-admin-password-on-import" do
-      cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
-      user 'root'
-      cmd = "drush upwd #{drupal_user['admin_user']} --password=#{drupal_user['admin_pass']}"
-      only_if { site[:deploy][:action].any? { |action| action == 'import' } }
-
-      Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action].any? { |action| action == 'import' }
-      code <<-EOH
-        set -x
-        set -e
-        #{cmd}
-      EOH
-    end
-
     # Run post-everything scripts if any are defined.
-    if defined?(site[:deploy][:scripts][:post_everything]) != nil
+    if site[:deploy][:scripts][:post_everything].any?
       site[:deploy][:scripts][:post_everything].each do |script|
         bash "Run post-everything script #{script} for #{site_name}" do
           cwd "#{base}/current"

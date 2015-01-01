@@ -80,7 +80,7 @@ node[:drupal][:sites].each do |site_name, site|
       end
 
       # Run post-import scripts if any are defined.
-      if site[:deploy][:action].any? { |action| action == 'import' } && defined?(site[:deploy][:scripts][:post_import]) != nil
+      if site[:deploy][:action].any? { |action| action == 'import' } && site[:deploy][:scripts][:post_import].any?
         site[:deploy][:scripts][:post_import].each do |script|
           bash "Run post-import script #{script} for #{site_name}" do
             cwd "#{node[:drupal][:server][:base]}/#{site_name}/current"
