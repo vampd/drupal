@@ -466,6 +466,19 @@ node[:drupal][:sites].each do |site_name, site|
       end
     end
 
+    bash "drush-update-#{site_name}-admin-password-on-import" do
+      cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
+      user 'root'
+      cmd = "drush upwd #{drupal_user['admin_user']} --password=#{drupal_user['admin_pass']}"
+      only_if { site[:deploy][:action].include?('import') && site[:drupal_user][:update_password] == true}
+      Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action].any? { |action| action == 'import' }
+      code <<-EOH
+        set -x
+        set -e
+        #{cmd}
+      EOH
+    end
+
     # Run post-everything scripts if any are defined.
     if site[:deploy][:scripts][:post_everything].any?
       site[:deploy][:scripts][:post_everything].each do |script|
