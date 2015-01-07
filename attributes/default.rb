@@ -39,6 +39,11 @@ node[:drupal][:sites].each do |site_name, site|
   default[:drupal][:sites][site_name][:active] = 0
   default[:drupal][:sites][site_name][:deploy][:action] = []
   default[:drupal][:sites][site_name][:deploy][:releases] = 5
+  default[:drupal][:sites][site_name][:deploy][:scripts][:post_deploy] = []
+  default[:drupal][:sites][site_name][:deploy][:scripts][:post_install] = []
+  default[:drupal][:sites][site_name][:deploy][:scripts][:post_import] = []
+  default[:drupal][:sites][site_name][:deploy][:scripts][:post_update] = []
+  default[:drupal][:sites][site_name][:deploy][:scripts][:post_everything] = []
 
   # default to bringing in latest drupal
   default[:drupal][:sites][site_name][:repository][:host] = 'github.com'
