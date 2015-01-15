@@ -79,6 +79,22 @@ node[:drupal][:sites].each do |site_name, site|
         EOH
       end
 
+      # Run post-import scripts if any are defined.
+      if site[:deploy][:action].any? { |action| action == 'import' } && site[:deploy][:scripts][:post_import].any?
+        site[:deploy][:scripts][:post_import].each do |script|
+          bash "Run post-import script #{script} for #{site_name}" do
+            cwd "#{node[:drupal][:server][:base]}/#{site_name}/current"
+            user 'root'
+            cmd = "sh #{script}"
+            code <<-EOH
+              set -x
+              set -e
+              #{cmd}
+            EOH
+          end
+        end
+      end
+
       node[:db][:grant_hosts].each do |host_name|
         Chef::Log.debug "drupal::mysql: - `mysql -u #{mysql_connection_info[:username]} -p#{mysql_connection_info[:password]} -h #{mysql_connection_info[:host]} -e \"GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON '#{site[:drupal][:settings][:db_name]}' TO '#{drupal_user['db_user']}'@'#{host_name}' IDENTIFIED BY '#{drupal_user['db_password']}';\"`"
         mysql_database_user drupal_user['db_user'] do
