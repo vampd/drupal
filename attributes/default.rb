@@ -44,7 +44,7 @@ node[:drupal][:sites].each do |site_name, site|
   default[:drupal][:sites][site_name][:deploy][:scripts][:post_import] = []
   default[:drupal][:sites][site_name][:deploy][:scripts][:post_update] = []
   default[:drupal][:sites][site_name][:deploy][:scripts][:post_everything] = []
-
+  default[:drupal][:sites][site_name][:type] = 'drupal'
   # default to bringing in latest drupal
   default[:drupal][:sites][site_name][:repository][:host] = 'github.com'
   default[:drupal][:sites][site_name][:repository][:uri] = 'https://github.com/drupal/drupal.git'
