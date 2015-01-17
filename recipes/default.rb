@@ -375,7 +375,7 @@ node[:drupal][:sites].each do |site_name, site|
       if site[:type] == "drupal"
         cmd = "drush -y site-install"
       elsif site[:type] == "backdrop"
-        cmd = "php ./core/scripts/install.sh"
+        cmd = "php ./core/scripts/install.sh --db-url='mysql://#{drupal_user['db_user']}:#{drupal_user['db_password']}@#{site[:drupal][:settings][:db_host]}/#{site[:drupal][:settings][:db_name]}'"
       end
 
       cmd << " #{site[:drupal][:settings][:profile]}"
