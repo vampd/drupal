@@ -346,9 +346,24 @@ node[:drupal][:sites].each do |site_name, site|
       purge_before_symlink.clear
       symlinks.clear
     end
+
+    # Run post-deploy scripts if any are defined.
+    if site[:deploy][:action].any? { |action| action == 'deploy' } && site[:deploy][:scripts][:post_deploy].any?
+      site[:deploy][:scripts][:post_deploy].each do |script|
+        bash "Run post-deployment script #{script} for #{site_name}" do
+          cwd "#{base}/current"
+          user 'root'
+          cmd = "sh #{script}"
+          code <<-EOH
+            set -x
+            set -e
+            #{cmd}
+          EOH
+        end
+      end
+    end
     if site[:deploy][:action].any? { |action| action == 'install' }
       cmd = "drush -y site-install #{site[:drupal][:settings][:profile]}"
-
 
       unless site[:drupal][:install].nil?
         site[:drupal][:install].each do |flag, value|
@@ -357,10 +372,10 @@ node[:drupal][:sites].each do |site_name, site|
       end
 
       cmd << " --account-name=#{drupal_user['admin_user']} --account-pass=#{drupal_user['admin_pass']}"
+
       bash "drush-site-install-#{site_name}" do
         cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
         user 'root'
-
         Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action].any? { |action| action == 'install' }
         code <<-EOH
           set -x
@@ -368,7 +383,6 @@ node[:drupal][:sites].each do |site_name, site|
           #{cmd}
         EOH
       end
-
       template "/root/#{site_name}-install.sh" do
         source 'install.sh.erb'
         mode 0755
@@ -377,6 +391,23 @@ node[:drupal][:sites].each do |site_name, site|
         variables(
           :install_command => cmd
         )
+        cmd = ''
+      end
+    end
+
+    # Run post-install scripts if any are defined.
+    if site[:deploy][:action].any? { |action| action == 'install' } && site[:deploy][:scripts][:post_install].any?
+      site[:deploy][:scripts][:post_install].each do |script|
+        bash "Run post-install script #{script} for #{site_name}" do
+          cwd "#{base}/current"
+          user 'root'
+          cmd = "sh #{script}"
+          code <<-EOH
+            set -x
+            set -e
+            #{cmd}
+          EOH
+        end
       end
     end
 
@@ -429,18 +460,49 @@ node[:drupal][:sites].each do |site_name, site|
       EOH
     end
 
+    # Run post-update scripts if any are defined.
+    if site[:deploy][:action].any? { |action| action == 'update' } && site[:deploy][:scripts][:post_update].any?
+      site[:deploy][:scripts][:post_update].each do |script|
+        bash "Run post-update script #{script} for #{site_name}" do
+          cwd "#{base}/current"
+          user 'root'
+          cmd = "sh #{script}"
+          code <<-EOH
+            set -x
+            set -e
+            #{cmd}
+          EOH
+        end
+      end
+    end
+
     bash "drush-update-#{site_name}-admin-password-on-import" do
       cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
       user 'root'
       cmd = "drush upwd #{drupal_user['admin_user']} --password=#{drupal_user['admin_pass']}"
       only_if { site[:deploy][:action].include?('import') && site[:drupal_user][:update_password] == true}
-
       Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action].any? { |action| action == 'import' }
       code <<-EOH
         set -x
         set -e
         #{cmd}
       EOH
+    end
+
+    # Run post-everything scripts if any are defined.
+    if site[:deploy][:scripts][:post_everything].any?
+      site[:deploy][:scripts][:post_everything].each do |script|
+        bash "Run post-everything script #{script} for #{site_name}" do
+          cwd "#{base}/current"
+          user 'root'
+          cmd = "sh #{script}"
+          code <<-EOH
+            set -x
+            set -e
+            #{cmd}
+          EOH
+        end
+      end
     end
   end
 end
