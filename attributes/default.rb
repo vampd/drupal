@@ -85,5 +85,5 @@ node[:drupal][:sites].each do |site_name, site|
   default[:drupal][:sites][site_name][:drupal_user][:db_password] = 'drupal'
   default[:drupal][:sites][site_name][:drupal_user][:admin_user] = 'admin'
   default[:drupal][:sites][site_name][:drupal_user][:admin_pass] = 'admin'
-  default[:drupal][:sites][site_name][:drupal_user][:update_password] = true
+  default[:drupal][:sites][site_name][:drupal_user][:update_password] = false
 end
