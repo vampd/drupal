@@ -1,9 +1,9 @@
 #
-# Author::  Kevin Bridges (<kevin@cyberswat.com>)
+# Author::  Tim Whitney (<tim.d.whitney@gmail.com>)
 # Cookbook Name:: drupal
 # Recipe:: drush
 #
-# Copyright 2013, Cyberswat Industries, LLC.
+# Copyright 2013, Tim Whitney
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,32 +17,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+include_recipe 'composer'
 
-directory node[:drupal][:drush][:dir] do
-  owner 'root'
-  group 'root'
-  mode '0755'
-  action :create
-end
 
-directory "#{node[:drupal][:drush][:dir]}/shared" do
-  owner 'root'
-  group 'root'
-  mode '0755'
-  action :create
-end
-
-deploy node[:drupal][:drush][:dir] do
+git node[:drupal][:drush][:dir] do
   repository node[:drupal][:drush][:repository]
-  revision node[:drupal][:drush][:revision]
-  keep_releases 1
-  symlink_before_migrate.clear
-  create_dirs_before_symlink.clear
-  purge_before_symlink.clear
-  symlinks.clear
+  reference node[:drupal][:drush][:revision]
+  action :sync
 end
 
 link node[:drupal][:drush][:executable] do
-  to "#{node[:drupal][:drush][:dir]}/current/drush"
+  to "#{node[:drupal][:drush][:dir]}/drush"
   link_type :symbolic
+end
+
+ # we are going to remove all the files in this folder, this will allow
+# the drush make to occur
+bash 'Install Drush' do
+  user 'root'
+  cwd node[:drupal][:drush][:dir]
+  cmd = 'composer install'
+  code <<-EOH
+    set -x
+    set -e
+    #{cmd}
+  EOH
 end
