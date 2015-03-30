@@ -58,10 +58,10 @@ node[:drupal][:sites].each do |site_name, site|
 
   #Set up the docroot to be used as a default
   default[:drupal][:sites][site_name][:drupal][:settings][:docroot] = ''
-  docroot = site[:drupal][:settings][:docroot]
   docroot_before = ''
   docoot_after = ''
-  if !docroot.empty?
+  if node[:drupal][:sites][site_name][:drupal][:settings][:docroot].to_s != ''
+    docroot = node[:drupal][:sites][site_name][:drupal][:settings][:docroot]
     docroot_before = "#{docroot}/"
     docoot_after = "/#{docroot}"
   end
