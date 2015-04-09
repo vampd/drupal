@@ -70,7 +70,7 @@ is the id of the of the site being looped over.
 [:sites][site_name][:drupal_user][:db_password] = 'drupal'
 [:sites][site_name][:drupal_user][:admin_user] = 'admin'
 [:sites][site_name][:drupal_user][:admin_pass] = 'admin'
-[:sites][site_name][:drupal_user][:update_password] = true
+[:sites][site_name][:drupal_user][:update_password] = false
 ```
 ## Available Deploy Actions
 #### deploy
