@@ -106,21 +106,11 @@ node[:drupal][:sites].each do |site_name, site|
       only_if { site[:deploy][:action].any? { |action| action == 'deploy' } }
       repository site[:repository][:uri]
       revision site[:repository][:revision]
+      shallow_clone site[:repository][:shallow_clone]
+      enable_submodules site[:repository][:submodule]
       keep_releases site[:deploy][:releases]
 
       before_migrate do
-        if site[:repository][:submodule]
-          bash 'Git submodule init and submodule update' do
-          cwd release_path
-          cmd = 'git submodule init && git submodule update';
-          code <<-EOH
-              set -x
-              set -e
-              #{cmd}
-            EOH
-          end
-        end
-
         # If the Drush make hash is nil, then do nothing, else make the site
         if site.has_key?("drush_make") && !site[:drush_make][:files].nil?
 
@@ -287,18 +277,6 @@ node[:drupal][:sites].each do |site_name, site|
             cwd base
             cmd = "unlink current; ln -s #{release_path.gsub("#{base}/", "")} current"
             Chef::Log.debug("Drupal::default: after_restart: relative symlink: base = #{base.inspect}; cmd = #{cmd.inspect}")
-            command <<-EOF
-              set -x
-              set -e
-              #{cmd}
-            EOF
-            only_if { ::File.exists?("#{base}/current") }
-          end
-
-          execute 'drupal-switch-branch' do
-            cwd "#{base}/current"
-            cmd = "git checkout #{site[:repository][:revision]} && git pull origin #{site[:repository][:revision]}"
-            Chef::Log.debug("Drupal::default: after_restart: _default environment: cd #{base}; #{cmd}")
             command <<-EOF
               set -x
               set -e
