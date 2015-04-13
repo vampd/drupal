@@ -50,6 +50,7 @@ node[:drupal][:sites].each do |site_name, site|
   default[:drupal][:sites][site_name][:repository][:uri] = 'https://github.com/drupal/drupal.git'
   default[:drupal][:sites][site_name][:repository][:revision] = '7.26'
   default[:drupal][:sites][site_name][:repository][:shallow_clone] = false
+  default[:drupal][:sites][site_name][:repository][:submodule] = false
 
   default[:drupal][:sites][site_name][:drupal][:version] = '7.26'
   default[:drupal][:sites][site_name][:drupal][:registry_rebuild] = false
