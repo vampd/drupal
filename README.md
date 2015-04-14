@@ -51,6 +51,7 @@ is the id of the of the site being looped over.
 [:sites][site_name][:drupal][:install]['--clean-url'] = 1
 
 # Set up the docroot to be used as a default
+[:sites][site_name][:drupal][:settings][:docroot] = ''
 [:sites][site_name][:drupal][:settings][:profile] = 'standard' // If action includes install, this profile will be installed.
 [:sites][site_name][:drupal][:settings][:files] = "#{docroot_before}sites/default/files" // Where the sites files live
 [:sites][site_name][:drupal][:settings][:cookbook] = 'drupal'
