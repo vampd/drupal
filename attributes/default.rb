@@ -48,11 +48,11 @@ node[:drupal][:sites].each do |site_name, site|
   # default to bringing in latest drupal
   default[:drupal][:sites][site_name][:repository][:host] = 'github.com'
   default[:drupal][:sites][site_name][:repository][:uri] = 'https://github.com/drupal/drupal.git'
-  default[:drupal][:sites][site_name][:repository][:revision] = '7.26'
+  default[:drupal][:sites][site_name][:repository][:revision] = '7.36'
   default[:drupal][:sites][site_name][:repository][:shallow_clone] = false
   default[:drupal][:sites][site_name][:repository][:submodule] = false
 
-  default[:drupal][:sites][site_name][:drupal][:version] = '7.26'
+  default[:drupal][:sites][site_name][:drupal][:version] = '7.x'
   default[:drupal][:sites][site_name][:drupal][:registry_rebuild] = false
   default[:drupal][:sites][site_name][:drupal][:install]['install_configure_form.update_status_module'] = "'array(FALSE,FALSE)'"
   default[:drupal][:sites][site_name][:drupal][:install]['--clean-url'] = 1
