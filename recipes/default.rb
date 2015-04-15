@@ -286,6 +286,22 @@ node[:drupal][:sites].each do |site_name, site|
           end
         end
 
+        execute 'drupal-switch-branch' do
+          cwd "#{base}/current"
+          cmd = "git checkout #{site[:repository][:revision]} && git pull origin #{site[:repository][:revision]}"
+
+          if site[:repository][:shallow_clone]
+            cmd << " --depth 5"
+          end
+
+          command <<-EOF
+            set -x
+            set -e
+            #{cmd}
+          EOF
+          only_if { ::File.exists?("#{base}/current") }
+        end
+
         Chef::Log.debug("Drupal::default: after_restart: execute: /root/#{site_name}-files.sh")
         bash 'change file ownership' do
           code <<-EOH
