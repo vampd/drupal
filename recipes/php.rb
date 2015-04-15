@@ -1,9 +1,9 @@
 #
-# Author::  Kevin Bridges (<kevin@cyberswat.com>)
+# Author::  Alex Knoll (arknoll@gmail.com)
 # Cookbook Name:: drupal
-# Recipe:: mysql
+# Recipe:: php
 #
-# Copyright 2013, Cyberswat Industries, LLC.
+# Copyright 2015, Alex Knoll
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,10 +19,16 @@
 #
 include_recipe 'php'
 
-['php5-mysql', 'php5-gd', 'php5-curl'].each do |pkg|
+['php5-mysql', 'php5-gd', 'php5-curl', 'libpcre3-dev'].each do |pkg|
   package pkg do
     action :install
   end
+end
+
+# install apc pecl with directives.
+php_pear "apc" do
+  action :install
+  directives(:shm_size => '96M', :enable_cli => 1)
 end
 
 php_pear 'uploadprogress' do
