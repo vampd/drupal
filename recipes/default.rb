@@ -216,7 +216,8 @@ node[:drupal][:sites].each do |site_name, site|
            :host => site[:drupal][:settings][:db_host],
            :driver => site[:drupal][:settings][:db_driver],
            :prefix => site[:drupal][:settings][:db_prefix],
-           :settings_custom => site[:drupal][:settings][:settings]
+           :settings_custom => site[:drupal][:settings][:settings],
+           :port => site[:drupal][:settings][:db_port]
           )
         end
         bash "Ignore the #{site_name} settings.php but don't place it in the gitignore" do

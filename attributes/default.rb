@@ -73,13 +73,22 @@ node[:drupal][:sites].each do |site_name, site|
   default[:drupal][:sites][site_name][:drupal][:settings][:settings][:default][:location] = "#{docroot_before}sites/default/settings.php"
   default[:drupal][:sites][site_name][:drupal][:settings][:settings][:default][:ignore] = false
   default[:drupal][:sites][site_name][:drupal][:settings][:db_name] = site_name.gsub('-', '_')
-  default[:drupal][:sites][site_name][:drupal][:settings][:db_host] = 'localhost'
+  default[:drupal][:sites][site_name][:drupal][:settings][:db_host] = '127.0.0.1'
+  default[:drupal][:sites][site_name][:drupal][:settings][:db_port] = '3306'
   default[:drupal][:sites][site_name][:drupal][:settings][:db_prefix] = ''
   default[:drupal][:sites][site_name][:drupal][:settings][:db_driver] = 'mysql'
+
+  directory = "#{node[:drupal][:server][:base]}/#{site_name}/current#{docoot_after}"
   default[:drupal][:sites][site_name][:web_app]['80'][:server_name] = "#{site_name}.local"
   default[:drupal][:sites][site_name][:web_app]['80'][:rewrite_engine] = 'On'
-  default[:drupal][:sites][site_name][:web_app]['80'][:docroot] = "#{node[:drupal][:server][:base]}/#{site_name}/current#{docoot_after}"
+  default[:drupal][:sites][site_name][:web_app]['80'][:docroot] = directory
   default[:drupal][:sites][site_name][:web_app]['80'][:error_log] = "/var/log/apache2/#{site_name}-error.log"
+
+  if node['apache']['version'] == '2.4'
+    default[:drupal][:sites][site_name][:web_app]['80'][:directories][directory][:options] = ['Indexes', 'FollowSymLinks', 'MultiViews']
+    default[:drupal][:sites][site_name][:web_app]['80'][:directories][directory][:allow_override] = ['All']
+    default[:drupal][:sites][site_name][:web_app]['80'][:directories][directory][:require] = ['all', 'granted']
+  end
 
   default[:drupal][:sites][site_name][:drupal_user][:id] = site_name
   default[:drupal][:sites][site_name][:drupal_user][:db_user] = 'drupal'
@@ -87,4 +96,17 @@ node[:drupal][:sites].each do |site_name, site|
   default[:drupal][:sites][site_name][:drupal_user][:admin_user] = 'admin'
   default[:drupal][:sites][site_name][:drupal_user][:admin_pass] = 'admin'
   default[:drupal][:sites][site_name][:drupal_user][:update_password] = false
+end
+
+# This is necessary until https://github.com/opscode-cookbooks/php/pull/107
+# Is pulled into a release.
+case node['platform']
+  when 'ubuntu'
+    if node['platform_version'].to_f >= 12.10
+      default['php']['ext_conf_dir'] = '/etc/php5/mods-available'
+    else
+      default['php']['ext_conf_dir']  = '/etc/php5/conf.d'
+    end
+  else
+    default['php']['ext_conf_dir']  = '/etc/php5/conf.d'
 end

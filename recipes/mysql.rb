@@ -19,42 +19,39 @@
 #
 
 # Set up the server.
-Chef::Log.debug "drupal::mysql - site[:db] = #{node[:db].inspect}"
-include_recipe node[:db][:client_recipe] unless node[:db][:client_recipe].nil?
-include_recipe 'database'
-include_recipe 'database::mysql'
-
 passwords = data_bag_item('users', 'mysql')[node.chef_environment]
-Chef::Log::debug "drupal::mysql passwords = #{passwords.inspect}"
 
-if Chef::Config[:solo]
-  Chef::Log.debug 'drupal::mysql Setting chef solo node mysql passwords.'
-  node.set['mysql']['server_debian_password'] = passwords['debian'] unless passwords['debian'].nil?
-  node.default[:mysql][:server_root_password] = passwords['root'] unless passwords['root'].nil?
-  node.set['mysql']['server_repl_password'] = passwords['replication'] unless passwords['replication'].nil?
+mysql_service 'default' do
+  version '5.5'
+  bind_address '0.0.0.0'
+  port '3306'
+  data_dir '/data'
+  initial_root_password passwords['root']
+  action [:create, :start]
+end
+
+mysql_client 'default' do
+  action :create
+end
+
+mysql2_chef_gem 'default' do
+  action :install
 end
 
 mysql_connection_info = {
-  :host => node[:db][:host],
-  :username => node[:db][:root],
-  :password => node[:mysql][:server_root_password]
+  :host => '127.0.0.1',
+  :username => 'root',
+  :password => passwords['root'],
+  :port => '3306'
 }
-Chef::Log.debug "drupal::mysql - mysql_connection_info = #{mysql_connection_info.inspect}"
 
 drupal_user = data_bag_item('users', 'drupal')[node.chef_environment]
-Chef::Log.debug "drupal::mysql - drupal_user = #{drupal_user.inspect}"
 
 # Set up each drupal site.
-Chef::Log.debug "drupal::mysql - node[:drupal] = #{node[:drupal].inspect}"
-
 node[:drupal][:sites].each do |site_name, site|
 
   if site[:active]
-    Chef::Log.debug "drupal::mysql site #{site_name.inspect} is active."
-
     if site[:deploy][:action].any? { |action| %w[install import].include? action }
-
-      Chef::Log.debug("drupal::mysql clean install: purging database: #{site[:drupal][:settings][:db_name]}")
       mysql_database site[:drupal][:settings][:db_name] do
         connection mysql_connection_info
         action :drop
@@ -107,7 +104,5 @@ node[:drupal][:sites].each do |site_name, site|
         end
       end
     end
-  else
-    Chef::Log.debug "drupal::mysql site #{site_name} is not active."
   end
 end
