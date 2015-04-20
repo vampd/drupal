@@ -21,6 +21,10 @@
 # Set up the server.
 passwords = data_bag_item('users', 'mysql')[node.chef_environment]
 
+mysql2_chef_gem 'default' do
+  action :install
+end
+
 mysql_service 'default' do
   version '5.5'
   bind_address '0.0.0.0'
@@ -34,8 +38,15 @@ mysql_client 'default' do
   action :create
 end
 
-mysql2_chef_gem 'default' do
-  action :install
+mysql_config 'default' do
+  source 'my.cnf.erb'
+  config_name 'custom.my.cnf'
+  instance 'default'
+  variables({
+    :tunable => node[:mysql][:tunable]
+  })
+  notifies :restart, 'mysql_service[default]'
+  action :create
 end
 
 mysql_connection_info = {
