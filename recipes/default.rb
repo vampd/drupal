@@ -220,6 +220,17 @@ node[:drupal][:sites].each do |site_name, site|
            :port => site[:drupal][:settings][:db_port]
           )
         end
+
+        template "#{release_path}/#{site[:drupal][:settings][:services][:default][:location]}" do
+          path "#{release_path}/#{site[:drupal][:settings][:services][:default][:location]}"
+          version = site[:drupal][:version].split('.')[0]
+          source "d#{version}.services.yml.erb"
+          mode 0644
+          variables(
+          )
+          only_if { version == '8' }
+        end
+
         bash "Ignore the #{site_name} settings.php but don't place it in the gitignore" do
           user 'root'
           cwd release_path

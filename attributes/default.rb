@@ -1,9 +1,11 @@
 #
 # Author:: Kevin Bridges (<kevin@cyberswat.com>)
+# Author:: Alex Knoll (<arknoll@gmail.com>)
 # Cookbook Name:: drupal
 # Attribute:: default
 #
 # Copyright 2013, Cyberswat Industries, LLC.
+# Copyright 2015, Alex Knoll.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +27,7 @@ default[:drupal][:server][:web_group] = 'www-data'
 default[:drupal][:server][:base] = '/srv/www'
 default[:drupal][:server][:assets] = '/assets'
 
-default[:drupal][:drush][:revision] = '6.2.0'
+default[:drupal][:drush][:revision] = '6.6.0'
 default[:drupal][:drush][:repository] = 'https://github.com/drush-ops/drush.git'
 default[:drupal][:drush][:dir] = '/usr/local/src/drush'
 default[:drupal][:drush][:executable] = '/usr/bin/drush'
@@ -53,9 +55,22 @@ node[:drupal][:sites].each do |site_name, site|
   default[:drupal][:sites][site_name][:repository][:submodule] = false
 
   default[:drupal][:sites][site_name][:drupal][:version] = '7.x'
+
+  # Change drush version if 8.x drupal version
+  drupal_version = node[:drupal][:sites][site_name][:drupal][:version].split('.')[0]
+
+  # Ensure Drush 7.x is installed if drupal 8 being deployed.
+  if drupal_version == '8'
+    default[:drupal][:drush][:revision] = '7.0.0-rc1'
+  end
+
   default[:drupal][:sites][site_name][:drupal][:registry_rebuild] = false
   default[:drupal][:sites][site_name][:drupal][:install]['install_configure_form.update_status_module'] = "'array(FALSE,FALSE)'"
-  default[:drupal][:sites][site_name][:drupal][:install]['--clean-url'] = 1
+
+  # Install setting only appropriate for drupal 7.
+  if drupal_version == '7'
+    default[:drupal][:sites][site_name][:drupal][:install]['--clean-url'] = 1
+  end
 
   #Set up the docroot to be used as a default
   default[:drupal][:sites][site_name][:drupal][:settings][:docroot] = ''
@@ -72,6 +87,7 @@ node[:drupal][:sites].each do |site_name, site|
   default[:drupal][:sites][site_name][:drupal][:settings][:cookbook] = 'drupal'
   default[:drupal][:sites][site_name][:drupal][:settings][:settings][:default][:location] = "#{docroot_before}sites/default/settings.php"
   default[:drupal][:sites][site_name][:drupal][:settings][:settings][:default][:ignore] = false
+  default[:drupal][:sites][site_name][:drupal][:settings][:services][:default][:location] = "#{docroot_before}sites/default/services.yml"
   default[:drupal][:sites][site_name][:drupal][:settings][:db_name] = site_name.gsub('-', '_')
   default[:drupal][:sites][site_name][:drupal][:settings][:db_host] = '127.0.0.1'
   default[:drupal][:sites][site_name][:drupal][:settings][:db_port] = '3306'
