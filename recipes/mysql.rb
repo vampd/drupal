@@ -1,9 +1,11 @@
 #
 # Author::  Kevin Bridges (<kevin@cyberswat.com>)
+# Author:: Alex Knoll (arknoll@gmail.com)
 # Cookbook Name:: drupal
 # Recipe:: mysql
 #
 # Copyright 2013, Cyberswat Industries, LLC.
+# Copyright 2015, Alex Knoll
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,10 +36,6 @@ mysql_service 'default' do
   action [:create, :start]
 end
 
-mysql_client 'default' do
-  action :create
-end
-
 mysql_config 'default' do
   source 'my.cnf.erb'
   config_name 'custom.my.cnf'
@@ -46,6 +44,10 @@ mysql_config 'default' do
     :tunable => node[:mysql][:tunable]
   })
   notifies :restart, 'mysql_service[default]'
+  action :create
+end
+
+mysql_client 'default' do
   action :create
 end
 
