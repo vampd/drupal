@@ -38,7 +38,6 @@ end
 
 mysql_config 'default' do
   source 'my.cnf.erb'
-  config_name 'custom.my.cnf'
   instance 'default'
   variables({
     :tunable => node[:mysql][:tunable]
