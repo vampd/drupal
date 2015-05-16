@@ -356,10 +356,7 @@ node[:drupal][:sites].each do |site_name, site|
         end
       end
     end
-
-    bash "drush-site-install-#{site_name}" do
-      cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
-      user 'root'
+    if site[:deploy][:action].any? { |action| action == 'install' }
       cmd = "drush -y site-install #{site[:drupal][:settings][:profile]}"
 
       unless site[:drupal][:install].nil?
@@ -369,14 +366,27 @@ node[:drupal][:sites].each do |site_name, site|
       end
 
       cmd << " --account-name=#{drupal_user['admin_user']} --account-pass=#{drupal_user['admin_pass']}"
-      only_if { site[:deploy][:action].any? { |action| action == 'install' } }
 
-      Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action].any? { |action| action == 'install' }
-      code <<-EOH
-        set -x
-        set -e
-        #{cmd}
-      EOH
+      bash "drush-site-install-#{site_name}" do
+        cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
+        user 'root'
+        Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action].any? { |action| action == 'install' }
+        code <<-EOH
+          set -x
+          set -e
+          #{cmd}
+        EOH
+      end
+      template "/root/#{site_name}-install.sh" do
+        source 'install.sh.erb'
+        mode 0755
+        owner 'root'
+        group 'root'
+        variables(
+          :install_command => cmd
+        )
+        cmd = ''
+      end
     end
 
     # Run post-install scripts if any are defined.
