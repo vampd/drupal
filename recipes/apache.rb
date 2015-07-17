@@ -17,9 +17,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-include_recipe 'apache2'
-include_recipe 'apache2::mod_php5'
-include_recipe 'apache2::mod_rewrite'
 
 node[:drupal][:sites].each do |site_name, site|
   if site[:active]

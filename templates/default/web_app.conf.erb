@@ -15,7 +15,8 @@
   DirectoryIndex <%= [@params[:directory_index]].flatten.join " " %><% end -%><% if @params[:directories] -%>
   <% @params[:directories].each do |directory, a| %>
     <Directory <%= directory %>><% if a['options'] -%>
-      Options <%= a['options'].flatten.join " " %><% end -%><% if a['allow_override'] -%>
+      Options <%= a['options'].flatten.join " " %><% end -%><% if a['require'] -%>
+      Require <%= a['require'].flatten.join " " %><% end -%><% if a['allow_override'] -%>
       AllowOverride <%= a['allow_override'].flatten.join " " %><% end -%><% if a['order'] -%>
       Order <%= a['order'].flatten.join "," %><% end -%><% if a['allow_from'] -%>
       Allow from <%= a['allow_from'].flatten.join " " %><% end -%>
@@ -28,3 +29,4 @@
   SSLCertificateKeyFile <%= @params[:ssl_certificate_key_file] %><% end -%><% if @params[:set_env_if] -%><% @params[:set_env_if].each do |a| %>
   SetEnvIf <%= a %><% end %><% end %>
 </VirtualHost>
+

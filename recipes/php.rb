@@ -17,18 +17,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-include_recipe 'php'
 
-['php5-mysql', 'php5-gd', 'php5-curl', 'libpcre3-dev'].each do |pkg|
-  package pkg do
-    action :install
+ruby_block 'check_php_version' do
+  block do
+    Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
+    command = 'php -v'
+    command_out = shell_out(command)
+    if command_out.stdout.include? 'PHP 5.3'
+      # For php 5.3 include apc.
+      node.set[:drupal][:php][:version] = '5.3'
+    end
   end
+  action :create
+  notifies :install, "php_pear[apc]", :immediately
 end
 
-# install apc pecl with directives.
-php_pear "apc" do
-  action :install
+# Install apc pecl with directives.
+php_pear 'apc' do
+  action :nothing
   directives(:shm_size => '96M', :enable_cli => 1)
+  only_if { node[:drupal][:php] == '5.3' }
 end
 
 php_pear 'uploadprogress' do

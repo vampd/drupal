@@ -1,0 +1,10 @@
+# Chef generated configuration
+
+<% if @tunable %>
+  <% @tunable.each do |group_name, settings| %>
+[<%= group_name %>]
+    <% settings.each do |setting_name, setting| %>
+<%= setting_name %> = <%= setting %>
+    <% end %>
+  <% end %>
+<% end %>
