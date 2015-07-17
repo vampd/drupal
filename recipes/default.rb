@@ -204,8 +204,12 @@ node[:drupal][:sites].each do |site_name, site|
         Chef::Log.debug("Drupal::default: before_migrate: template #{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}")
         template "#{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}" do
           path "#{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}"
-          version = site[:drupal][:version].split('.')[0]
-          source "d#{version}.settings.php.erb"
+          if site[:type] == "drupal"
+            version = site[:drupal][:version].split('.')[0]
+            source "d#{version}.settings.php.erb"
+          elsif site[:type] == "backdrop"
+            source "backdrop.settings.php.erb"
+          end
          # owner node[:server][:web_user]
          # group node[:server][:web_group]
           mode 0644
@@ -242,18 +246,20 @@ node[:drupal][:sites].each do |site_name, site|
           EOH
           only_if { site[:drupal][:settings][:settings][:default][:ignore] == true }
         end
-        Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{site[:drupal][:settings]}")
-        site[:drupal][:settings][:settings].each do |setting_name, setting|
-          unless setting[:template].nil?
-            Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{setting[:location]}")
-            drupal_custom_settings "#{release_path}/#{setting[:location]}" do
-              cookbook site[:drupal][:settings][:cookbook]
-              source setting[:template]
+        if site[:type] == "drupal"
+          Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{site[:drupal][:settings]}")
+          site[:drupal][:settings][:settings].each do |setting_name, setting|
+            unless setting[:template].nil?
+              Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{setting[:location]}")
+              drupal_custom_settings "#{release_path}/#{setting[:location]}" do
+                cookbook site[:drupal][:settings][:cookbook]
+                source setting[:template]
+              end
             end
           end
         end
         # Generate the drush aliases folder
-        if site.has_key?("drush_aliases") && !site[:drush_aliases][:location].nil?
+        if site[:type] == "drupal" && site.has_key?("drush_aliases") && !site[:drush_aliases][:location].nil?
           # Generate drush aliases file
           Chef::Log.debug("Drupal::default: before_migrate: template #{release_path}/#{site[:drush_aliases][:location]}")
           Chef::Log.debug("Drupal::default: before_migrate: drupal_custom_settings #{release_path}/#{site[:drush_aliases][:aliases]}")
@@ -372,7 +378,13 @@ node[:drupal][:sites].each do |site_name, site|
     bash "drush-site-install-#{site_name}" do
       cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
       user 'root'
-      cmd = "drush -y site-install #{site[:drupal][:settings][:profile]}"
+      if site[:type] == "drupal"
+        cmd = "drush -y site-install"
+      elsif site[:type] == "backdrop"
+        cmd = "php ./core/scripts/install.sh --db-url='mysql://#{drupal_user['db_user']}:#{drupal_user['db_password']}@#{site[:drupal][:settings][:db_host]}/#{site[:drupal][:settings][:db_name]}'"
+      end
+
+      cmd << " #{site[:drupal][:settings][:profile]}"
 
       unless site[:drupal][:install].nil?
         site[:drupal][:install].each do |flag, value|
@@ -447,7 +459,7 @@ node[:drupal][:sites].each do |site_name, site|
       cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
       user 'root'
       cmd = 'drush updb -y; drush cc all'
-      only_if { site[:deploy][:action].any? { |action| action == 'update' } }
+      only_if { site[:deploy][:action].any? { |action| action == 'update' }  && site[:type] == 'drupal'}
       Chef::Log.debug("Drupal::default: action = 'update' execute = #{cmd.inspect}") if site[:deploy][:action].any? { |action| action == 'update' }
       code <<-EOH
         set -x
@@ -476,7 +488,7 @@ node[:drupal][:sites].each do |site_name, site|
       cwd "#{base}/current/#{site[:drupal][:settings][:docroot]}"
       user 'root'
       cmd = "drush upwd #{drupal_user['admin_user']} --password=#{drupal_user['admin_pass']}"
-      only_if { site[:deploy][:action].include?('import') && site[:drupal_user][:update_password] == true}
+      only_if { site[:deploy][:action].include?('import') && site[:drupal_user][:update_password] == true && site[:type] == 'drupal'}
       Chef::Log.debug("Drupal::default: before_restart: execute: #{cmd.inspect}") if site[:deploy][:action].any? { |action| action == 'import' }
       code <<-EOH
         set -x
