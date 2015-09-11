@@ -42,7 +42,6 @@ mysql_config 'default' do
   variables({
     :tunable => node[:mysql][:tunable]
   })
-  notifies :restart, 'mysql_service[default]'
   action :create
 end
 
@@ -56,6 +55,9 @@ mysql_connection_info = {
   :password => passwords['root'],
   :port => '3306'
 }
+mysql_service 'default' do
+  action :restart
+end
 
 drupal_user = data_bag_item('users', 'drupal')[node.chef_environment]
 
