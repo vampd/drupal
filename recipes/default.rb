@@ -87,11 +87,13 @@ node[:drupal][:sites].each do |site_name, site|
       to assets
     end
 
-    directory "#{assets}/files" do
-      not_if { ::File.exists?("#{assets}/files") }
-      mode 00755
-      action :create
-      recursive true
+    unless site[:drupal][:settings][:files].empty?
+      directory "#{assets}/files" do
+        not_if { ::File.exists?("#{assets}/files") }
+        mode 00755
+        action :create
+        recursive true
+      end
     end
 
     directory "#{assets}/shared" do
@@ -194,11 +196,13 @@ node[:drupal][:sites].each do |site_name, site|
 
         end
 
-        Chef::Log.debug("Drupal::default: before_migrate: release_path = #{release_path}")
-        Chef::Log.debug("Drupal::default: before_migrate: link #{release_path}/#{site[:drupal][:settings][:files]} to #{assets}/files")
-        link "#{release_path}/#{site[:drupal][:settings][:files]}" do
-          to "#{assets}/files"
-          link_type :symbolic
+        unless site[:drupal][:settings][:files].empty?
+          Chef::Log.debug("Drupal::default: before_migrate: release_path = #{release_path}")
+          Chef::Log.debug("Drupal::default: before_migrate: link #{release_path}/#{site[:drupal][:settings][:files]} to #{assets}/files")
+          link "#{release_path}/#{site[:drupal][:settings][:files]}" do
+            to "#{assets}/files"
+            link_type :symbolic
+          end
         end
 
         Chef::Log.debug("Drupal::default: before_migrate: template #{release_path}/#{site[:drupal][:settings][:settings][:default][:location]}")
