@@ -437,12 +437,19 @@ node[:drupal][:sites].each do |site_name, site|
 
     if site[:drupal][:registry_rebuild]
       bash "drush-download-registry-rebuild-#{site_name}" do
-        cwd "#{base}"
-        cmd = 'drush dl registry_rebuild; '
+        # Make sure we're not in the site root when we download this. Otherwise,
+        # Drush will try to bootstrap Drupal first, which might fail because the
+        # Drupal site's registry is messed up (the issue that we download and
+        # run this command to fix in the first place). As registry_rebuild is a
+        # Drush command and not a Drupal module in the first place, we don't
+        # need to be in the site root even if the registry *isn't* corrupted.
+        cwd "~"
+        cmd = 'drush dl registry_rebuild-7.x; '
         code <<-EOH
           set -x
           #{cmd}
         EOH
+        cwd "-"
       end
 
       bash "drush-site-registry-rebuild-#{site_name}" do
