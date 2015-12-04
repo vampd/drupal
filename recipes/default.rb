@@ -443,13 +443,12 @@ node[:drupal][:sites].each do |site_name, site|
         # run this command to fix in the first place). As registry_rebuild is a
         # Drush command and not a Drupal module in the first place, we don't
         # need to be in the site root even if the registry *isn't* corrupted.
-        cwd "~"
+        cwd "/root"
         cmd = 'drush dl registry_rebuild-7.x; '
         code <<-EOH
           set -x
           #{cmd}
         EOH
-        cwd "-"
       end
 
       bash "drush-site-registry-rebuild-#{site_name}" do
